@@ -34,8 +34,8 @@
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.show_sql">${hibernate.showsql}</prop>
                 <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl}</prop>
-                <!-- moet verwijderd worden voor de transactionManager --> <prop key="hibernate.current_session_context_class">thread</prop>
-                
+                <!-- moet verwijderd worden voor de transactionManager  <prop key="hibernate.current_session_context_class">thread</prop>
+                -->
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
             </props>
         </property>
@@ -53,6 +53,6 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
-
+	<tx:annotation-driven transaction-manager="transactionManager"/>
 
 </beans>
