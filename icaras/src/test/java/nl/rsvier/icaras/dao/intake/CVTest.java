@@ -24,23 +24,23 @@ public class CVTest {
 	public void test() {
 		CV a = new CV();
 		Aanmelder q = new Aanmelder();
-		q.setcV(a);
+		//q.setcV(a);
 		a.setAanmelder(q);
 		aanmelderdao.persistAanmelder(q);
 		
 		//Opslaan van de CV.
 	   	testdao.persistCV(a);
-	   	long ida = q.getId();
+	   	long ida = a.getId();
 		System.out.println("Het id van CV a is: "+ida);
 	   	System.out.println("De CV is gepersisteerd!");
 	   	
 	   	//De CV weer opzoeken.
 	   	CV b = testdao.findCV(ida);
-	   	System.out.println("Het id van de opgezochte CV is: " +b.getAanmelder().getId());
+	   	System.out.println("Het id van de opgezochte CV is: " +b.getId());
 	   	
 	   	//De CV aanpassen door een bestand toe te voegen.
 	   	System.out.println("CV een bestand geven");
-	   	a.setCvDocument(new File("///local/"));
+	   	a.setCvDocument(null);
 	   	
 	   
 	   	testdao.updateCV(a);

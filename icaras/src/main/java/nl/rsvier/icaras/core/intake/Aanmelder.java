@@ -31,7 +31,7 @@ public class Aanmelder extends TMPPersoon implements Serializable {
 	private CV cV;
 	
 	/**
-	 * @return the id
+	 * @return the id van aanmelder.
 	 */
 	@Id
 	@GeneratedValue

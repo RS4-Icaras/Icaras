@@ -8,11 +8,13 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 /**
  * 
@@ -25,17 +27,28 @@ public class CV implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Aanmelder aanmelder;
 	private File cvDocument;
+	private long id;
 	
 	private List<Werkervaringseenheid> werkervaringsEenheden = new ArrayList<Werkervaringseenheid>();
 	private List<Opleiding> opleidingen = new ArrayList<Opleiding>();
 	//private List<Expertise> expertises = new ArrayList<Expertise>();
 	
+	@Id
+	@GeneratedValue
+	@PrimaryKeyJoinColumn
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	
 	/**
 	 * @return the aanmelder
 	 */
-	@Id
-	@OneToOne
-	@JoinColumn(name="aanmelder_cv_ID")
+	
+	@OneToOne(cascade=CascadeType.ALL)
+	//@JoinColumn(name="aanmelder_cv_ID")
 	public Aanmelder getAanmelder() {
 		return aanmelder;
 	}
