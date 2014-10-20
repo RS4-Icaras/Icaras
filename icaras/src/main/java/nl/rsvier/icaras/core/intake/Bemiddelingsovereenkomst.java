@@ -92,6 +92,22 @@ public class Bemiddelingsovereenkomst extends Interneovereenkomst implements Ser
 		this.ondergetekende = ondergetekende;
 	}
 	
+	//TODO Aanpassen als er meer atributen zijn voor Bemiddelingsovereenkomst.
+			public boolean equals(Object obj){
+				boolean isEqual = false;
+				if(obj instanceof Bemiddelingsovereenkomst
+						&& this.id == ((Bemiddelingsovereenkomst) obj).getId()
+						&& this.isGetekend == ((Bemiddelingsovereenkomst) obj).isGetekend()
+						&& this.isStandaardOvereenkomst == ((Bemiddelingsovereenkomst) obj).isStandaardOvereenkomst()
+						&& this.startDatum.equals(((Bemiddelingsovereenkomst) obj).getStartDatum()) 
+						&& this.eindDatum.equals(((Bemiddelingsovereenkomst) obj).getEindDatum())
+						//&& this.ondergetekende.equals(((Bemiddelingsovereenkomst) obj).getOndergetekende())
+						){
+					isEqual = true;
+				}
+				return isEqual;
+			}
+	
 	
 
 

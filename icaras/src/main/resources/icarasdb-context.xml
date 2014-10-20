@@ -25,15 +25,16 @@
 		
         <property name="packagesToScan" value="nl.rsvier.icaras.core" />
 
-		<property name="configLocation">
+		<!--  <property name="configLocation">
 			<value>classpath:hibernate.cfg.xml</value>
-		</property>
+		</property>-->
 		
 		<property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.show_sql">${hibernate.showsql}</prop>
                 <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl}</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
             </props>
         </property>
 		
@@ -43,10 +44,13 @@
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Repository" />
 	</context:component-scan>
+	
 	<!-- Transaction config -->
-	<bean id="transactionManager"
-		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager"/>
 
 </beans>

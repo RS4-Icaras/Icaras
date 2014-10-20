@@ -1,14 +1,13 @@
 package nl.rsvier.icaras.dao.intake;
 
+import java.util.List;
 import nl.rsvier.icaras.core.intake.Scholingsovereenkomst;
-
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
-@Repository("scholingsovereenkomstDao")
+@Repository("IScholingsovereenkomstDao")
 public class ScholingsovereenkomstDAO implements IScholingsovereenkomstDAO {
 	
 	private SessionFactory sessionFactory;
@@ -25,36 +24,25 @@ public class ScholingsovereenkomstDAO implements IScholingsovereenkomstDAO {
 	}
 
 	public Scholingsovereenkomst findScholingsovereenkomst(long id) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		Scholingsovereenkomst a = (Scholingsovereenkomst) session.get(Scholingsovereenkomst.class, id);
-		session.getTransaction().commit();
+		Scholingsovereenkomst a = hibernateTemplate.load(Scholingsovereenkomst.class, id);
 		return a;
-		
 	}
 
 	public void persistScholingsovereenkomst(Scholingsovereenkomst a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(a);
-		session.getTransaction().commit();
-		
+		hibernateTemplate.saveOrUpdate(a);	
 	}
 
 	public void updateScholingsovereenkomst(Scholingsovereenkomst a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.saveOrUpdate(a);
-		session.getTransaction().commit();
-		
+		hibernateTemplate.saveOrUpdate(a);
+	}
+
+	public void deleteScholingsovereenkomst(Scholingsovereenkomst a) {
+		hibernateTemplate.delete(a);
 	}
 	
-	public void deleteScholingsovereenkomst(Scholingsovereenkomst a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.delete(a);
-		session.getTransaction().commit();
-		
+	public List<Scholingsovereenkomst> getAllScholingsovereenkomst(){
+		List<Scholingsovereenkomst> alijst = (List<Scholingsovereenkomst>) hibernateTemplate.loadAll(Scholingsovereenkomst.class);
+		return alijst;
 	}
 
 }

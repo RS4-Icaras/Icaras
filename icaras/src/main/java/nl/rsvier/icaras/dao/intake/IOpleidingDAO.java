@@ -1,5 +1,7 @@
 package nl.rsvier.icaras.dao.intake;
 
+import java.util.List;
+
 import nl.rsvier.icaras.core.intake.Opleiding;
 
 public interface IOpleidingDAO {
@@ -11,5 +13,7 @@ public interface IOpleidingDAO {
     public void updateOpleiding (Opleiding a);
     
     public void deleteOpleiding (Opleiding a);
+    
+    public List<Opleiding> getAllOpleiding();
 
 }

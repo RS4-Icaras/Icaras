@@ -93,4 +93,20 @@ public class Scholingsovereenkomst extends Interneovereenkomst implements Serial
 		this.ondergetekende = ondergetekende;
 	}
 	
+	//TODO Aanpassen als er meer atributen zijn voor Scholingsovereenkomst.
+	public boolean equals(Object obj){
+		boolean isEqual = false;
+		if(obj instanceof Scholingsovereenkomst
+				&& this.id == ((Scholingsovereenkomst) obj).getId()
+				&& this.isGetekend == ((Scholingsovereenkomst) obj).isGetekend()
+				&& this.isStandaardOvereenkomst == ((Scholingsovereenkomst) obj).isStandaardOvereenkomst()
+				&& this.startDatum.equals(((Scholingsovereenkomst) obj).getStartDatum()) 
+				&& this.eindDatum.equals(((Scholingsovereenkomst) obj).getEindDatum())
+				//&& this.ondergetekende.equals(((Scholingsovereenkomst) obj).getOndergetekende())
+				){
+			isEqual = true;
+		}
+		return isEqual;
+	}
+	
 }

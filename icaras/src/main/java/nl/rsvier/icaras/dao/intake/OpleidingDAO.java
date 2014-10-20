@@ -1,13 +1,13 @@
 package nl.rsvier.icaras.dao.intake;
 
+import java.util.List;
 import nl.rsvier.icaras.core.intake.Opleiding;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
-@Repository("opleidingDao")
+@Repository("IOpleidingDao")
 public class OpleidingDAO implements IOpleidingDAO{
 	
 	private SessionFactory sessionFactory;
@@ -24,36 +24,25 @@ public class OpleidingDAO implements IOpleidingDAO{
 	}
 
 	public Opleiding findOpleiding(long id) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		Opleiding a = (Opleiding) session.get(Opleiding.class, id);
-		session.getTransaction().commit();
+		Opleiding a = hibernateTemplate.load(Opleiding.class, id);
 		return a;
-		
 	}
 
 	public void persistOpleiding(Opleiding a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(a);
-		session.getTransaction().commit();
-		
+		hibernateTemplate.saveOrUpdate(a);	
 	}
 
 	public void updateOpleiding(Opleiding a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.saveOrUpdate(a);
-		session.getTransaction().commit();
-		
+		hibernateTemplate.saveOrUpdate(a);
 	}
 
 	public void deleteOpleiding(Opleiding a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.delete(a);
-		session.getTransaction().commit();
-		
+		hibernateTemplate.delete(a);
+	}
+	
+	public List<Opleiding> getAllOpleiding(){
+		List<Opleiding> alijst = (List<Opleiding>) hibernateTemplate.loadAll(Opleiding.class);
+		return alijst;
 	}
 
 }

@@ -1,66 +1,67 @@
 package nl.rsvier.icaras.dao.intake;
 
-import java.io.File;
-
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import nl.rsvier.icaras.core.intake.Aanmelder;
 import nl.rsvier.icaras.core.intake.CV;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateObjectRetrievalFailureException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class) 
 @ContextConfiguration(locations="classpath:icarasdb-context.xml")
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback=true)
 public class CVTest {
 	
 	@Autowired
 	private CVDAO testdao;
-	@Autowired
-	private AanmelderDAO aanmelderdao;
+		
+	CV a1;
+	CV a2;
+	
+	@Before
+	public void setUp(){
+		a1 = new CV();
+		a2 = new CV();
+		a1.setAanmelder(new Aanmelder());
+		a2.setAanmelder(new Aanmelder());
+
+	}
 	
 	@Test
-	public void test() {
-		CV a = new CV();
-		Aanmelder q = new Aanmelder();
-		q.setcV(a);
-		a.setAanmelder(q);
-		aanmelderdao.persistAanmelder(q);
-		
-		//Opslaan van de CV.
-	   	testdao.persistCV(a);
-	   	long ida = q.getId();
-		System.out.println("Het id van CV a is: "+ida);
-	   	System.out.println("De CV is gepersisteerd!");
-	   	
-	   	//De CV weer opzoeken.
-	   	CV b = testdao.findCV(ida);
-	   	System.out.println("Het id van de opgezochte CV is: " +b.getAanmelder().getId());
-	   	
-	   	//De CV aanpassen door een bestand toe te voegen.
-	   	System.out.println("CV een bestand geven");
-	   	a.setCvDocument(new File("///local/"));
-	   	
-	   
-	   	testdao.updateCV(a);
-	   	
-	   	CV c =testdao.findCV(ida);
-	   	if(c.getCvDocument()!=null) {
-	   		System.out.println("De CV heeft een bestand!");
-	   	}else{
-	   		System.out.println("De CV heeft geen bestand!");
-	   	}
-	   	
-	   	//De CV deleten en testen of die gedelete is.
-	   	System.out.println("De CV wordt gedelete.");
-	   	testdao.deleteCV(a);
-	   	CV d = testdao.findCV(ida);
-	   	if(d != null){
-	   		System.out.println("De CV is niet verwijderd!");
-	   	}else{
-	   		System.out.println("De CV is verwijderd!");
-	   	}
+	@Transactional
+	public void testSaveEnGet() {
+		testdao.persistCV(a1);
+	   	assertNotNull(a1.getId());
+	   	a2 = testdao.findCV(a1.getId());
+	   	assertTrue("De attributen uit de database zijn gelijk aan die van de save", a2.equals(a1));
+	}
+	
+	@Test (expected = HibernateObjectRetrievalFailureException.class)
+	@Transactional
+	public void testDeleteCV(){
+		testdao.persistCV(a1);
+		testdao.deleteCV(a1);
+		a2.setId(3);
+		testdao.deleteCV(a2);
+		a2 = testdao.findCV(a1.getId());
+	}
+	
+	@Test
+	@Transactional
+	public void UpdateCV(){
+		testdao.persistCV(a1);
+		a1.setAanmelder(new Aanmelder());
+		testdao.updateCV(a1);
+		CV vergelijken = testdao.findCV(a1.getId());
+		assertTrue("De atributten van de ingeladen en opgeslagen aanmelders zijn gelijk.", a1.equals(vergelijken));
 	}
 
 }

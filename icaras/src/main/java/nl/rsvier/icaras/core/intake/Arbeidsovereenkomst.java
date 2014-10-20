@@ -2,6 +2,7 @@ package nl.rsvier.icaras.core.intake;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -125,6 +126,21 @@ public class Arbeidsovereenkomst extends Overeenkomst implements Serializable{
 	public void setOndergetekende(TMPPersoon ondergetekende) {
 		this.ondergetekende = ondergetekende;
 	}
+	
+	//TODO Aanpassen als er meer atributen zijn voor Arbeidsovereenkomstn.
+		public boolean equals(Object obj){
+			boolean isEqual = false;
+			if(obj instanceof Arbeidsovereenkomst
+					&& this.id == ((Arbeidsovereenkomst) obj).getId()
+					&& this.isGetekend == ((Arbeidsovereenkomst) obj).isGetekend()
+					&& this.isStandaardOvereenkomst == ((Arbeidsovereenkomst) obj).isStandaardOvereenkomst()
+					//&& this.werkgever.equals(((Arbeidsovereenkomst) obj).getWerkgever())
+					//&& this.werknemer.equals(((Arbeidsovereenkomst) obj).getWerknemer())
+					){
+				isEqual = true;
+			}
+			return isEqual;
+		}
 	
 	
 	

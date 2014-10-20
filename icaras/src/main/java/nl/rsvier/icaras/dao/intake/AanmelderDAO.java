@@ -1,13 +1,15 @@
 package nl.rsvier.icaras.dao.intake;
 
-import org.hibernate.Session;
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
+
 import nl.rsvier.icaras.core.intake.Aanmelder;
 
-@Repository("aanmelderDao")
+@Repository("IAanmelderDao")
 public class AanmelderDAO implements IAanmelderDAO {
 	
 	private SessionFactory sessionFactory;
@@ -24,37 +26,28 @@ public class AanmelderDAO implements IAanmelderDAO {
 	}
 
 	public Aanmelder findAanmelder(long id) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		Aanmelder a = (Aanmelder) session.get(Aanmelder.class, id);
-		session.getTransaction().commit();
+		Aanmelder a = hibernateTemplate.load(Aanmelder.class, id);
 		return a;
 		
 	}
 
 	public void persistAanmelder(Aanmelder aanmelder) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(aanmelder);
-		session.getTransaction().commit();
+		hibernateTemplate.saveOrUpdate(aanmelder);
 		
 	}
 
 	public void updateAanmelder(Aanmelder aanmelder) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.saveOrUpdate(aanmelder);
-		session.getTransaction().commit();
+		hibernateTemplate.saveOrUpdate(aanmelder);
 		
 	}
 
 	public void deleteAanmelder(Aanmelder aanmelder) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.delete(aanmelder);
-		session.getTransaction().commit();
+		hibernateTemplate.delete(aanmelder);
 		
 	}
-
-
+	
+	public List<Aanmelder> getAllAanmelder(){
+		List<Aanmelder> aanmelderlijst = (List<Aanmelder>) hibernateTemplate.loadAll(Aanmelder.class);
+		return aanmelderlijst;
+	}
 }

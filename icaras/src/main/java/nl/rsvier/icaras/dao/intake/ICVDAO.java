@@ -1,5 +1,7 @@
 package nl.rsvier.icaras.dao.intake;
 
+import java.util.List;
+
 import nl.rsvier.icaras.core.intake.CV;
 
 public interface ICVDAO {
@@ -11,5 +13,7 @@ public interface ICVDAO {
     public void updateCV (CV a);
     
     public void deleteCV (CV a);
+    
+    public List<CV> getAllCV();
 
 }

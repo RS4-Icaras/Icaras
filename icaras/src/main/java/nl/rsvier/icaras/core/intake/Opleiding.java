@@ -52,6 +52,16 @@ public class Opleiding implements Serializable {
 		this.cv = cv;
 	}
 	
-	
+	//TODO Aanpassen als er meer attributen zijn voor Opleiding.
+	public boolean equals(Object obj){
+		boolean isEqual = false;
+		if(obj instanceof Opleiding
+				&& this.id == ((Opleiding) obj).getId()
+				//&& this.cv == ((Opleiding) obj).getCv()
+				){
+			isEqual = true;
+		}
+		return isEqual;
+	}
 
 }

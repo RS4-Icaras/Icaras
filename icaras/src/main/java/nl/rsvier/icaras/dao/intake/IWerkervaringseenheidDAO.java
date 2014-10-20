@@ -1,5 +1,6 @@
 package nl.rsvier.icaras.dao.intake;
 
+import java.util.List;
 import nl.rsvier.icaras.core.intake.Werkervaringseenheid;
 
 public interface IWerkervaringseenheidDAO {
@@ -11,6 +12,8 @@ public interface IWerkervaringseenheidDAO {
     public void updateWerkervaringseenheid (Werkervaringseenheid a);
     
     public void deleteWerkervaringseenheid (Werkervaringseenheid a);
+    
+    public List<Werkervaringseenheid> getAllWerkervaringseenheid();
 	
 
 }

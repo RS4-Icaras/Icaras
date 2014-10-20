@@ -1,15 +1,16 @@
 package nl.rsvier.icaras.dao.intake;
 
-import nl.rsvier.icaras.core.intake.Bemiddelingsovereenkomst;
+import java.util.List;
 
-import org.hibernate.Session;
+import nl.rsvier.icaras.core.intake.Bemiddelingsovereenkomst;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
-import nl.rsvier.icaras.util.intake.HibernateUtil;
 
-@Repository("bemiddelingsovereenkomstDao")
+
+
+@Repository("IBemiddelingsovereenkomstDao")
 public class BemiddelingsovereenkomstDAO implements IBemiddelingsovereenkomstDAO {
 	
 	private SessionFactory sessionFactory;
@@ -26,36 +27,25 @@ public class BemiddelingsovereenkomstDAO implements IBemiddelingsovereenkomstDAO
 	}
 
 	public Bemiddelingsovereenkomst findBemiddelingsovereenkomst(long id) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		Bemiddelingsovereenkomst a = (Bemiddelingsovereenkomst) session.get(Bemiddelingsovereenkomst.class, id);
-		session.getTransaction().commit();
+		Bemiddelingsovereenkomst a = hibernateTemplate.load(Bemiddelingsovereenkomst.class, id);
 		return a;
-		
 	}
 
 	public void persistBemiddelingsovereenkomst(Bemiddelingsovereenkomst a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(a);
-		session.getTransaction().commit();
-		
+		hibernateTemplate.saveOrUpdate(a);	
 	}
 
 	public void updateBemiddelingsovereenkomst(Bemiddelingsovereenkomst a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.saveOrUpdate(a);
-		session.getTransaction().commit();
-		
+		hibernateTemplate.saveOrUpdate(a);
+	}
+
+	public void deleteBemiddelingsovereenkomst(Bemiddelingsovereenkomst a) {
+		hibernateTemplate.delete(a);
 	}
 	
-	public void deleteBemiddelingsovereenkomst(Bemiddelingsovereenkomst a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.delete(a);
-		session.getTransaction().commit();
-		
+	public List<Bemiddelingsovereenkomst> getAllBemiddelingsovereenkomst(){
+		List<Bemiddelingsovereenkomst> alijst = (List<Bemiddelingsovereenkomst>) hibernateTemplate.loadAll(Bemiddelingsovereenkomst.class);
+		return alijst;
 	}
 
 }

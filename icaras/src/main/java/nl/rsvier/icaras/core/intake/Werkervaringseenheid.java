@@ -58,6 +58,18 @@ public class Werkervaringseenheid implements Serializable{
 		this.cv = cv;
 	}
 	
+	//TODO Aanpassen als er meer attributen zijn voor Werkervaringseenheid.
+		public boolean equals(Object obj){
+			boolean isEqual = false;
+			if(obj instanceof Werkervaringseenheid
+					&& this.id == ((Werkervaringseenheid) obj).getId()
+					//&& this.cv == ((Werkervaringseenheid) obj).getCv()
+					){
+				isEqual = true;
+			}
+			return isEqual;
+		}
+	
 	
 	
 

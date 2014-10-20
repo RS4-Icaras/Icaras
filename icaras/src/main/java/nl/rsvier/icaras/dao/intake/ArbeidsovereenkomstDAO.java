@@ -1,5 +1,8 @@
 package nl.rsvier.icaras.dao.intake;
 
+import java.util.List;
+
+import nl.rsvier.icaras.core.intake.Aanmelder;
 import nl.rsvier.icaras.core.intake.Arbeidsovereenkomst;
 
 import org.hibernate.Session;
@@ -9,7 +12,7 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 //import nl.rsvier.icaras.util.intake.HibernateUtil;
 
-@Repository("arbeidsovereenkomstDao")
+@Repository("IArbeidsovereenkomstDao")
 public class ArbeidsovereenkomstDAO implements IArbeidsovereenkomstDAO {
 	
 	private SessionFactory sessionFactory;
@@ -26,36 +29,26 @@ public class ArbeidsovereenkomstDAO implements IArbeidsovereenkomstDAO {
 	};
 
 	public Arbeidsovereenkomst findArbeidsovereenkomst(long id) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		Arbeidsovereenkomst a = (Arbeidsovereenkomst) session.get(Arbeidsovereenkomst.class, id);
-		session.getTransaction().commit();
+		Arbeidsovereenkomst a = hibernateTemplate.load(Arbeidsovereenkomst.class, id);
 		return a;
 		
 	}
 
 	public void persistArbeidsovereenkomst(Arbeidsovereenkomst a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(a);
-		session.getTransaction().commit();
-		
+		hibernateTemplate.saveOrUpdate(a);	
 	}
 
 	public void updateArbeidsovereenkomst(Arbeidsovereenkomst a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.saveOrUpdate(a);
-		session.getTransaction().commit();
-		
+		hibernateTemplate.saveOrUpdate(a);
 	}
 
 	public void deleteArbeidsovereenkomst(Arbeidsovereenkomst a) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.delete(a);
-		session.getTransaction().commit();
-		
+		hibernateTemplate.delete(a);
+	}
+	
+	public List<Arbeidsovereenkomst> getAllArbeidsovereenkomst(){
+		List<Arbeidsovereenkomst> alijst = (List<Arbeidsovereenkomst>) hibernateTemplate.loadAll(Arbeidsovereenkomst.class);
+		return alijst;
 	}
 
 }

@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 /**
  * 
@@ -25,6 +26,7 @@ public class CV implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Aanmelder aanmelder;
 	private File cvDocument;
+	private long id;
 	
 	private List<Werkervaringseenheid> werkervaringsEenheden = new ArrayList<Werkervaringseenheid>();
 	private List<Opleiding> opleidingen = new ArrayList<Opleiding>();
@@ -33,9 +35,24 @@ public class CV implements Serializable {
 	/**
 	 * @return the aanmelder
 	 */
+	/**
+	 * @return the id
+	 */
 	@Id
+	public long getId() {
+		return id;
+	}
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(long id) {
+		this.id = id;
+	}
+	
+	
+	
 	@OneToOne
-	@JoinColumn(name="aanmelder_cv_ID")
+	@PrimaryKeyJoinColumn
 	public Aanmelder getAanmelder() {
 		return aanmelder;
 	}
@@ -99,6 +116,21 @@ public class CV implements Serializable {
 	//public void setExpertises(List<Expertise> expertises) {
 	//	this.expertises = expertises;
 	//}
+	
+	//TODO Aanpassen als er meer atributen zijn voor CV.
+	public boolean equals(Object obj){
+		boolean isEqual = false;
+		if(obj instanceof CV
+				&& this.id == ((CV) obj).getId()
+				//&& this.cvDocument.equals(((CV) obj).getCvDocument())
+				&& this.aanmelder.equals(((CV) obj).getAanmelder())
+				&& this.werkervaringsEenheden.equals(((CV) obj).getWerkervaringsEenheden())
+				&& this.opleidingen.equals(((CV) obj).getOpleidingen())
+				){
+			isEqual = true;
+		}
+		return isEqual;
+	}
 	
 	
 	

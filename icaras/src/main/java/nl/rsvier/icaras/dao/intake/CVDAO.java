@@ -1,15 +1,14 @@
 package nl.rsvier.icaras.dao.intake;
 
-import nl.rsvier.icaras.core.intake.CV;
+import java.util.List;
 
-import org.hibernate.Session;
+import nl.rsvier.icaras.core.intake.CV;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
-import nl.rsvier.icaras.util.intake.HibernateUtil;
 
-@Repository("cvDao")
+@Repository("ICVDao")
 public class CVDAO implements ICVDAO {
 	
 	private SessionFactory sessionFactory;
@@ -26,36 +25,25 @@ public class CVDAO implements ICVDAO {
 	}
 
 	public CV findCV(long id) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		CV a = (CV) session.get(CV.class, id);
-		session.getTransaction().commit();
+		CV a = hibernateTemplate.load(CV.class, id);
 		return a;
-		
 	}
 
-	public void persistCV(CV cv) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(cv);
-		session.getTransaction().commit();
-		
+	public void persistCV(CV a) {
+		hibernateTemplate.saveOrUpdate(a);	
 	}
 
-	public void updateCV(CV cv) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.saveOrUpdate(cv);
-		session.getTransaction().commit();
-		
+	public void updateCV(CV a) {
+		hibernateTemplate.saveOrUpdate(a);
 	}
 
-	public void deleteCV(CV cv) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.delete(cv);
-		session.getTransaction().commit();
-		
+	public void deleteCV(CV a) {
+		hibernateTemplate.delete(a);
+	}
+	
+	public List<CV> getAllCV(){
+		List<CV> alijst = (List<CV>) hibernateTemplate.loadAll(CV.class);
+		return alijst;
 	}
 
 }

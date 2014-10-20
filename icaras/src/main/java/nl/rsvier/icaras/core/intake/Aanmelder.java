@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 /**
  * 
@@ -65,6 +66,7 @@ public class Aanmelder extends TMPPersoon implements Serializable {
 	 */
 	//@Column(name="CV")
 	@OneToOne(mappedBy = "aanmelder", cascade = CascadeType.ALL)
+	//@PrimaryKeyJoinColumn
 	public CV getcV() {
 		return cV;
 	}
@@ -75,7 +77,18 @@ public class Aanmelder extends TMPPersoon implements Serializable {
 		this.cV = cV;
 	}
 	
-	
+	//TODO Aanpassen als er meer atributen zijn voor Aanmelder.
+	public boolean equals(Object obj){
+		boolean isEqual = false;
+		if(obj instanceof Aanmelder
+				&& this.id == ((Aanmelder) obj).getId()
+				//&& this.cV.equals(((Aanmelder) obj).getcV())
+				//&& this.interneovereenkomsten.equals(((Aanmelder) obj).getInterneovereenkomsten())
+				){
+			isEqual = true;
+		}
+		return isEqual;
+	}
 	
 
 
