@@ -56,7 +56,7 @@ public class AanmelderTest {
 	public void UpdateAanmelder(){
 		aanmelderdao.persistAanmelder(a1);
 		//TODO Vervangen voor het veranderen van een ander atribuut van Aanmelder.
-		a1.setId(3);
+		a1.setId(1);
 		//a2.setId(2);
 		aanmelderdao.updateAanmelder(a1);
 		Aanmelder vergelijken = aanmelderdao.findAanmelder(a1.getId());

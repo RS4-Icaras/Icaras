@@ -75,7 +75,19 @@ public class Aanmelder extends TMPPersoon implements Serializable {
 		this.cV = cV;
 	}
 	
-	
+	//TODO Aanpassen als er meer atributen zijn voor Aanmelder.
+			public boolean equals(Object obj){
+				boolean isEqual = false;
+				if(obj instanceof Aanmelder
+						&& this.id == ((Aanmelder) obj).getId()
+						&& this.interneovereenkomsten.equals(((Aanmelder) obj).getInterneovereenkomsten())
+						//&& this.werkgever.equals(((Aanmelder) obj).getWerkgever())
+						//&& this.werknemer.equals(((Aanmelder) obj).getWerknemer())
+						){
+					isEqual = true;
+				}
+				return isEqual;
+			}
 	
 
 

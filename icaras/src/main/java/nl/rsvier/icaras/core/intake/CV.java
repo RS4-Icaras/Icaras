@@ -113,7 +113,19 @@ public class CV implements Serializable {
 	//	this.expertises = expertises;
 	//}
 	
-	
+	//TODO Aanpassen als er meer attributen zijn voor CV.
+		public boolean equals(Object obj){
+			boolean isEqual = false;
+			if(obj instanceof CV
+					&& this.id == ((CV) obj).getId()
+					&& this.aanmelder.equals(((CV) obj).getAanmelder())
+					&& this.werkervaringsEenheden.equals(((CV) obj).getWerkervaringsEenheden())
+					&& this.opleidingen.equals(((CV) obj).getOpleidingen())
+					){
+				isEqual = true;
+			}
+			return isEqual;
+		}
 	
 	
 

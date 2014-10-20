@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AanmelderTest.class, ArbeidsovereenkomstTest.class, BemiddelingsovereenkomstTest.class, CVTest.class, 
+@Suite.SuiteClasses({AanmelderTest.class, ArbeidsovereenkomstTest.class, BemiddelingsovereenkomstTest.class,  
 	OpleidingTest.class, ScholingsovereenkomstTest.class, WerkervaringseenheidTest.class
 })
 public class IntakeDAOTest {
