@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 /**
  * 
@@ -32,7 +31,7 @@ public class Aanmelder extends TMPPersoon implements Serializable {
 	private CV cV;
 	
 	/**
-	 * @return the id
+	 * @return the id van aanmelder.
 	 */
 	@Id
 	@GeneratedValue
@@ -66,7 +65,6 @@ public class Aanmelder extends TMPPersoon implements Serializable {
 	 */
 	//@Column(name="CV")
 	@OneToOne(mappedBy = "aanmelder", cascade = CascadeType.ALL)
-	//@PrimaryKeyJoinColumn
 	public CV getcV() {
 		return cV;
 	}
