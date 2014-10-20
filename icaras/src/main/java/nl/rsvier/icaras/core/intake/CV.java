@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -32,27 +33,22 @@ public class CV implements Serializable {
 	private List<Opleiding> opleidingen = new ArrayList<Opleiding>();
 	//private List<Expertise> expertises = new ArrayList<Expertise>();
 	
-	/**
-	 * @return the aanmelder
-	 */
-	/**
-	 * @return the id
-	 */
 	@Id
+	@GeneratedValue
+	@PrimaryKeyJoinColumn
 	public long getId() {
 		return id;
 	}
-	/**
-	 * @param id the id to set
-	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 	
+	/**
+	 * @return the aanmelder
+	 */
 	
-	
-	@OneToOne
-	@PrimaryKeyJoinColumn
+	@OneToOne(cascade=CascadeType.ALL)
+	//@JoinColumn(name="aanmelder_cv_ID")
 	public Aanmelder getAanmelder() {
 		return aanmelder;
 	}
@@ -116,21 +112,6 @@ public class CV implements Serializable {
 	//public void setExpertises(List<Expertise> expertises) {
 	//	this.expertises = expertises;
 	//}
-	
-	//TODO Aanpassen als er meer atributen zijn voor CV.
-	public boolean equals(Object obj){
-		boolean isEqual = false;
-		if(obj instanceof CV
-				&& this.id == ((CV) obj).getId()
-				//&& this.cvDocument.equals(((CV) obj).getCvDocument())
-				&& this.aanmelder.equals(((CV) obj).getAanmelder())
-				&& this.werkervaringsEenheden.equals(((CV) obj).getWerkervaringsEenheden())
-				&& this.opleidingen.equals(((CV) obj).getOpleidingen())
-				){
-			isEqual = true;
-		}
-		return isEqual;
-	}
 	
 	
 	
