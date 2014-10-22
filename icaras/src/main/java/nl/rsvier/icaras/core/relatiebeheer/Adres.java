@@ -5,25 +5,32 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import nl.rsvier.icaras.core.IEntity;
+
 /**
  * 
  * @author Gerben en Gordon 
  * Klasse voor fysieke adressen 
- * Dit kan een postbus of een adres met een straatnaam zijn.
+ * Dit kan een postbus of een adres met een straatnaam zijn. Standaard is adres met straatnaam.
  * Gebruik de hulpmethode maakPostbus voor een postbus en maakStraat om dit weer ongedaan te maken.
  *
  */
 @Entity
-public class Adres {
+public class Adres implements IEntity {
 
+	private static final long serialVersionUID = 1L;
 	private int adresId;
-	private Boolean isPostbus;
+	private Boolean isPostbus;// = false;//als alternatief voor constructor, kan beide.
 	private String straat;
 	private String huisOfPostbusNummer;
 	private String postcode;
 	private String plaats;
 	@Transient
 	private String straatVoorPostbus;
+	
+	public Adres(){
+		isPostbus = false;
+	}
 
 	/**
 	 * @return the adresId
@@ -53,7 +60,7 @@ public class Adres {
 	 * @param isPostbus
 	 *            the isPostbus to set
 	 */
-	public void setIsPostbus(Boolean isPostbus) {
+	private void setIsPostbus(Boolean isPostbus) {//private ter verplichting van maakStraat() en maakPostbus()
 		this.isPostbus = isPostbus;
 	}
 
@@ -122,7 +129,7 @@ public class Adres {
 	 * waarde "nvt" De boolean isPostbus krijgt de waarde true
 	 */
 	public void maakPostbus() {
-		isPostbus = true;
+		setIsPostbus(true);
 		straatVoorPostbus = straat;
 		straat = "nvt";
 
@@ -136,7 +143,7 @@ public class Adres {
 	public void maakStraat() {
 
 		if (isPostbus) {
-			isPostbus = false;
+			setIsPostbus(false);
 			if (straatVoorPostbus == null) {
 				straatVoorPostbus = "";
 			}
@@ -159,20 +166,3 @@ public class Adres {
 	}
 
 }
-
-//if (!(obj instanceof Adres))
-//		return false;
-//	if (this.adresId != ((Adres) obj).getAdresId())
-//		return false;
-//	if (this.isPostbus != ((Adres) obj).getIsPostbus())
-//			return false;
-//	if (!this.straat.equals(((Adres) obj).getStraat()))
-//		return false;	
-//	if (!this.huisOfPostbusNummer.equals(((Adres) obj).getHuisOfPostbusNummer()))
-//			return false;
-//	if (!this.postcode.equals(((Adres) obj).getPostcode()))
-//			return false;
-//	if (!this.plaats.equals(((Adres) obj).getPlaats()))
-//		return false;			
-//
-//return true;	
