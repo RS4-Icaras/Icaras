@@ -26,26 +26,24 @@ public class AdresDaoHibernate implements IAdresDao {
 		return sessionFactory;
 	}
 
-	public void saveAdres(Adres adres) {
+	public void save(Adres adres) {
 		hibernateTemplate.saveOrUpdate(adres);		
 	}
 
-	public void updateAdres(Adres adres) {
+	public void update(Adres adres) {
 		hibernateTemplate.saveOrUpdate(adres);		
 	}
 
-	public void deleteAdres(Adres adres) {
+	public void delete(Adres adres) {
 		hibernateTemplate.delete(adres);		
 	}
 	
-	public Adres getAdresById(int adresId) {
-		Adres adres = hibernateTemplate.load(Adres.class, adresId);
-		return adres;
-		
+	public Adres getById(int adresId) {
+		return hibernateTemplate.load(Adres.class, adresId);		
 	}
 
-	public List<Adres> getAllAdressen() {
-		List<Adres> adressenlijst = (List<Adres>) hibernateTemplate.loadAll(Adres.class);
+	public List<Adres> getAll() {
+		List<Adres> adressenlijst = hibernateTemplate.loadAll(Adres.class);
 		return adressenlijst;
 	}
 
