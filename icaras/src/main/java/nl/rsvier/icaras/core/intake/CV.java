@@ -3,15 +3,17 @@ package nl.rsvier.icaras.core.intake;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -29,9 +31,10 @@ public class CV implements Serializable {
 	private File cvDocument;
 	private long id;
 	
+	private Set<Expertise> expertise = new HashSet<Expertise>();
 	private List<Werkervaringseenheid> werkervaringsEenheden = new ArrayList<Werkervaringseenheid>();
 	private List<Opleiding> opleidingen = new ArrayList<Opleiding>();
-	//private List<Expertise> expertises = new ArrayList<Expertise>();
+	
 	
 	@Id
 	@GeneratedValue
@@ -43,6 +46,21 @@ public class CV implements Serializable {
 		this.id = id;
 	}
 	
+	
+	
+	/**
+	 * @return the expertise
+	 */
+	@ManyToMany(mappedBy="cvs")
+	public Set<Expertise> getExpertise() {
+		return expertise;
+	}
+	/**
+	 * @param expertise the expertise to set
+	 */
+	public void setExpertise(Set<Expertise> expertise) {
+		this.expertise = expertise;
+	}
 	/**
 	 * @return the aanmelder
 	 */

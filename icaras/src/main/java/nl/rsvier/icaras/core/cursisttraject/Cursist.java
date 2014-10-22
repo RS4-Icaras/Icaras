@@ -1,16 +1,22 @@
 package nl.rsvier.icaras.core.cursisttraject;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import nl.rsvier.icaras.core.intake.Expertise;
 
 
 /**
@@ -20,7 +26,7 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table (name="Cursist")
+@Table (name="cursist")
 public class Cursist implements Serializable {
 	private static final long serialVersionUID = 5415078172055314155L;
 	private long cursistId;
@@ -33,6 +39,7 @@ public class Cursist implements Serializable {
     
     //Materiaal : Materiaal ophalen via traject -> trajecteenheid -> getMateriaal?
     private List<Materiaal> materiaalLijst; 
+    private Set<Expertise> expertise = new HashSet<Expertise>();
     
     @Id @GeneratedValue
     @Column (name = "cursist_id")
@@ -44,6 +51,23 @@ public class Cursist implements Serializable {
 		this.cursistId = cursistId;
 	}
 	
+	
+	
+	/**
+	 * @return the expertise
+	 */
+	@ManyToMany(mappedBy="cursisten", cascade = CascadeType.ALL)
+	public Set<Expertise> getExpertise() {
+		return expertise;
+	}
+
+	/**
+	 * @param expertise the expertise to set
+	 */
+	public void setExpertise(Set<Expertise> expertise) {
+		this.expertise = expertise;
+	}
+
 	@OneToMany (mappedBy = "cursist")	
 	public List<Toets> getToetsenLijst() {
 		return toetsenLijst;
