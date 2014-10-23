@@ -1,15 +1,8 @@
 package nl.rsvier.icaras.dao.relatiebeheer;
 
-import java.util.List;
-
 import nl.rsvier.icaras.core.relatiebeheer.Adres;
+import nl.rsvier.icaras.dao.IGenericDao;
 
-public interface IAdresDao {
-
-	public void save(Adres adres);
-	public void update(Adres adres);
-	public void delete(Adres adres);
-	public Adres getById(int adresId);
-	public List<Adres> getAll();
+public interface IAdresDao extends IGenericDao<Adres> {
 	
 }
