@@ -44,6 +44,7 @@ public class NfaDaoHibernateTest {
 	public void testSaveEnGet() {
 		nfaDaoHibernate.save(testNfa1);
 		assertNotNull(testNfa1.getNfaId());
+		nfaDaoHibernate.getHibernateTemplate().evict(testNfa1);
 		testNfa2 = nfaDaoHibernate.getById(testNfa1.getNfaId());
 		assertTrue("attributen vanuit database zijn gelijk aan die van het adres voor save", testNfa1.equals(testNfa2));
 	}
@@ -52,6 +53,7 @@ public class NfaDaoHibernateTest {
 	public void testGetAll(){
 		nfaDaoHibernate.save(testNfa1);
 		nfaDaoHibernate.save(testNfa2);
+		nfaDaoHibernate.getHibernateTemplate().clear();
 		List<Nfa> nfaLijst = nfaDaoHibernate.getAll();
 		assertTrue("Zijn er inderdaad 2 objecten geladen uit de database?", nfaLijst.size()==2);
 		//toekennen van juiste nfa aan juiste vergelijkNfa (om ordening van nfaLijst irrelevant te maken)
@@ -62,13 +64,15 @@ public class NfaDaoHibernateTest {
 		assertTrue("tweede opgeslagen nfa en nfa uit de opgehaalde lijst met dezelfde id zijn gelijk", testNfa2.equals(vergelijkNfa2));
 	}
 	
-	@Test //(expected = HibernateObjectRetrievalFailureException.class) // gebruik gemaakt van get() ipv load()
+	@Test
 	@Transactional
 	public void testDelete(){
 		nfaDaoHibernate.save(testNfa1);
 		nfaDaoHibernate.delete(testNfa1);
+		nfaDaoHibernate.getHibernateTemplate().flush();
+		nfaDaoHibernate.getHibernateTemplate().evict(testNfa1);
 		testNfa2 = nfaDaoHibernate.getById(testNfa1.getNfaId());
-		assertNull("verwijderde nfa opvragen uit database geeft null", testNfa2);//get() geeft null ipv exception
+		assertNull("verwijderde nfa opvragen uit database geeft null", testNfa2);
 	}	
 	
 	@Test
@@ -77,6 +81,8 @@ public class NfaDaoHibernateTest {
 		nfaDaoHibernate.save(testNfa1);
 		testNfa1.setExtraInfo(testNfa2.getExtraInfo());
 		nfaDaoHibernate.update(testNfa1);
+		nfaDaoHibernate.getHibernateTemplate().flush();
+		nfaDaoHibernate.getHibernateTemplate().evict(testNfa1);
 		Nfa vergelijkNfa = nfaDaoHibernate.getById(testNfa1.getNfaId());
 		assertTrue("attributen geupdate adres is gelijk aan attributen ingeladen adres met dezelfde id", testNfa1.equals(vergelijkNfa));
 	}

@@ -57,6 +57,8 @@ public class AdresDaoHibernateTest {
 	public void testSaveEnGetAdres() {
 		adresDaoHibernate.save(testAdres);
 		assertNotNull(testAdres.getAdresId());
+		//adresDaoHibernate.getHibernateTemplate().flush(); HIER GEEN FLUSH NODIG
+		adresDaoHibernate.getHibernateTemplate().evict(testAdres);//Verwijdert gegeven object van 1st level cache
 		testAdres2 = adresDaoHibernate.getById(testAdres.getAdresId());
 		assertTrue("attributen vanuit database zijn gelijk aan die van het adres voor save", testAdres2.equals(testAdres));
 	}
@@ -66,6 +68,7 @@ public class AdresDaoHibernateTest {
 	public void testGetAllAdressen(){
 		adresDaoHibernate.save(testAdres);
 		adresDaoHibernate.save(testAdres2);
+		adresDaoHibernate.getHibernateTemplate().clear();//leegt de gehele 1st level cache (deze is sessie gebonden)
 		List<Adres> adressenlijst = adresDaoHibernate.getAll();
 		assertTrue("Zijn er inderdaad 2 objecten geladen uit de database?", adressenlijst.size()==2);
 		//toekennen van juiste adres aan juiste vergelijkAdres (om ordening van adressenlijst irrelevant te maken)
@@ -81,6 +84,8 @@ public class AdresDaoHibernateTest {
 	public void testDeleteAdres(){
 		adresDaoHibernate.save(testAdres);
 		adresDaoHibernate.delete(testAdres);
+		adresDaoHibernate.getHibernateTemplate().flush();
+		adresDaoHibernate.getHibernateTemplate().evict(testAdres);
 		testAdres2 = adresDaoHibernate.getById(testAdres.getAdresId());
 			assertNull("verwijderde adres opvragen uit database geeft null terug", testAdres2);
 		
@@ -92,6 +97,8 @@ public class AdresDaoHibernateTest {
 		adresDaoHibernate.save(testAdres);
 		testAdres.setPlaats(testAdres2.getPlaats());
 		adresDaoHibernate.update(testAdres);
+		adresDaoHibernate.getHibernateTemplate().flush();
+		adresDaoHibernate.getHibernateTemplate().evict(testAdres);
 		Adres vergelijkAdres = adresDaoHibernate.getById(testAdres.getAdresId());
 		assertTrue("attributen geupdate adres is gelijk aan attributen ingeladen adres met dezelfde id", testAdres.equals(vergelijkAdres));
 	}
