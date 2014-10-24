@@ -1,4 +1,8 @@
-package nl.rsvier.icaras.dao.relatiebeheer;
+package nl.rsvier.icaras.dao;
+
+import nl.rsvier.icaras.dao.relatiebeheer.AdresDaoHibernateTest;
+import nl.rsvier.icaras.dao.relatiebeheer.NfaDaoHibernateTest;
+import nl.rsvier.icaras.dao.relatiebeheer.RelatieDaoHibernateTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -12,8 +16,8 @@ import org.junit.runners.Suite;
  *
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AdresDaoHibernateSpringTest.class, })//Voeg hier alle DaoTest-klassen aan toe
+@Suite.SuiteClasses({AdresDaoHibernateTest.class, NfaDaoHibernateTest.class, RelatieDaoHibernateTest.class})//Voeg hier alle DaoTest-klassen aan toe
 //@ContextConfiguration(locations={"classpath:icarasdb-context.xml"})//Per testklasse toevoegen ivm autowiring
-public class DaoTestSuiteSpring {
+public class DaoTestSuite {
 
 }
