@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.validation.constraints.NotNull;
 
 import nl.rsvier.icaras.core.IEntity;
 /**
@@ -29,7 +30,7 @@ public abstract class Nfa implements IEntity {
 	}
 	@Id
 	@GeneratedValue
-	private int nfaId;
+	private int id;
 	@Enumerated(EnumType.STRING)//Constraint voor de column nfaSoort met alle waarden vd Enum toevoegen via @Column nog toevoegen
 	private final NfaSoort nfaSoort;
 	private String nfaAdres;
@@ -39,12 +40,12 @@ public abstract class Nfa implements IEntity {
 		this.nfaSoort = nfaSoort;
 	}
 
-	public int getNfaId() {
-		return nfaId;
+	public int getId() {
+		return id;
 	}
 
-	public void setNfaId(int nfaId) {
-		this.nfaId = nfaId;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	
@@ -55,7 +56,7 @@ public abstract class Nfa implements IEntity {
 //	public void setNfaSoort(NfaSoort nfaSoort) {
 //		this.nfaSoort = nfaSoort;
 //	}
-
+	@NotNull
 	public String getNfaAdres() {
 		return nfaAdres;
 	}
@@ -63,7 +64,7 @@ public abstract class Nfa implements IEntity {
 	public void setNfaAdres(String nfaAdres) {
 		this.nfaAdres = nfaAdres;
 	}
-
+	@NotNull
 	public String getExtraInfo() {
 		return extraInfo;
 	}
@@ -76,7 +77,7 @@ public abstract class Nfa implements IEntity {
 		boolean isEqual = false;
 		if (obj instanceof Nfa
 			&& this.nfaSoort == ((Nfa) obj).getNfaSoort()	
-			&& this.nfaId == ((Nfa) obj).getNfaId()
+			&& this.id == ((Nfa) obj).getId()
 			&& this.nfaAdres.equals(((Nfa) obj).getNfaAdres())
 			&& this.extraInfo.equals(((Nfa) obj).getExtraInfo())) {
 			isEqual = true;

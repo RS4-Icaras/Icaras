@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -21,7 +20,7 @@ public abstract class Relatie implements IEntity {
 	private static final long serialVersionUID = 1L;
 	
 	
-	private int relatieId;
+	private int id;
 	private boolean gearchiveerd = false;
 	private String opmerking;
 	private boolean priveRelatie = false;
@@ -32,14 +31,14 @@ public abstract class Relatie implements IEntity {
 	 */
 	@Id
 	@GeneratedValue
-	public int getRelatieId() {
-		return relatieId;
+	public int getId() {
+		return id;
 	}
 	/**
 	 * @param relatieId the relatieId to set
 	 */
-	public void setRelatieId(int relatieId) {
-		this.relatieId = relatieId;
+	public void setId(int relatieId) {
+		this.id = relatieId;
 	}
 	public boolean isGearchiveerd() {//moeten de rollen van de te archiveren persoon ook automatisch gearchiveerd worden?
 		return gearchiveerd;
@@ -62,7 +61,7 @@ public abstract class Relatie implements IEntity {
 	/**
 	 * @return the nfaLijst
 	 */
-	@OneToMany(orphanRemoval=true)//(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)//(orphanRemoval=true)//(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	public Set<Nfa> getNfaLijst() {
 		return nfaLijst;
 	}
@@ -75,7 +74,7 @@ public abstract class Relatie implements IEntity {
 	/**
 	 * @return the adressen
 	 */
-	@OneToMany(orphanRemoval=true)//(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL) //(orphanRemoval=true)//(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	public Set<Adres> getAdressen() {
 		return adressen;
 	}

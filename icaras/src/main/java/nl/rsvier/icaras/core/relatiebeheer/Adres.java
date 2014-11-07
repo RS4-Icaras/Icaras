@@ -19,7 +19,7 @@ import nl.rsvier.icaras.core.IEntity;
 public class Adres implements IEntity {
 
 	private static final long serialVersionUID = 1L;
-	private int adresId;
+	private int id;
 	private Boolean isPostbus;// = false;//als alternatief voor constructor, kan beide.
 	private String straat;
 	private String huisOfPostbusNummer;
@@ -37,16 +37,16 @@ public class Adres implements IEntity {
 	 */
 	@Id
 	@GeneratedValue
-	public int getAdresId() {
-		return adresId;
+	public int getId() {
+		return id;
 	}
 
 	/**
-	 * @param adresId
+	 * @param id
 	 *            the adresId to set
 	 */
-	public void setAdresId(int adresId) {
-		this.adresId = adresId;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class Adres implements IEntity {
 	public boolean equals(Object obj) {
 		boolean isEqual = false;
 		if (obj instanceof Adres
-			&& this.adresId == ((Adres) obj).getAdresId()
+			&& this.id == ((Adres) obj).getId()
 			&& this.isPostbus == ((Adres) obj).getIsPostbus()
 			&& this.straat.equals(((Adres) obj).getStraat())
 			&& this.huisOfPostbusNummer.equals(((Adres) obj).getHuisOfPostbusNummer())
