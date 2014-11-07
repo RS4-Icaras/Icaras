@@ -10,9 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 import nl.rsvier.icaras.core.IEntity;
 
+//TODO methoden voor toevoegen van adressen en private maken van setMethoden voor lijsten
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Relatie implements IEntity {
@@ -61,26 +63,30 @@ public abstract class Relatie implements IEntity {
 	/**
 	 * @return the nfaLijst
 	 */
-	@OneToMany(cascade = CascadeType.ALL)//(orphanRemoval=true)//(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@NotNull//Wat doet dit precies?
+	@OneToMany(cascade = CascadeType.ALL)
 	public Set<Nfa> getNfaLijst() {
 		return nfaLijst;
 	}
 	/**
 	 * @param nfaLijst the nfaLijst to set
 	 */
+	@SuppressWarnings("unused")
 	public void setNfaLijst(Set<Nfa> nfaLijst) {
 		this.nfaLijst = nfaLijst;
 	}
 	/**
 	 * @return the adressen
 	 */
-	@OneToMany(cascade = CascadeType.ALL) //(orphanRemoval=true)//(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@NotNull
+	@OneToMany(cascade = CascadeType.ALL)
 	public Set<Adres> getAdressen() {
 		return adressen;
 	}
 	/**
 	 * @param adressen the adressen to set
 	 */
+	@SuppressWarnings("unused")
 	public void setAdressen(Set<Adres> adressen) {
 		this.adressen = adressen;
 	}
