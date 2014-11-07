@@ -43,9 +43,9 @@ public class NfaDaoHibernateTest {
 	@Transactional
 	public void testSaveEnGet() {
 		nfaDaoHibernate.save(testNfa1);
-		assertNotNull(testNfa1.getNfaId());
+		assertNotNull(testNfa1.getId());
 		nfaDaoHibernate.getHibernateTemplate().evict(testNfa1);
-		testNfa2 = nfaDaoHibernate.getById(testNfa1.getNfaId());
+		testNfa2 = nfaDaoHibernate.getById(testNfa1.getId());
 		assertTrue("attributen vanuit database zijn gelijk aan die van het adres voor save", testNfa1.equals(testNfa2));
 	}
 	@Test
@@ -58,8 +58,8 @@ public class NfaDaoHibernateTest {
 		assertTrue("Zijn er inderdaad 2 objecten geladen uit de database?", nfaLijst.size()==2);
 		//toekennen van juiste nfa aan juiste vergelijkNfa (om ordening van nfaLijst irrelevant te maken)
 		Nfa vergelijkNfa1 = null, vergelijkNfa2 = null;
-		{for (Nfa n : nfaLijst){ if (n.getNfaId()==testNfa1.getNfaId()) vergelijkNfa1 = n;}};
-		{for (Nfa n : nfaLijst){ if (n.getNfaId()==testNfa2.getNfaId()) vergelijkNfa2 = n;}};
+		{for (Nfa n : nfaLijst){ if (n.getId()==testNfa1.getId()) vergelijkNfa1 = n;}};
+		{for (Nfa n : nfaLijst){ if (n.getId()==testNfa2.getId()) vergelijkNfa2 = n;}};
 		assertTrue("eerste opgeslagen nfa en nfa uit de opgehaalde lijst met dezelfde id zijn gelijk", testNfa1.equals(vergelijkNfa1));
 		assertTrue("tweede opgeslagen nfa en nfa uit de opgehaalde lijst met dezelfde id zijn gelijk", testNfa2.equals(vergelijkNfa2));
 	}
@@ -71,7 +71,7 @@ public class NfaDaoHibernateTest {
 		nfaDaoHibernate.delete(testNfa1);
 		nfaDaoHibernate.getHibernateTemplate().flush();
 		nfaDaoHibernate.getHibernateTemplate().evict(testNfa1);
-		testNfa2 = nfaDaoHibernate.getById(testNfa1.getNfaId());
+		testNfa2 = nfaDaoHibernate.getById(testNfa1.getId());
 		assertNull("verwijderde nfa opvragen uit database geeft null", testNfa2);
 	}	
 	
@@ -83,7 +83,7 @@ public class NfaDaoHibernateTest {
 		nfaDaoHibernate.update(testNfa1);
 		nfaDaoHibernate.getHibernateTemplate().flush();
 		nfaDaoHibernate.getHibernateTemplate().evict(testNfa1);
-		Nfa vergelijkNfa = nfaDaoHibernate.getById(testNfa1.getNfaId());
+		Nfa vergelijkNfa = nfaDaoHibernate.getById(testNfa1.getId());
 		assertTrue("attributen geupdate adres is gelijk aan attributen ingeladen adres met dezelfde id", testNfa1.equals(vergelijkNfa));
 	}
 }

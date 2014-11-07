@@ -55,11 +55,13 @@ public class AdresDaoHibernateTest {
 	@Test
 	@Transactional
 	public void testSaveEnGetAdres() {
+//		adresDaoHibernate.save(null);//Het saven van null waarde geeft java.lang.IllegalArgumentException
+		System.out.println("Zojuist geprobeerd null te saven");
 		adresDaoHibernate.save(testAdres);
-		assertNotNull(testAdres.getAdresId());
+		assertNotNull(testAdres.getId());
 		//adresDaoHibernate.getHibernateTemplate().flush(); HIER GEEN FLUSH NODIG
 		adresDaoHibernate.getHibernateTemplate().evict(testAdres);//Verwijdert gegeven object van 1st level cache
-		testAdres2 = adresDaoHibernate.getById(testAdres.getAdresId());
+		testAdres2 = adresDaoHibernate.getById(testAdres.getId());
 		assertTrue("attributen vanuit database zijn gelijk aan die van het adres voor save", testAdres2.equals(testAdres));
 	}
 	
@@ -73,8 +75,8 @@ public class AdresDaoHibernateTest {
 		assertTrue("Zijn er inderdaad 2 objecten geladen uit de database?", adressenlijst.size()==2);
 		//toekennen van juiste adres aan juiste vergelijkAdres (om ordening van adressenlijst irrelevant te maken)
 		Adres vergelijkAdres = null, vergelijkAdres2 = null;
-		{for (Adres a : adressenlijst){ if (a.getAdresId()==testAdres.getAdresId()) vergelijkAdres = a;}};
-		{for (Adres a : adressenlijst){ if (a.getAdresId()==testAdres2.getAdresId()) vergelijkAdres2 = a;}};
+		{for (Adres a : adressenlijst){ if (a.getId()==testAdres.getId()) vergelijkAdres = a;}};
+		{for (Adres a : adressenlijst){ if (a.getId()==testAdres2.getId()) vergelijkAdres2 = a;}};
 		assertTrue("eerste opgeslagen adres en adres uit de opgehaalde lijst met dezelfde id zijn gelijk", testAdres.equals(vergelijkAdres));
 		assertTrue("tweede opgeslagen adres en adres uit de opgehaalde lijst met dezelfde id zijn gelijk", testAdres2.equals(vergelijkAdres2));
 	}
@@ -86,7 +88,7 @@ public class AdresDaoHibernateTest {
 		adresDaoHibernate.delete(testAdres);
 		adresDaoHibernate.getHibernateTemplate().flush();
 		adresDaoHibernate.getHibernateTemplate().evict(testAdres);
-		testAdres2 = adresDaoHibernate.getById(testAdres.getAdresId());
+		testAdres2 = adresDaoHibernate.getById(testAdres.getId());
 			assertNull("verwijderde adres opvragen uit database geeft null terug", testAdres2);
 		
 	}
@@ -99,7 +101,7 @@ public class AdresDaoHibernateTest {
 		adresDaoHibernate.update(testAdres);
 		adresDaoHibernate.getHibernateTemplate().flush();
 		adresDaoHibernate.getHibernateTemplate().evict(testAdres);
-		Adres vergelijkAdres = adresDaoHibernate.getById(testAdres.getAdresId());
+		Adres vergelijkAdres = adresDaoHibernate.getById(testAdres.getId());
 		assertTrue("attributen geupdate adres is gelijk aan attributen ingeladen adres met dezelfde id", testAdres.equals(vergelijkAdres));
 	}
 }
