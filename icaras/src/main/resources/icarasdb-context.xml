@@ -22,37 +22,43 @@
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		
-        <property name="packagesToScan" value="nl.rsvier.icaras.core" />
 
-		<!-- Moved last 2 properties to icarasdb-context.xml <property name="configLocation">
-			<value>classpath:hibernate.cfg.xml</value>
-		</property>  -->
-		
+		<property name="packagesToScan" value="nl.rsvier.icaras.core" />
+
+		<!-- Moved last 2 properties to icarasdb-context.xml <property name="configLocation"> 
+			<value>classpath:hibernate.cfg.xml</value> </property> -->
+
 		<property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-                <prop key="hibernate.show_sql">${hibernate.showsql}</prop>
-                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl}</prop>
-                <!-- moet verwijderd worden voor de transactionManager  <prop key="hibernate.current_session_context_class">thread</prop>
-                -->
-                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
-            </props>
-        </property>
-		
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.showsql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl}</prop>
+				<!-- moet verwijderd worden voor de transactionManager <prop key="hibernate.current_session_context_class">thread</prop> -->
+				<!-- onduidelijk of dit nodig is <prop key="hibernate.cache.provider_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop> -->
+			</props>
+		</property>
+
 	</bean>
 
 	<context:component-scan base-package="nl.rsvier.icaras.dao">
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Repository" />
 	</context:component-scan>
-	
+<!--
+	<context:component-scan base-package="nl.rsvier.icaras.dao, nl.rsvier.icaras.service">
+	<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Repository" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
+-->
 	<!-- Transaction config -->
-	
-	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
-	<tx:annotation-driven transaction-manager="transactionManager"/>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
 
 </beans>
