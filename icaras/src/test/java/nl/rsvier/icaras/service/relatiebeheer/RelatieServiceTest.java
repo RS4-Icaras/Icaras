@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import nl.rsvier.icaras.core.InvalidBusinessKeyException;
 import nl.rsvier.icaras.core.relatiebeheer.Adres;
 import nl.rsvier.icaras.core.relatiebeheer.Email;
 import nl.rsvier.icaras.core.relatiebeheer.Facebook;
@@ -58,7 +59,7 @@ public class RelatieServiceTest {
 	Relatie nullRelatie = null;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws InvalidBusinessKeyException {
 		testAdres1 = maakTestAdresZonderId(true, "9876ZY", "123A", "Utrecht",
 				"Oude Markt");
 		testAdres2 = maakTestAdresZonderId(false, "1234AB", "191", "Hilversum",
@@ -96,7 +97,7 @@ public class RelatieServiceTest {
 				GregorianCalendar.FEBRUARY, 13));
 		testRelatie1.setAdressen(adressen);
 		testRelatie1.setNfaLijst(nfaLijst);
-		testRelatie2 = new Organisatie();
+		testRelatie2 = new Organisatie("OrganisatieNaam");
 		Set<Adres> adressen2 = new HashSet<Adres>();
 		adressen2.add(testAdres3);
 		adressen2.add(testAdres4);
@@ -110,7 +111,6 @@ public class RelatieServiceTest {
 		testRelatie2.setAdressen(adressen2);
 		testRelatie2.setGearchiveerd(false);
 		testRelatie2.setPriveRelatie(true);
-		testRelatie2.setNaam("OrganisatieNaam");
 		testRelatie2.setOpmerking("Fantastische organisatie");
 		//onderstaande niet meer nodig ivm CascadingType.ALL
 //		for (Adres a : testRelatie1.getAdressen()) {
@@ -320,7 +320,7 @@ public class RelatieServiceTest {
 		testAdres1.setPlaats("Gewijzigde Plaatsnaam");
 		relatieDao.update(testRelatie1);
 		//nog een test waarin de persoon zelf wel gewijzigd wordt
-		testRelatie2.setNaam("New and improved name");
+		testRelatie2.setOpmerking("New and improved name");
 		testAdres3.maakPostbus();
 		testNfa4.setExtraInfo(null);//kan vooralsnog omdat nullability nog by default op true staat
 									//lvert verder geen probleem op om een null waarde in een veld mee te geven
