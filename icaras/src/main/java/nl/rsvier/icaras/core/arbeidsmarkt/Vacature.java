@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import nl.rsvier.icaras.core.IEntity;
+import nl.rsvier.icaras.core.InvalidBusinessKeyException;
 import nl.rsvier.icaras.core.relatiebeheer.Bedrijf;
 import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
 
@@ -26,11 +27,13 @@ import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
  * vastleggen van de vraag, zodat Rob kan beslissen of er een aanbod is dat daar
  * op aansluit.
  * 
- * 
- * 
  * De levensduur van een Vacature is flexibel. Vacatures kunnen verlopen, worden
  * opgeruimd om plaats te maken, etc.
+ * 
+ * @author Mark van Meerten
  */
+
+// TODO: Add Expertises
 
 @Entity
 public class Vacature implements IEntity {
@@ -46,18 +49,40 @@ public class Vacature implements IEntity {
 	/*
 	 * Constructoren
 	 */
-	public Vacature(Organisatie organisatie, String omschrijving, String website) {
+	public Vacature(Organisatie organisatie, String omschrijving, String website)
+			throws InvalidBusinessKeyException, MalformedURLException {
 		this(organisatie, omschrijving);
 		this.helperSetUrl(website);
 	}
 
-	public Vacature(Organisatie organisatie, String omschrijving) {
+	public Vacature(Organisatie organisatie, String omschrijving)
+			throws InvalidBusinessKeyException {
 		this();
-		this.setOrganisatie(organisatie);
-		this.setOmschrijving(omschrijving);
 
-		// Don't add this Aanbieding UNTIL Persoon & Organisatie have been set!
-		((Bedrijf) this.organisatie.getRol(Bedrijf.class)).addVacature(this);
+		if (this.organisatieMagWordenToegevoegd(organisatie)) {
+			this.setOrganisatie(organisatie);
+		}
+
+		if (this.omschrijvingMagWordenToegevoegd(omschrijving)) {
+			this.setOmschrijving(omschrijving);
+		}
+
+		if (this.organisatieIsToegevoegd() && this.omschrijvingIsToegevoegd()) {
+			/*
+			 * Add this Vacature IF AND ONLY IF Organisatie has been set!
+			 * addVacature() will indirectly call this Vacature's hashCode() so
+			 * you better be damn sure the business key fields have been
+			 * properly initialized
+			 */
+			this.getOrganisatie().getBedrijf().addVacature(this);
+		} else {
+			/*
+			 * Let's just make our business key immutable and be required to be
+			 * set in the constructor
+			 */
+			throw new InvalidBusinessKeyException(
+					"Vacature business key has not been properly initialized");
+		}
 	}
 
 	private Vacature() {
@@ -71,13 +96,13 @@ public class Vacature implements IEntity {
 	 * langer bestaat.
 	 */
 	public boolean removeAllReferences() {
-		if (this.aanbiedingen != null) {
+		if (this.getAanbiedingen() != null) {
 			/*
 			 * Remove Vacature from every Aanbieding that has been sent out
 			 * containing this Vacature
 			 */
 			ArrayList<Aanbieding> toRemove = new ArrayList<Aanbieding>();
-			for (Aanbieding a : this.aanbiedingen) {
+			for (Aanbieding a : this.getAanbiedingen()) {
 				if (a.getVacature() != null && a.getVacature().equals(this)) {
 					// Set Vacature van Aanbieding op null
 					a.removeVacature(this);
@@ -89,17 +114,9 @@ public class Vacature implements IEntity {
 			}
 			// Verwijder alle aanbieding die gebruik maken van deze Vacature uit
 			// de collectie Aanbiedingen.
-			this.aanbiedingen.removeAll(toRemove);
-
-			for (Aanbieding a : this.aanbiedingen) {
-				if (a.getVacature().equals(this)) {
-					a.removeVacature(this);
-					this.removeAanbieding(a);
-				}
-			}
+			this.getAanbiedingen().removeAll(toRemove);
 		}
-		if (this.organisatie != null
-				&& ((Bedrijf) this.organisatie.getRol(Bedrijf.class)) != null) {
+		if (this.organisatieIsToegevoegd()) {
 			/*
 			 * Remove this Vacature from the collection of Vacatures Bedrijf
 			 * keeps.
@@ -109,8 +126,7 @@ public class Vacature implements IEntity {
 			 * Vacature to be null, so we can't be sure if it failed or just
 			 * didn't exist in the first place.
 			 */
-			return ((Bedrijf) this.organisatie.getRol(Bedrijf.class))
-					.removeVacature(this);
+			return this.getOrganisatie().getBedrijf().removeVacature(this);
 		}
 		return false;
 	}
@@ -144,13 +160,29 @@ public class Vacature implements IEntity {
 		this.organisatie = organisatie;
 	}
 
-	public void helperSetOrganisatie(Organisatie organisatie) {
-		this.setOrganisatie(organisatie);
-		if (this.organisatie != null
-				&& ((Bedrijf) this.organisatie.getRol(Bedrijf.class)) != null) {
-			((Bedrijf) this.organisatie.getRol(Bedrijf.class))
-					.addVacature(this);
-		}
+	public static boolean organisatieConstraint(Organisatie organisatie) {
+		/*
+		 * De voorwaarden waar een Organisatie aan moet voldoen. Organisatie mag
+		 * nooit null zijn en moet een bedrijfsrol bevatten
+		 */
+		return organisatie != null && organisatie.hasRol(Bedrijf.class);
+	}
+
+	public boolean organisatieMagWordenToegevoegd(Organisatie organisatie) {
+		/*
+		 * Om een Organisatie toe te voegen mag deze geen null zijn en moet deze
+		 * aan de voorwaarde voldoen
+		 */
+		return !this.organisatieIsToegevoegd()
+				&& Vacature.organisatieConstraint(organisatie);
+	}
+
+	public boolean organisatieIsToegevoegd() {
+		/*
+		 * Organisatie is immutable. Als deze reeds is toegevoegd mag deze niet
+		 * meer worder aangepast
+		 */
+		return this.getOrganisatie() != null;
 	}
 
 	/*
@@ -159,7 +191,7 @@ public class Vacature implements IEntity {
 
 	@OneToMany()
 	public Set<Aanbieding> getAanbiedingen() {
-		return aanbiedingen;
+		return this.aanbiedingen;
 	}
 
 	@SuppressWarnings("unused")
@@ -168,16 +200,18 @@ public class Vacature implements IEntity {
 	}
 
 	public boolean addAanbieding(Aanbieding aanbieding) {
-		return this.aanbiedingen.add(aanbieding);
+		if (!this.getAanbiedingen().contains(aanbieding)) {
+			return this.getAanbiedingen().add(aanbieding);
+		}
+		return false;
 	}
 
-	/*
-	 * Alleen verantwoordelijk voor het verwijderen van een Aanbieding uit de
-	 * collectie Aanbiedingen die we hier bewaren. @See Aanbieding.destructotron
-	 * wanneer je alle referenties naar Aanbieding wilt verwijderen.
-	 */
 	public boolean removeAanbieding(Aanbieding aanbieding) {
-		return this.aanbiedingen.remove(aanbieding);
+		if (aanbieding.getVacature() != null
+				&& aanbieding.getVacature().equals(this)) {
+			return this.getAanbiedingen().remove(aanbieding);
+		}
+		return false;
 	}
 
 	/*
@@ -192,6 +226,30 @@ public class Vacature implements IEntity {
 
 	private void setOmschrijving(String s) {
 		this.omschrijving = s;
+	}
+
+	public static boolean omschrijvingConstraint(String str) {
+		/*
+		 * De voorwaarden waar een Omschrijving aan moet voldoen
+		 */
+		return str != null && !str.equals("");
+	}
+
+	public boolean omschrijvingMagWordenToegevoegd(String str) {
+		/*
+		 * Om een Omschrijving toe te voegen mag deze geen null zijn en moet
+		 * deze aan de voorwaarde voldoen
+		 */
+		return !this.omschrijvingIsToegevoegd()
+				&& Vacature.omschrijvingConstraint(str);
+	}
+
+	public boolean omschrijvingIsToegevoegd() {
+		/*
+		 * Omschrijving is immutable. Als deze reeds is toegevoegd mag deze niet
+		 * meer worder aangepast
+		 */
+		return this.getOmschrijving() != null;
 	}
 
 	/*
@@ -212,12 +270,8 @@ public class Vacature implements IEntity {
 	 * een URL zonder dat de MalformedURLException iedere keer moet worden
 	 * afgevangen
 	 */
-	public void helperSetUrl(String s) {
-		try {
-			this.setWebsite(new URL(s));
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+	public void helperSetUrl(String s) throws MalformedURLException {
+		this.setWebsite(new URL(s));
 	}
 
 	/*
@@ -227,8 +281,11 @@ public class Vacature implements IEntity {
 	@Override
 	public int hashCode() {
 		/*
-		 * Null checks zijn niet meer nodig. Organisatie en Omschrijving zijn
+		 * Null checks zijn niet nodig. Organisatie en Omschrijving zijn
 		 * onderdeel van de businesskey en mogen dus niet null zijn.
+		 * 
+		 * N.B. Overflow is gebruikelijk, standaard Object.hashCode() maakt ook
+		 * gebruik van int
 		 */
 		final int prime = 32589;
 		int hash = 1;
@@ -261,9 +318,5 @@ public class Vacature implements IEntity {
 				+ ") geplaatst door Organisatie: " + this.getOrganisatie()
 				+ ", met als omschrijving: " + this.getOmschrijving();
 	}
-
-	// TODO: AddLater#8 >>> Expertises en Kernwoorden implementeren. Aangezien
-	// dat afhankelijk
-	// is van hoe de klasse Expertise er uit komt te zien laat ik dat even open
 
 }
