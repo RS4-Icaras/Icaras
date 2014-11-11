@@ -7,8 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.GregorianCalendar;
 
-import javax.validation.constraints.AssertTrue;
-
 import nl.rsvier.icaras.core.arbeidsmarkt.CvGenerator;
 
 import org.junit.Before;
