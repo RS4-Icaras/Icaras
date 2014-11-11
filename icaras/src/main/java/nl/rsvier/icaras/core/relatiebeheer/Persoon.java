@@ -36,7 +36,6 @@ import nl.rsvier.icaras.core.IEntity;
 public class Persoon extends Relatie implements IEntity {
 
 	private static final long serialVersionUID = 1L;
-
 	private String voornaam;
 	private String achternaam;
 	private String tussenvoegsels = "";
@@ -295,6 +294,7 @@ public class Persoon extends Relatie implements IEntity {
 				return true;
 			}
 		}
+
 		return false;
 	}
 }
