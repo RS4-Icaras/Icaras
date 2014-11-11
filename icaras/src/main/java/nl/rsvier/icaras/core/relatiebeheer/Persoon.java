@@ -212,16 +212,15 @@ public class Persoon extends Relatie implements IEntity {
 		return returnRol;
 	}
 
-	// Aan zetten als de Aanmelder klasse is toegevoegd
-	// /**
-	// * Vraag de aanmelderrol op van deze klasse
-	// * @return instantie van Aanmelder indien de persoon deze rol vervult,
-	// anders null
-	// */
-	// @Transient//Hibernate denkt anders dat dit een persistent attribuut is
-	// omdat @Id bij de getter staat
+	/**
+	 * Vraag de aanmelderrol op van deze klasse
+	 * 
+	 * @return instantie van Aanmelder indien de persoon deze rol vervult,
+	 *         anders null
+	 */
+	// @Transient
 	// public Aanmelder getAanmelder() {
-	// return (Aanmelder) getPersoonsRolByType(Aanmelder.class);
+	// return (Aanmelder) getRolByType(Aanmelder.class);
 	// }
 
 	/**
@@ -231,22 +230,19 @@ public class Persoon extends Relatie implements IEntity {
 	 *         anders null
 	 */
 	@Transient
-	// Hibernate denkt anders dat dit een persistent attribuut is omdat @Id bij
-	// de getter staat
 	public Contactpersoon getContactpersoon() {
 		return (Contactpersoon) getRolByType(Contactpersoon.class);
 	}
 
-	// Aan zetten als de Cursist klasse is toegevoegd
-	// /**
-	// * Vraag de cursistrol op van deze klasse
-	// * @return instantie van Cursist indien de persoon deze rol vervult,
-	// anders null
-	// */
-	// @Transient//Hibernate denkt anders dat dit een persistent attribuut is
-	// omdat @Id bij de getter staat
+	/**
+	 * Vraag de cursistrol op van deze klasse
+	 * 
+	 * @return instantie van Cursist indien de persoon deze rol vervult, anders
+	 *         null
+	 */
+	// @Transient
 	// public Cursist getCursist() {
-	// return (Cursist) getPersoonsRolByType(Cursist.class);
+	// return (Cursist) getRolByType(Cursist.class);
 	// }
 
 	/**
@@ -256,8 +252,6 @@ public class Persoon extends Relatie implements IEntity {
 	 *         anders null
 	 */
 	@Transient
-	// Hibernate denkt anders dat dit een persistent attribuut is omdat @Id bij
-	// de getter staat
 	public Kandidaat getKandidaat() {
 		return (Kandidaat) getRolByType(Kandidaat.class);
 	}
@@ -269,32 +263,60 @@ public class Persoon extends Relatie implements IEntity {
 	 *         anders null
 	 */
 	@Transient
-	// Hibernate denkt anders dat dit een persistent attribuut is omdat @Id bij
-	// de getter staat
 	public Werknemer getWerknemer() {
 		return (Werknemer) getRolByType(Werknemer.class);
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * Utils
 	 */
+
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Persoon) {
-			Persoon p = (Persoon) obj;
-
-			if (this.getVoornaam().equals(p.getVoornaam())
-					&& this.getTussenvoegsels().equals(p.getTussenvoegsels())
-					&& this.getAchternaam().equals(p.getAchternaam())
-					&& this.getGeboortedatum().equals(p.getGeboortedatum())
-			// TODO: controleert nog niet of lijsten gelijk zijn
-			) {
-				return true;
+		if (this == obj) {
+			return true;
+		} else if (obj == null || !(obj instanceof Persoon)) {
+			return false;
+		} else {
+			Persoon other = (Persoon) obj;
+			if (!this.getVoornaam().equals(other.getVoornaam())) {
+				return false;
 			}
+			if (!this.getTussenvoegsels().equals(other.getTussenvoegsels())) {
+				return false;
+			}
+			if (!this.getAchternaam().equals(other.getAchternaam())) {
+				return false;
+			}
+			// Voorkom nullpointerexception, TODO: Mag Geboortedatum wel null
+			// zijn?
+			if (this.getGeboortedatum() != null
+					&& !this.getGeboortedatum()
+							.equals(other.getGeboortedatum())) {
+				return false;
+			}
+			// TODO: Neem rollen mee in de vergelijking
 		}
-
-		return false;
+		return true;
 	}
+
+	@Transient
+	public String getVolledigeNaam() {
+		return this.getVoornaam() + " " + this.getTussenvoegsels()
+				+ (this.getTussenvoegsels() != "" ? " " : "")
+				+ this.getAchternaam();
+	}
+
+	@Override
+	public String toString() {
+		return "Persoon(id=" + this.getId() + ", hash=" + this.hashCode()
+				+ "): " + this.getVolledigeNaam();
+	}
+
+	public String toVolledigeString() {
+		return "Persoon(id=" + this.getId() + ", hash=" + this.hashCode()
+				+ "): " + this.getVolledigeNaam() + ", bevat "
+				+ this.getRollen().size();
+	}
+
 }
