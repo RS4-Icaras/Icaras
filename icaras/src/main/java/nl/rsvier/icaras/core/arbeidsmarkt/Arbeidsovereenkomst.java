@@ -7,6 +7,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 import nl.rsvier.icaras.core.IEntity;
+import nl.rsvier.icaras.core.InvalidBusinessKeyException;
+import nl.rsvier.icaras.core.relatiebeheer.Bedrijf;
+import nl.rsvier.icaras.core.relatiebeheer.Kandidaat;
 import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
 import nl.rsvier.icaras.core.relatiebeheer.Persoon;
 import nl.rsvier.icaras.core.relatiebeheer.Werknemer;
@@ -35,11 +38,15 @@ public class Arbeidsovereenkomst implements IEntity {
 	private Arbeidsovereenkomst() {
 	}
 
-	public Arbeidsovereenkomst(Aanbieding aanbieding) {
-		setAanbieding(aanbieding);
-		//volgende twee worden aangeroepen in setAanbieding
-//		setPersoon(aanbieding.getPersoon());
-//		setOrganisatie(aanbieding.getOrganisatie());
+	public Arbeidsovereenkomst(Aanbieding aanbieding)
+			throws InvalidBusinessKeyException {
+		if (aanbieding != null) {
+			setAanbieding(aanbieding);// setPersoon en setOrganisatie worden
+										// daarin aangeroepen
+		} else {
+			throw new InvalidBusinessKeyException(
+					"De arbeidsovereenkomst kon niet worden gecreëerd op basis van de opgegeven aanbieding");
+		}
 	}
 
 	@Id
@@ -68,29 +75,6 @@ public class Arbeidsovereenkomst implements IEntity {
 	private void setPersoon(Persoon persoon) {
 		this.persoon = persoon;
 	}
-//		System.out.println("Aanvang setPersoon AO");
-//		if (persoon != null) {
-//			System.out.println("Voor persoon: " + persoon);
-//			Werknemer w = null;// hulp variabele
-//			// kijk of de meegegeven persoonsinstantie een werknemersrol heeft
-//			w = persoon.getWerknemer();
-//			if (w != null) {
-//				System.out.println("werknemer is niet null");
-//				for (Arbeidsovereenkomst arbeidsovereenkomst : w
-//						.getArbeidsovereenkomsten()) {
-//
-//					if (arbeidsovereenkomst == this) {// Kan niet worden
-//														// gebruikt binnen
-//														// Hibernate (mogelijk
-//														// meerdere instanties/proxies?)
-//						// ken dan deze persoon toe
-//						this.persoon = persoon;
-//					}
-//				}
-//			}
-//		}
-//
-//	}
 
 	@OneToOne
 	public Organisatie getOrganisatie() {
@@ -108,16 +92,31 @@ public class Arbeidsovereenkomst implements IEntity {
 
 	/**
 	 * Voegt een aanbieding toe aan deze arbeidsovereenkomst. Voorwaarde is dat
-	 * deze aanbieding een persoon en een organisatie heeft.
+	 * deze aanbieding een persoon en een organisatie heeft, die respectievelijk
+	 * een kandidaat en bedrijf hebben met een referentie naar de gegeven
+	 * aanbieding.
 	 * 
 	 * @param aanbieding
+	 *            De toe te voegen aanbieding.
+	 * @return True als het toevoegen van de arbeidsovereenkomst op basis van de
+	 *         gegeven aanbieding aan de betreffende werknemer is gelukt.
 	 */
-	private void setAanbieding(Aanbieding aanbieding) {
-		if (aanbieding.getPersoon() != null && aanbieding.getOrganisatie() != null) {
-			this.aanbieding = aanbieding;
-			this.setPersoon(aanbieding.getPersoon());
+	private synchronized boolean setAanbieding(Aanbieding aanbieding) {
+		Persoon persoon = aanbieding.getPersoon();
+		Organisatie organisatie = aanbieding.getOrganisatie();
+		if (persoon != null && organisatie != null) {
+			Kandidaat kandidaat = persoon.getKandidaat();
+			Werknemer werknemer = persoon.getWerknemer();
+			Bedrijf bedrijf = organisatie.getBedrijf();
+			if (kandidaat != null && werknemer != null && bedrijf != null
+					&& kandidaat.heeftAanbieding(aanbieding)
+					&& bedrijf.heeftAanbieding(aanbieding))
+				this.aanbieding = aanbieding;
+			setPersoon(aanbieding.getPersoon());
 			setOrganisatie(aanbieding.getOrganisatie());
+			return werknemer.addArbeidsovereenkomst(this);
 		}
+		return false;
 	}
 
 }
