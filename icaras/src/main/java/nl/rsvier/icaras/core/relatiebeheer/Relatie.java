@@ -91,8 +91,20 @@ public abstract class Relatie implements IEntity {
 		this.adressen = adressen;
 	}
 	
+	public boolean addAdres(Adres adres) {
+		if (adres != null && !heeftAdres(adres)) {
+			return getAdressen().add(adres);
+		}
+		return false;
+	}
 	
-	
-	
+	public boolean heeftAdres(Adres adres) {
+		return getAdressen().contains(adres);
+	}
+//	TODO
+//	public Adres getCorrespondentieAdres() {
+//		
+//	}
+//	
 
 }
