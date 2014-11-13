@@ -67,7 +67,7 @@ public class Kandidaat extends PersoonsRol {
 	public synchronized boolean addAanbieding(Aanbieding aanbieding) {
 		if (aanbieding == null || aanbieding.getPersoon() == null
 				|| aanbieding.getOrganisatie() == null
-				|| aanbiedingen.contains(aanbieding)) {
+				|| heeftAanbieding(aanbieding)) {
 			return false;
 		}
 		Kandidaat kandidaat = aanbieding.getPersoon().getKandidaat();
@@ -106,9 +106,9 @@ public class Kandidaat extends PersoonsRol {
 		Kandidaat kandidaat = aanbieding.getPersoon().getKandidaat();
 		Bedrijf bedrijf = aanbieding.getOrganisatie().getBedrijf();
 		if (kandidaat != null && bedrijf != null && kandidaat == this) {
-			aanbiedingen.remove(aanbieding);
+			getAanbiedingen().remove(aanbieding);
 			bedrijf.removeAanbieding(aanbieding);
-			return !aanbiedingen.contains(aanbieding)
+			return !heeftAanbieding(aanbieding)
 					&& !bedrijf.getAanbiedingen().contains(aanbieding);
 		}
 		return false;
