@@ -37,7 +37,7 @@ public class Bedrijf extends OrganisatieRol {
 	}
 
 	/*
-	 * Colllectie: Arbeidsovereenkomsten
+	 * Arbeidsovereenkomsten
 	 */
 
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
@@ -85,12 +85,11 @@ public class Bedrijf extends OrganisatieRol {
 					&& organisatie.getBedrijf() == this
 					&& getArbeidsovereenkomsten().add(arbeidsovereenkomst)) {
 				werknemer.addArbeidsovereenkomst(arbeidsovereenkomst);
-				this.addMedewerker(medewerker);
-				boolean a = heeftArbeidsovereenkomst(arbeidsovereenkomst);
-				boolean b = isMedewerker(medewerker);
-				boolean c = werknemer
-						.heeftArbeidsovereenkomst(arbeidsovereenkomst);
-				return a && b && c;
+				addMedewerker(medewerker);
+				return heeftArbeidsovereenkomst(arbeidsovereenkomst)
+						&& isMedewerker(medewerker)
+						&& werknemer
+								.heeftArbeidsovereenkomst(arbeidsovereenkomst);
 			}
 		}
 		return false;
@@ -135,7 +134,7 @@ public class Bedrijf extends OrganisatieRol {
 	}
 
 	/*
-	 * Collectie: Vacatures
+	 * Vacatures
 	 */
 
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
@@ -155,30 +154,22 @@ public class Bedrijf extends OrganisatieRol {
 	 * doen op deze methode zodat er geen tweede insert word gedaan (met als
 	 * gevolg dat de insert een unique restraint breekt)
 	 */
-	public synchronized boolean addVacature(Vacature vacature) {
-		if (vacature != null && !this.heeftVacature(vacature)) {
+	public void addVacature(Vacature vacature) {
+		if (vacature != null && !this.getVacatures().contains(vacature)) {
 			this.vacatures.add(vacature);
 		}
-		return false;
 	}
 
-	public synchronized boolean removeVacature(Vacature vacature) {
-		if (vacature != null) { // TODO: Wat is hier de meerwaarde van? Een
-								// nullwaarde word toch gewoon niet verwijderd
-								// en returned dus false?
+	public boolean removeVacature(Vacature vacature) {
+		if (vacature != null) {
 			return this.vacatures.remove(vacature);
 		}
 		return false;
 	}
 
-	public boolean heeftVacature(Vacature vacature) {
-		return getVacatures().contains(vacature);
-	}
-
 	/*
-	 * Collectie: Aanbiedingen
+	 * Aanbiedingen
 	 */
-
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
 	public Set<Aanbieding> getAanbiedingen() {
 		return aanbiedingen;
@@ -210,7 +201,7 @@ public class Bedrijf extends OrganisatieRol {
 	public synchronized boolean addAanbieding(Aanbieding aanbieding) {
 		if (aanbieding == null || aanbieding.getPersoon() == null
 				|| aanbieding.getOrganisatie() == null
-				|| this.heeftAanbieding(aanbieding)) {
+				|| heeftAanbieding(aanbieding)) {
 			return false;
 		}
 		Kandidaat kandidaat = aanbieding.getPersoon().getKandidaat();
@@ -218,7 +209,7 @@ public class Bedrijf extends OrganisatieRol {
 				&& aanbieding.getOrganisatie().getBedrijf() == this) {
 			aanbiedingen.add(aanbieding);
 			kandidaat.addAanbieding(aanbieding);
-			return this.heeftAanbieding(aanbieding)
+			return aanbiedingen.contains(aanbieding)
 					&& kandidaat.getAanbiedingen().contains(aanbieding);
 		}
 		return false;
@@ -243,26 +234,22 @@ public class Bedrijf extends OrganisatieRol {
 	public synchronized boolean removeAanbieding(Aanbieding aanbieding) {
 		if (aanbieding == null || aanbieding.getPersoon() == null
 				|| aanbieding.getOrganisatie() == null
-				|| !this.heeftAanbieding(aanbieding)) {
+				|| !aanbiedingen.contains(aanbieding)) {
 			return false;
 		}
 		Kandidaat kandidaat = aanbieding.getPersoon().getKandidaat();
 		Bedrijf bedrijf = aanbieding.getOrganisatie().getBedrijf();
 		if (kandidaat != null && bedrijf != null && bedrijf == this) {
-			this.getAanbiedingen().remove(aanbieding);
+			aanbiedingen.remove(aanbieding);
 			kandidaat.removeAanbieding(aanbieding);
-			return !this.heeftAanbieding(aanbieding)
+			return !aanbiedingen.contains(aanbieding)
 					&& !kandidaat.getAanbiedingen().contains(aanbieding);
 		}
 		return false;
 	}
 
-	public boolean heeftAanbieding(Aanbieding aanbieding) {
-		return getAanbiedingen().contains(aanbieding);
-	}
-
 	/*
-	 * Collectie: Medewerkers
+	 * Medewerkers
 	 */
 
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
@@ -311,7 +298,7 @@ public class Bedrijf extends OrganisatieRol {
 	 *         arbeidsovereenkomsten na afloop ook niet meer voorkomen in de
 	 *         lijst van de betreffende werknemer en dit bedrijf.
 	 */
-	public synchronized boolean removeMedewerker(Persoon medewerker) {
+	public boolean removeMedewerker(Persoon medewerker) {
 		if (medewerker != null && isMedewerker(medewerker)) {
 			for (Arbeidsovereenkomst a : getArbeidsovereenkomsten()) {
 				if (a.getPersoon().equals(medewerker)) {
@@ -338,7 +325,7 @@ public class Bedrijf extends OrganisatieRol {
 	 *         arbeidsovereenkomsten na afloop ook niet meer voorkomen in de
 	 *         lijst van de betreffende werknemer en dit bedrijf.
 	 */
-	public synchronized boolean removeMedewerkerMetAlleArbeidsovereenkomsten(
+	public boolean removeMedewerkerMetAlleArbeidsovereenkomsten(
 			Persoon medewerker) {
 		if (medewerker != null && medewerkers.remove(medewerker)) {
 			Werknemer werknemer = medewerker.getWerknemer();
@@ -362,7 +349,7 @@ public class Bedrijf extends OrganisatieRol {
 				}
 			}
 		}
-		return !this.heeftMedewerker(medewerker)
+		return !medewerkers.contains(medewerker)
 				&& !medewerker.getWerknemer().werktBijBedrijf(this)
 				&& isMedewerker(medewerker);
 	}
@@ -379,15 +366,16 @@ public class Bedrijf extends OrganisatieRol {
 	public boolean isMedewerker(Persoon medewerker) {
 		if (medewerker != null) {
 			for (Persoon p : getMedewerkers())
-				if (medewerker.equals(p)) { // TODO equals of ==?
+				// TODO equals of ==?
+				if (medewerker.equals(p)) {
 					return true;
 				}
 		}
 		return false;
 	}
 
-	public boolean heeftMedewerker(Persoon medewerker) {
-		return getMedewerkers().contains(medewerker);
+	public boolean heeftAanbieding(Aanbieding aanbieding) {
+		return getAanbiedingen().contains(aanbieding);
 	}
 
 	/*
@@ -395,14 +383,23 @@ public class Bedrijf extends OrganisatieRol {
 	 */
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int hash = 1;
+		hash = prime * hash + this.getId();
+		return hash;
+	}
+
+	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (obj == null || !(obj instanceof Bedrijf)) {
+		if (obj == null || !super.equals(obj) || !(obj instanceof Bedrijf)) {
 			return false;
 		} else {
-			@SuppressWarnings("unused")
 			Bedrijf other = (Bedrijf) obj;
+			if (this.getId() > 0 && other.getId() > 0
+					&& this.getId() != other.getId()) {
+				return false;
+			}
 		}
 		return true;
 	}
