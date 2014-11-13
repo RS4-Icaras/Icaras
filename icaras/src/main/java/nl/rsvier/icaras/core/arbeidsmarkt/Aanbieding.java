@@ -59,7 +59,7 @@ public class Aanbieding implements IEntity {
 			this.getOrganisatie().getBedrijf().addAanbieding(this);
 		} else {
 			throw new InvalidBusinessKeyException(
-					"Vacature business key has not been properly initialized");
+					"Aanbieding business key has not been properly initialized");
 		}
 	}
 
