@@ -5,6 +5,7 @@
 	<packaging>war</packaging>
 	<name>Icaras</name>
 	<url>http://www.rsvier.nl/icaras</url>
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -85,7 +86,7 @@
 				<artifactId>spring-test</artifactId>
 				</dependency>
 				
-							<dependency>
+				<dependency>
 				<groupId>cglib</groupId>
 				<artifactId>cglib</artifactId>
 				</dependency>
@@ -151,9 +152,25 @@
 			<artifactId>validation-api</artifactId>
 		</dependency>
 	</dependencies>
+	
 	<build>
-		<finalName>Icaras</finalName>
+	<finalName>Icaras</finalName>
+	<pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </pluginManagement>
 	</build>
+	
 	<parent>
 		<groupId>nl.rsvier.icaras</groupId>
 		<artifactId>IcarasOntwikkelproject</artifactId>
