@@ -5,9 +5,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.GregorianCalendar;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import nl.rsvier.icaras.core.InvalidBusinessKeyException;
 import nl.rsvier.icaras.core.relatiebeheer.Adres;
@@ -68,9 +67,6 @@ public class RelatieRelatiesTest {
 				"IngevoerdePlaats1", "Dorpsstraat");
 		testAdres4 = maakTestAdresZonderId(true, "4325LL", "5677",
 				"IngevoerdePlaats2", "");
-		Set<Adres> adressen = new HashSet<Adres>();
-		adressen.add(testAdres1);
-		adressen.add(testAdres2);
 		testNfa1 = new Email();
 		testNfa1.setNfaAdres("blabla@blabla.bla");
 		testNfa1.setExtraInfo("Deze infomatie is van grote toegevoegde waarde");
@@ -83,9 +79,6 @@ public class RelatieRelatiesTest {
 		testNfa4 = new Website();
 		testNfa4.setNfaAdres("www.rsvier.nl");
 		testNfa4.setExtraInfo("In need of a serious make over");
-		Set<Nfa> nfaLijst = new HashSet<Nfa>();
-		nfaLijst.add(testNfa1);
-		nfaLijst.add(testNfa2);
 		testRelatie1 = new Persoon();
 		testRelatie1.setGearchiveerd(true);
 		testRelatie1.setPriveRelatie(false);
@@ -95,32 +88,31 @@ public class RelatieRelatiesTest {
 		testRelatie1.setOpmerking("Dit is een persoon");
 		testRelatie1.setGeboortedatum(new GregorianCalendar(1988,
 				GregorianCalendar.FEBRUARY, 13));
-		testRelatie1.setAdressen(adressen);
-		testRelatie1.setNfaLijst(nfaLijst);
+		testRelatie1.addAdres(testAdres1);
+		testRelatie1.addAdres(testAdres2);
+		testRelatie1.addNfa(testNfa1);
+		testRelatie1.addNfa(testNfa2);
 		testRelatie2 = new Organisatie("OrganisatieNaam");
-		Set<Adres> adressen2 = new HashSet<Adres>();
-		adressen2.add(testAdres3);
-		adressen2.add(testAdres4);
-		Set<Nfa> nfaLijst2 = new HashSet<Nfa>();
-		nfaLijst2.add(testNfa3);
-		nfaLijst2.add(testNfa4);
-		testRelatie2.setNfaLijst(nfaLijst2);
-		Object[] adrs = adressen2.toArray();
-		((Adres) adrs[0]).setPlaats("VeranderdePlaats1");
-		((Adres) adrs[1]).setPlaats("VeranderdePlaats2");
-		testRelatie2.setAdressen(adressen2);
+		testRelatie2.addAdres(testAdres3);
+		testRelatie2.addAdres(testAdres4);
+		testRelatie2.addNfa(testNfa3);
+		testRelatie2.addNfa(testNfa4);
+		Iterator<Adres> adresIterator = testRelatie2.getAdressen().iterator();
+		adresIterator.next().setPlaats("VeranderdePlaats1");
+		adresIterator.next().setPlaats("VeranderdePlaats2");
 		testRelatie2.setGearchiveerd(false);
 		testRelatie2.setPriveRelatie(true);
 		testRelatie2.setOpmerking("Fantastische organisatie");
-		//onderstaande niet meer nodig ivm CascadingType.ALL
-//		for (Adres a : testRelatie1.getAdressen()) {
-//			if (a != null)//saving a null value levert een IllegalArgumentException
-//			adresDao.save(a);
-//		}
-//		for (Nfa n : testRelatie1.getNfaLijst()) {
-//			if (n != null)
-//			nfaDao.save(n);
-//		}
+		// onderstaande niet meer nodig ivm CascadingType.ALL
+		// for (Adres a : testRelatie1.getAdressen()) {
+		// if (a != null)//saving a null value levert een
+		// IllegalArgumentException
+		// adresDao.save(a);
+		// }
+		// for (Nfa n : testRelatie1.getNfaLijst()) {
+		// if (n != null)
+		// nfaDao.save(n);
+		// }
 	}
 
 	private Adres maakTestAdresZonderId(boolean isPostbus, String postcode,
@@ -138,7 +130,6 @@ public class RelatieRelatiesTest {
 		return nieuwAdres;
 	}
 
-	
 	@Test
 	@Transactional
 	// (propagation=Propagation.REQUIRES_NEW)//Hiervoor is Spring versie van
@@ -149,7 +140,8 @@ public class RelatieRelatiesTest {
 		relatieDao.getHibernateTemplate().flush();
 		relatieDao.getHibernateTemplate().clear();
 		Relatie vergelijkRelatie = relatieDao.getById(testRelatie1.getId());
-		assertTrue("attributen vanuit database zijn gelijk aan die van het adres voor save",
+		assertTrue(
+				"attributen vanuit database zijn gelijk aan die van het adres voor save",
 				testRelatie1.equals(vergelijkRelatie));
 		Adres vergelijkAdres = null, vergelijkAdres2 = null;
 		{
@@ -190,20 +182,23 @@ public class RelatieRelatiesTest {
 				"tweede nfa van opgeslagen persoon en nfa uit de lijst van ingeladen persoon met dezelfde id zijn gelijk",
 				testNfa2.equals(vergelijkNfa2));
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	@Transactional
-	public void testNullSave(){
+	public void testNullSave() {
 		relatieDao.save(nullRelatie);
 	}
-	
+
 	@Test
 	@Transactional
-	public void testSaveRelatieMetNullAdressen(){
+	public void testSaveRelatieMetNullAdressen() {
 		testRelatie1.getAdressen().add(nullAdres);
 		testRelatie1.getNfaLijst().add(nullNfa);
-		relatieDao.save(testRelatie1);//adressen en nfaLijst via cascading, geen probleem in geval van null waarden
-//		nfaDao.save(testRelatie1.getNfaLijst().iterator().next());//handmatig saven van null waarde geef wel exception
+		relatieDao.save(testRelatie1);// adressen en nfaLijst via cascading,
+										// geen probleem in geval van null
+										// waarden
+		// nfaDao.save(testRelatie1.getNfaLijst().iterator().next());//handmatig
+		// saven van null waarde geef wel exception
 	}
 
 	@Test
@@ -229,9 +224,13 @@ public class RelatieRelatiesTest {
 					vergelijkRelatie2 = r;
 			}
 		}
-		assertTrue("eerste opgeslagen relatie is gelijk aan ingelezen relatie met gelijk id", testRelatie1.equals(vergelijkRelatie));
-		assertTrue("tweede opgeslagen relatie is gelijk aan ingelezen relatie met gelijk id", testRelatie2.equals(vergelijkRelatie2));
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		assertTrue(
+				"eerste opgeslagen relatie is gelijk aan ingelezen relatie met gelijk id",
+				testRelatie1.equals(vergelijkRelatie));
+		assertTrue(
+				"tweede opgeslagen relatie is gelijk aan ingelezen relatie met gelijk id",
+				testRelatie2.equals(vergelijkRelatie2));
+		// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		Adres vergelijkAdres = null, vergelijkAdres2 = null;
 		{
 			for (Adres a : vergelijkRelatie.getAdressen()) {
@@ -270,7 +269,7 @@ public class RelatieRelatiesTest {
 		assertTrue(
 				"tweede nfa van opgeslagen persoon en nfa uit de lijst van ingeladen persoon met dezelfde id zijn gelijk",
 				testNfa2.equals(vergelijkNfa2));
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		Adres vergelijkAdres3 = null, vergelijkAdres4 = null;
 
 		{
@@ -316,14 +315,17 @@ public class RelatieRelatiesTest {
 	@Transactional
 	public void testCascadeUpdate() {
 		relatieDao.save(testRelatie1);
-//		testRelatie1.getAdressen().iterator().next().setPlaats("Gewijzigde Plaatsnaam");//niet gegarandeerd omdat ik test op testadres1.getAdresId()
+		// testRelatie1.getAdressen().iterator().next().setPlaats("Gewijzigde Plaatsnaam");//niet
+		// gegarandeerd omdat ik test op testadres1.getAdresId()
 		testAdres1.setPlaats("Gewijzigde Plaatsnaam");
 		relatieDao.update(testRelatie1);
-		//nog een test waarin de persoon zelf wel gewijzigd wordt
+		// nog een test waarin de persoon zelf wel gewijzigd wordt
 		testRelatie2.setOpmerking("New and improved name");
 		testAdres3.maakPostbus();
-		testNfa4.setExtraInfo(null);//kan vooralsnog omdat nullability nog by default op true staat
-									//lvert verder geen probleem op om een null waarde in een veld mee te geven
+		testNfa4.setExtraInfo(null);// kan vooralsnog omdat nullability nog by
+									// default op true staat
+									// lvert verder geen probleem op om een null
+									// waarde in een veld mee te geven
 		relatieDao.update(testRelatie2);
 		relatieDao.getHibernateTemplate().flush();
 		relatieDao.getHibernateTemplate().clear();
@@ -331,36 +333,41 @@ public class RelatieRelatiesTest {
 				.getId());
 		assertTrue("Persoon uit db is gelijk aan geupdate persoon",
 				testRelatie1.equals(vergelijkPersoon));
-		System.out.println("plaatnaam van vergelijkpersoon: " + vergelijkPersoon.getAdressen().iterator().next().getPlaats());
+		System.out.println("plaatnaam van vergelijkpersoon: "
+				+ vergelijkPersoon.getAdressen().iterator().next().getPlaats());
 		Adres vergelijkAdres = null;
-		for (Object a: vergelijkPersoon.getAdressen().toArray()){
-			if(((Adres) a).getId()==testAdres1.getId()){
+		for (Object a : vergelijkPersoon.getAdressen().toArray()) {
+			if (((Adres) a).getId() == testAdres1.getId()) {
 				vergelijkAdres = (Adres) a;
 			}
 		}
-		assertTrue("adres in database heeft de gewijzigde plaatsnaam", vergelijkAdres.getPlaats().equals("Gewijzigde Plaatsnaam"));
-		//Tweede test asserts
-		Organisatie vergelijkOrganisatie = (Organisatie) relatieDao.getById(testRelatie2
-				.getId());
+		assertTrue("adres in database heeft de gewijzigde plaatsnaam",
+				vergelijkAdres.getPlaats().equals("Gewijzigde Plaatsnaam"));
+		// Tweede test asserts
+		Organisatie vergelijkOrganisatie = (Organisatie) relatieDao
+				.getById(testRelatie2.getId());
 		assertTrue("Organisatie uit db is gelijk aan geupdate organisatie",
 				testRelatie2.equals(vergelijkOrganisatie));
 		Adres vergelijkAdres2 = null;
-		for (Object a: vergelijkOrganisatie.getAdressen().toArray()){
-			if(((Adres) a).getId()==testAdres3.getId()){
+		for (Object a : vergelijkOrganisatie.getAdressen().toArray()) {
+			if (((Adres) a).getId() == testAdres3.getId()) {
 				vergelijkAdres2 = (Adres) a;
 			}
 		}
-		assertTrue("adres in database heeft de gewijzigde plaatsnaam", vergelijkAdres2.equals(testAdres3));
+		assertTrue("adres in database heeft de gewijzigde plaatsnaam",
+				vergelijkAdres2.equals(testAdres3));
 		Nfa vergelijkNfa = null;
-		for (Object n: vergelijkOrganisatie.getNfaLijst().toArray()){
-			if(((Nfa) n).getId()==testNfa4.getId()){
+		for (Object n : vergelijkOrganisatie.getNfaLijst().toArray()) {
+			if (((Nfa) n).getId() == testNfa4.getId()) {
 				vergelijkNfa = (Nfa) n;
 			}
 		}
-		//vergelijken van nfa met methode equals gaf nullpointerException ivm null als string --> null.equals(waarde)
-		assertNull("nfa heeft als extra info de toegekende en geupdate waarde null", vergelijkNfa.getExtraInfo());
+		// vergelijken van nfa met methode equals gaf nullpointerException ivm
+		// null als string --> null.equals(waarde)
+		assertNull(
+				"nfa heeft als extra info de toegekende en geupdate waarde null",
+				vergelijkNfa.getExtraInfo());
 
-		
 	}
 
 	@Test
@@ -375,17 +382,25 @@ public class RelatieRelatiesTest {
 		int idTestNfa1 = testNfa1.getId();
 		int idTestNfa2 = testNfa2.getId();
 		relatieDao.delete(testRelatie1);// Bijbehorende adressen en nfa's worden
-										// nu via orphanRemoval gedelete// inmiddels cascading all
+										// nu via orphanRemoval gedelete//
+										// inmiddels cascading all
 		relatieDao.getHibernateTemplate().flush();
 		relatieDao.getHibernateTemplate().clear();
-		Relatie vergelijkRelatie = relatieDao.getById(testRelatie1
-				.getId());
+		Relatie vergelijkRelatie = relatieDao.getById(testRelatie1.getId());
 		assertNull("verwijderde relatie opvragen uit database geeft null",
 				vergelijkRelatie);
-		assertNull("opvragen van eerste adres op id van gedelete relatie geeft null", adresDao.getById(idTestAdres1));
-		assertNull("opvragen van tweede adres op id van gedelete relatie geeft null", adresDao.getById(idTestAdres2));
-		assertNull("opvragen van eerste nfa op id van gedelete relatie geeft null", nfaDao.getById(idTestNfa1));
-		assertNull("opvragen van tweede nfa op id van gedelete relatie geeft null", nfaDao.getById(idTestNfa2));
+		assertNull(
+				"opvragen van eerste adres op id van gedelete relatie geeft null",
+				adresDao.getById(idTestAdres1));
+		assertNull(
+				"opvragen van tweede adres op id van gedelete relatie geeft null",
+				adresDao.getById(idTestAdres2));
+		assertNull(
+				"opvragen van eerste nfa op id van gedelete relatie geeft null",
+				nfaDao.getById(idTestNfa1));
+		assertNull(
+				"opvragen van tweede nfa op id van gedelete relatie geeft null",
+				nfaDao.getById(idTestNfa2));
 	}
 
 }
