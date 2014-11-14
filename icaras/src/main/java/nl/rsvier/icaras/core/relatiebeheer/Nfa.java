@@ -12,10 +12,14 @@ import javax.persistence.InheritanceType;
 import javax.validation.constraints.NotNull;
 
 import nl.rsvier.icaras.core.IEntity;
+
 /**
  * 
- * @author Gerben en Gordon
- * Klasse voor alle niet fysieke adresvormen (waaronder telefoonnummers en digitale communicatiekanalen)
+ * Klasse voor alle niet fysieke adresvormen (waaronder telefoonnummers en
+ * digitale communicatiekanalen)
+ * 
+ * @author Gerben
+ * @author Gordon
  *
  */
 @Entity
@@ -28,15 +32,18 @@ public abstract class Nfa implements IEntity {
 	public enum NfaSoort {
 		EMAIL, TELEFOONNUMMER, WEBSITE, FACEBOOK, TWITTER, LINKEDIN, FAX
 	}
+
 	@Id
 	@GeneratedValue
 	private int id;
-	@Enumerated(EnumType.STRING)//Constraint voor de column nfaSoort met alle waarden vd Enum toevoegen via @Column nog toevoegen
+	@Enumerated(EnumType.STRING)
+	// Constraint voor de column nfaSoort met alle waarden vd Enum toevoegen via
+	// @Column nog toevoegen
 	private final NfaSoort nfaSoort;
 	private String nfaAdres;
 	private String extraInfo;
-	
-	public Nfa(NfaSoort nfaSoort){
+
+	public Nfa(NfaSoort nfaSoort) {
 		this.nfaSoort = nfaSoort;
 	}
 
@@ -48,14 +55,13 @@ public abstract class Nfa implements IEntity {
 		this.id = id;
 	}
 
-	
 	public NfaSoort getNfaSoort() {
 		return nfaSoort;
 	}
 
-//	public void setNfaSoort(NfaSoort nfaSoort) {
-//		this.nfaSoort = nfaSoort;
-//	}
+	// public void setNfaSoort(NfaSoort nfaSoort) {
+	// this.nfaSoort = nfaSoort;
+	// }
 	@NotNull
 	public String getNfaAdres() {
 		return nfaAdres;
@@ -64,6 +70,7 @@ public abstract class Nfa implements IEntity {
 	public void setNfaAdres(String nfaAdres) {
 		this.nfaAdres = nfaAdres;
 	}
+
 	@NotNull
 	public String getExtraInfo() {
 		return extraInfo;
@@ -72,17 +79,16 @@ public abstract class Nfa implements IEntity {
 	public void setExtraInfo(String extraInfo) {
 		this.extraInfo = extraInfo;
 	}
-	
+
 	public boolean equals(Object obj) {
 		boolean isEqual = false;
-		if (obj instanceof Nfa
-			&& this.nfaSoort == ((Nfa) obj).getNfaSoort()	
-			&& this.id == ((Nfa) obj).getId()
-			&& this.nfaAdres.equals(((Nfa) obj).getNfaAdres())
-			&& this.extraInfo.equals(((Nfa) obj).getExtraInfo())) {
+		if (obj instanceof Nfa && this.nfaSoort == ((Nfa) obj).getNfaSoort()
+				&& this.id == ((Nfa) obj).getId()
+				&& this.nfaAdres.equals(((Nfa) obj).getNfaAdres())
+				&& this.extraInfo.equals(((Nfa) obj).getExtraInfo())) {
 			isEqual = true;
 		}
-		return isEqual;	
+		return isEqual;
 	}
 
 }
