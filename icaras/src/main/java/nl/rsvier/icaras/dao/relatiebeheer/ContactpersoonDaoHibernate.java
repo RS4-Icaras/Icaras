@@ -6,7 +6,7 @@ import nl.rsvier.icaras.core.relatiebeheer.Contactpersoon;
 import nl.rsvier.icaras.core.relatiebeheer.Kandidaat;
 import nl.rsvier.icaras.dao.GenericDaoHibernate;
 
-@Repository("IKandidaatDao")
+@Repository("IContactpersoonDao")
 public class ContactpersoonDaoHibernate extends GenericDaoHibernate<Contactpersoon> implements IContactpersoonDao {
 	
 	public ContactpersoonDaoHibernate() {
