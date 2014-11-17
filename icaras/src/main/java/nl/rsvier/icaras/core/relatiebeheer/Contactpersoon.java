@@ -15,7 +15,7 @@ public class Contactpersoon extends PersoonsRol {
 
 	private List<Organisatie> organisaties;
 	private String functie;
-	
+
 	// TODO: UUID ipv business key
 
 	/*
@@ -46,7 +46,7 @@ public class Contactpersoon extends PersoonsRol {
 	 * Organisatie
 	 */
 	public boolean addOrganisatie(Organisatie organisatie, Persoon persoon) {
-		if(organisatie == null) { // Voorkom NullpointerExceptions
+		if (organisatie == null) { // Voorkom NullpointerExceptions
 			return false;
 		}
 		if (this.organisatieMagWordenToegevoegd(organisatie)) {
@@ -117,7 +117,8 @@ public class Contactpersoon extends PersoonsRol {
 			if (!this.getFunctie().equals(other.getFunctie())) {
 				return false;
 			}
-			if (!this.getOrganisaties().equals(other.getOrganisaties())) {
+			if (this.getOrganisaties().size() > 0
+					&& !this.getOrganisaties().equals(other.getOrganisaties())) {
 				return false;
 			}
 		}
