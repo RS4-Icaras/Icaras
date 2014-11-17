@@ -66,6 +66,14 @@ public class OrganisatieTest {
 				sterlingcooper_clone, pearsonhardman, pearsonhardman_clone));
 	}
 
+	private Organisatie randomTestOrganisatie()
+			throws InvalidBusinessKeyException {
+		Random r = new Random();
+		Organisatie o = new Organisatie(String.valueOf(r.nextInt(1000000)));
+		o.addRol(new Bedrijf());
+		return o;
+	}
+
 	private Persoon randomTestPersoon() {
 		Random r = new Random();
 		Persoon p = new Persoon(String.valueOf(r.nextInt(1000000)),
@@ -135,7 +143,8 @@ public class OrganisatieTest {
 		assertFalse(
 				"Om een Contactpersoon aan een Organisatie toe te voegen moet de Persoon \""
 						+ "wel een Contactpersoonsrol hebben",
-				use_organisatie.contactpersoonConstraint(new Persoon("Test", "Testerson")));
+				use_organisatie.contactpersoonConstraint(new Persoon("Test",
+						"Testerson")));
 	}
 
 	@Test
@@ -157,7 +166,8 @@ public class OrganisatieTest {
 	}
 
 	@Test
-	public void testBidirectionalAddingOfContactpersoonFromOrganisatie() {
+	public void testBidirectioneleRelatie_Organisatie_Contactpersoon()
+			throws InvalidBusinessKeyException {
 
 		/*
 		 * Organisatie bevat een collectie contactpersonen. Test of de
@@ -165,25 +175,36 @@ public class OrganisatieTest {
 		 * ook toe te voegen aan de collectie organisaties van Contactpersoon
 		 */
 
-		Persoon don = new Persoon("Don", "Draper");
-		don.addRol(new Contactpersoon());
+		Persoon testpersoon = this.randomTestPersoon();
+		Organisatie testorganisatie = this.randomTestOrganisatie();
 
 		// Controleer of de Organisatie nog geen Contactpersoon bevat
-		assertFalse(sterlingcooper.getContactpersonen().contains(don));
+		assertFalse(testorganisatie.heeftContactpersoon(testpersoon));
 
 		// Controleer of de Contactpersoon nog geen Organisatie bevat
-		assertFalse(don.getContactpersoon().getOrganisaties()
-				.contains(sterlingcooper));
+		assertFalse(testpersoon.getContactpersoon().heeftOrganisatie(
+				testorganisatie));
 
 		// Start de bidirectionele toevoeging via een aanroep op Organisatie
-		sterlingcooper.addContactpersoon(don);
+		testorganisatie.addContactpersoon(testpersoon);
 
 		// Nu heeft de Organisatie wel een referentie naar een Persoon
-		assertTrue(sterlingcooper.getContactpersonen().contains(don));
+		assertTrue(testorganisatie.heeftContactpersoon(testpersoon));
 
 		// Nu heeft de Contactpersoon wel een referentie naar een Organisatie
-		assertTrue(don.getContactpersoon().getOrganisaties()
-				.contains(sterlingcooper));
+		assertTrue(testpersoon.getContactpersoon().heeftOrganisatie(
+				testorganisatie));
+
+		// Verbreek de bidirectionele relatie via een aanroep op Organisatie
+		testorganisatie.removeContactpersoon(testpersoon);
+
+		// Nu heeft de Organisatie niet langer een referentie naar een Persoon
+		assertFalse(testorganisatie.heeftContactpersoon(testpersoon));
+
+		// Nu heeft de Contactpersoon niet langer een referentie naar een
+		// Organisatie
+		assertFalse(testpersoon.getContactpersoon().heeftOrganisatie(
+				testorganisatie));
 
 	}
 

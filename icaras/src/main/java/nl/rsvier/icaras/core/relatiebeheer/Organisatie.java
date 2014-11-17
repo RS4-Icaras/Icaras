@@ -187,8 +187,12 @@ public class Organisatie extends Relatie {
 		if (persoon == null) { // Voorkom NullpointerExceptions
 			return false;
 		}
-		this.getContactpersonen().remove(persoon);
-		persoon.getContactpersoon().removeOrganisatie(this, persoon);
+		if (this.heeftContactpersoon(persoon)) {
+			this.getContactpersonen().remove(persoon);
+		}
+		if (persoon.getContactpersoon().heeftOrganisatie(this)) {
+			persoon.getContactpersoon().removeOrganisatie(this, persoon);
+		}
 		return !this.heeftContactpersoon(persoon)
 				&& !persoon.getContactpersoon().heeftOrganisatie(this);
 	}
