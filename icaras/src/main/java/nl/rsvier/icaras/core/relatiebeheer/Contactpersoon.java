@@ -15,6 +15,8 @@ public class Contactpersoon extends PersoonsRol {
 
 	private List<Organisatie> organisaties;
 	private String functie;
+	
+	// TODO: UUID ipv business key
 
 	/*
 	 * Constructor
@@ -34,54 +36,54 @@ public class Contactpersoon extends PersoonsRol {
 		return organisaties;
 	}
 
-	public void setOrganisaties(List<Organisatie> organisaties) {
+	@SuppressWarnings("unused")
+	private void setOrganisaties(List<Organisatie> organisaties) {
 		this.organisaties = organisaties;
 	}
 
+	/**
+	 * Creëer bi-directionele relatie tussen Persoon > Contactpersoon >
+	 * Organisatie
+	 */
 	public boolean addOrganisatie(Organisatie organisatie, Persoon persoon) {
-
-		/*
-		 * TODO: Controleer: Contactpersoon voegt geen persoon toe aan een
-		 * bedrijf als medewerker, dat lijkt me de verantwoordelijkheid van de
-		 * werknemersrol
-		 */
-
-		boolean a = false;
-		boolean b = false;
-
-		if (!this.organisatieMagWordenToegevoegd(organisatie)) {
-			a = this.getOrganisaties().add(organisatie);
+		if(organisatie == null) { // Voorkom NullpointerExceptions
+			return false;
 		}
-
-		if (persoon != null
-				&& !organisatie.getContactpersonen().contains(persoon)) {
-			b = organisatie.addContactpersoon(persoon);
+		if (this.organisatieMagWordenToegevoegd(organisatie)) {
+			this.getOrganisaties().add(organisatie);
 		}
-
-		return a && b;
-
+		if (organisatie.contactpersoonMagWordenToegevoegd(persoon)) {
+			organisatie.addContactpersoon(persoon);
+		}
+		return this.heeftOrganisatie(organisatie)
+				&& organisatie.heeftContactpersoon(persoon);
 	}
 
-	public void removeOrganisatie(Organisatie organisatie) {
-		if (this.organisaties.contains(organisatie)) {
+	/**
+	 * Verbreek bi-directionele relatie tussen Persoon > Contactpersoon >
+	 * Organisatie
+	 */
+	public boolean removeOrganisatie(Organisatie organisatie, Persoon persoon) {
+		if (this.heeftOrganisatie(organisatie)) {
 			this.organisaties.remove(organisatie);
 		}
+		if (organisatie.heeftContactpersoon(persoon)) {
+			organisatie.removeContactpersoon(persoon);
+		}
+		return this.heeftOrganisatie(organisatie)
+				&& organisatie.heeftContactpersoon(persoon);
 	}
 
-	public void clearOrganisaties() {
-		this.organisaties.clear();
-	}
-
-	public boolean organisatieIsToegevoegd(Organisatie organisatie) {
+	public boolean heeftOrganisatie(Organisatie organisatie) {
 		return this.getOrganisaties().contains(organisatie);
 	}
 
 	public boolean organisatieConstraint(Organisatie organisatie) {
-		return true;
+		return organisatie != null;
 	}
 
 	public boolean organisatieMagWordenToegevoegd(Organisatie organisatie) {
-		return !this.organisatieIsToegevoegd(organisatie)
+		return !this.heeftOrganisatie(organisatie)
 				&& this.organisatieConstraint(organisatie);
 	}
 
@@ -115,29 +117,11 @@ public class Contactpersoon extends PersoonsRol {
 			if (!this.getFunctie().equals(other.getFunctie())) {
 				return false;
 			}
-
+			if (!this.getOrganisaties().equals(other.getOrganisaties())) {
+				return false;
+			}
 		}
 		return true;
 	}
 
-	/*
-	 * TODO: Remove?!
-	 */
-	/*
-	 * public void addOrganisatie2(Organisatie organisatie) {
-	 * 
-	 * // Voeg alleen toe wanneer dit nog niet eerder gedaan is om infinite //
-	 * loops te voorkomen if (!this.organisaties.contains(organisatie)) {
-	 * this.organisaties.add(organisatie); }
-	 * 
-	 * // Loop over de lijst contactpersonen om de juiste instantie van Persoon
-	 * // eruit te vissen for (Persoon p : organisatie.getContactpersonen()) {
-	 * // TODO: What if // Organisatie // does not have // contactpersonen //
-	 * yet? // Hebben we de juiste Persoon al gevonden? if
-	 * (p.getContactpersoon().equals(this)) { // Is de contactpersoon nog niet
-	 * eerder toegevoegd? if (!organisatie.getContactpersonen().contains(p)) {
-	 * // Voeg toe organisatie.addContactpersoon(p); } } }
-	 * 
-	 * }
-	 */
 }
