@@ -1,34 +1,45 @@
 package nl.rsvier.icaras.core.relatiebeheer;
 
+import java.util.ArrayList;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Leverancier extends OrganisatieRol {
 
 	private static final long serialVersionUID = 1L;
 
-	private String functie = "";
+	private String functie;
 
+	// TODO: UUID ipv business key
+
+	/*
+	 * Constructor
+	 */
+
+	public Leverancier() {
+		
+	}
+
+	/*
+	 * Functie
+	 */
+
+	@Column(unique = true, updatable = false)
+	@NotNull
 	public String getFunctie() {
 		return this.functie;
 	}
 
-	public void setFunctie(String functie) {
-		this.functie = functie;
+	public void setFunctie(String str) {
+		this.functie = str;
 	}
-	
+
 	/*
 	 * Utils
 	 */
-
-	@Override
-	public int hashCode() {
-		final int prime = 227;
-		int hash = 1;
-		hash = prime * hash + this.getFunctie().hashCode(); // TODO: Geen goede businesskey
-		// MAG IK ALSTUBLIEFT EEN REFERENTIE NAAR ORGANISATIE?!
-		return hash;
-	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -36,7 +47,7 @@ public class Leverancier extends OrganisatieRol {
 			return false;
 		} else {
 			Leverancier other = (Leverancier) obj;
-			if(this.getFunctie() != other.getFunctie()) {
+			if (!this.getFunctie().equals(other.getFunctie())) {
 				return false;
 			}
 		}
@@ -47,5 +58,5 @@ public class Leverancier extends OrganisatieRol {
 	public String toString() {
 		return "Leveranciersrol, subklasse van: " + super.toString();
 	}
-	
+
 }
