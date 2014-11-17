@@ -105,16 +105,37 @@ public class OrganisatieTest {
 	}
 
 	public void test_heeftContactpersoon(Organisatie use_organisatie) {
-		assertTrue(sterlingcooper.heeftContactpersoon(bertram));
-		assertFalse(pearsonhardman.heeftContactpersoon(randomTestPersoon()));
+		for (Persoon persoon : use_organisatie.getContactpersonen()) {
+			assertTrue(String.format(
+					"%s is contactpersoon voor organisatie: %s", persoon,
+					use_organisatie),
+					use_organisatie.heeftContactpersoon(persoon));
+		}
+		assertFalse(String.format(
+				"%s bevat (onverwacht) een random persoon als contactpersoon",
+				use_organisatie),
+				use_organisatie.heeftContactpersoon(randomTestPersoon()));
 	}
 
 	public void test_contactpersoonConstraint(Organisatie use_organisatie) {
-		assertTrue(pearsonhardman.contactpersoonConstraint(bertram));
-		assertFalse(sterlingcooper.contactpersoonConstraint(null));
-
-		assertTrue(bertram.hasRol(Contactpersoon.class));
-		assertFalse(new Persoon().hasRol(Contactpersoon.class));
+		for (Persoon persoon : use_organisatie.getContactpersonen()) {
+			assertTrue(
+					String.format(
+							"%s voldoet aan de voorwaarden die worden gesteld \""
+									+ "aan een contactpersoon om te worden toegevoegd \""
+									+ "aan een organisatie", persoon),
+					use_organisatie.contactpersoonConstraint(persoon));
+			assertTrue(
+					String.format("%s heeft een Contactpersoonsrol", persoon),
+					persoon.hasRol(Contactpersoon.class));
+		}
+		assertFalse(
+				"Om een Contactpersoon aan een Organisatie toe te voegen mag deze geen null zijn",
+				use_organisatie.contactpersoonConstraint(null));
+		assertFalse(
+				"Om een Contactpersoon aan een Organisatie toe te voegen moet de Persoon \""
+						+ "wel een Contactpersoonsrol hebben",
+				use_organisatie.contactpersoonConstraint(new Persoon("Test", "Testerson")));
 	}
 
 	@Test
@@ -150,53 +171,19 @@ public class OrganisatieTest {
 		// Controleer of de Organisatie nog geen Contactpersoon bevat
 		assertFalse(sterlingcooper.getContactpersonen().contains(don));
 
-		int perCounter1 = 0;
-		for (Persoon per : sterlingcooper.getContactpersonen()) {
-			if (per.equals(don)) {
-				perCounter1++;
-			}
-		}
-		assertTrue(perCounter1 == 0);
-
 		// Controleer of de Contactpersoon nog geen Organisatie bevat
 		assertFalse(don.getContactpersoon().getOrganisaties()
 				.contains(sterlingcooper));
 
-		int orgCounter2 = 0;
-		for (Organisatie org : don.getContactpersoon().getOrganisaties()) {
-			if (org.equals(sterlingcooper)) {
-				orgCounter2++;
-			}
-		}
-		assertTrue(orgCounter2 == 0);
-
 		// Start de bidirectionele toevoeging via een aanroep op Organisatie
 		sterlingcooper.addContactpersoon(don);
 
-		// Als het goed is heeft de Organisatie nu een referentie naar een
-		// Persoon
+		// Nu heeft de Organisatie wel een referentie naar een Persoon
 		assertTrue(sterlingcooper.getContactpersonen().contains(don));
 
-		int perCounter2 = 0;
-		for (Persoon per : sterlingcooper.getContactpersonen()) {
-			if (per.equals(don)) {
-				perCounter2++;
-			}
-		}
-		assertTrue(perCounter2 == 1);
-
-		// Als het goed is heeft de Contactpersoon nu een referentie naar een
-		// Organisatie
+		// Nu heeft de Contactpersoon wel een referentie naar een Organisatie
 		assertTrue(don.getContactpersoon().getOrganisaties()
 				.contains(sterlingcooper));
-
-		int orgCounter = 0;
-		for (Organisatie org : don.getContactpersoon().getOrganisaties()) {
-			if (org.equals(sterlingcooper)) {
-				orgCounter++;
-			}
-		}
-		assertTrue(orgCounter == 1);
 
 	}
 
