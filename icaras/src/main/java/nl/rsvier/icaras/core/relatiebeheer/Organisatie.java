@@ -21,6 +21,16 @@ import nl.rsvier.icaras.core.InvalidBusinessKeyException;
  * @author Mark van Meerten
  */
 
+/*
+ * TODO: Organisatie toevoegen frontend heeft een lege constructor nodig.
+ * 
+ * Mogelijke oplossing: o Invulobject o copyconstructor, booleanwaarde die op
+ * true moet staan voordat er geschreven mag worden o public maken o Fuck
+ * business-keys, stap over naar UUID
+ * 
+ * Lijkt erop dat het tijd word voor een UUID.
+ */
+
 @Entity
 @PrimaryKeyJoinColumn(name = "relatie_id")
 public class Organisatie extends Relatie {
@@ -46,10 +56,6 @@ public class Organisatie extends Relatie {
 	}
 
 	private Organisatie() {
-		/*
-		 * TODO: Make sure each instance of Organisatie has at least one type of
-		 * OrganisatieRol assigned to it? [1..2] vs [0..2]?
-		 */
 		this.rollen = new HashSet<OrganisatieRol>();
 		this.contactpersonen = new ArrayList<Persoon>();
 	}
@@ -66,24 +72,6 @@ public class Organisatie extends Relatie {
 	@SuppressWarnings("unused")
 	private void setRollen(Set<OrganisatieRol> rollenlijst) {
 		this.rollen = rollenlijst;
-	}
-
-	/**
-	 * Controleer of de collectie daadwerkelijk een rol bevat van het type
-	 * OrganisatieRol
-	 * 
-	 * @param: class literal van het gewenste type OrganisatieRol
-	 * 
-	 * @return: true wanneer de collectie een OrganisatieRol van het juiste type
-	 *          bevat
-	 */
-	public <T extends OrganisatieRol> boolean hasRol(Class<T> clstype) {
-		for (OrganisatieRol rol : this.getRollen()) {
-			if (clstype.isInstance(rol)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -112,6 +100,19 @@ public class Organisatie extends Relatie {
 		return null;
 	}
 
+	/**
+	 * Controleer of de collectie daadwerkelijk een rol bevat van het type
+	 * OrganisatieRol
+	 * 
+	 * @param: class literal van het gewenste type OrganisatieRol
+	 * 
+	 * @return: true wanneer de collectie een OrganisatieRol van het juiste type
+	 *          bevat
+	 */
+	public <T extends OrganisatieRol> boolean hasRol(Class<T> clstype) {
+		return this.getRol(clstype) != null;
+	}
+
 	@Transient
 	public Bedrijf getBedrijf() {
 		return (Bedrijf) this.getRol(Bedrijf.class);
@@ -126,6 +127,7 @@ public class Organisatie extends Relatie {
 	 * Naam: Maak een naam uniek en onaanpasbaar zodat deze te gebruiken is als
 	 * business logic key
 	 */
+
 	@Column(unique = true, updatable = false)
 	@NotNull
 	public String getNaam() {
@@ -136,26 +138,15 @@ public class Organisatie extends Relatie {
 		this.naam = naam;
 	}
 
-	public static boolean naamConstraint(String str) {
-		/*
-		 * De voorwaarden waar een Naam aan moet voldoen
-		 */
+	public boolean naamConstraint(String str) {
 		return str != null && !str.equals("");
 	}
 
 	public boolean naamMagWordenToegevoegd(String str) {
-		/*
-		 * Om een Naam toe te voegen mag deze geen null zijn en moet deze aan de
-		 * voorwaarde voldoen
-		 */
-		return !this.naamIsToegevoegd() && Organisatie.naamConstraint(str);
+		return !this.heeftNaam() && this.naamConstraint(str);
 	}
 
-	public boolean naamIsToegevoegd() {
-		/*
-		 * Naam is immutable. Als deze reeds is toegevoegd mag deze niet meer
-		 * worder aangepast
-		 */
+	public boolean heeftNaam() {
 		return this.getNaam() != null;
 	}
 
@@ -174,40 +165,44 @@ public class Organisatie extends Relatie {
 	}
 
 	public boolean addContactpersoon(Persoon persoon) {
-		if (this.contactpersoonMagWordenToegevoegd(persoon)) {
-			// Voeg Persoon toe aan de lijst van contactpersonen
-			boolean a = this.getContactpersonen().add(persoon);
-			// Vertel contactpersoon over deze organisatie
-			boolean b = persoon.getContactpersoon().addOrganisatie(this,
-					persoon);
-			return a && b;
+		if (persoon == null) { // Voorkom NullpointerExceptions
+			return false;
 		}
-		return false;
+		if (this.contactpersoonMagWordenToegevoegd(persoon)) {
+			this.getContactpersonen().add(persoon);
+		}
+		if (persoon.getContactpersoon().organisatieMagWordenToegevoegd(this)) {
+			persoon.getContactpersoon().addOrganisatie(this, persoon);
+		}
+		return this.heeftContactpersoon(persoon)
+				&& persoon.getContactpersoon().heeftOrganisatie(this);
 	}
 
+	/*
+	 * Wat als: o this.getContactpersonen() null is > nooit null, hoogstens leeg
+	 * o persoon geen contactpersoon rol heeft > is al afgevangen in de add
+	 * methode en komt die dus ook niet voor in de collectie
+	 */
 	public boolean removeContactpersoon(Persoon persoon) {
-		// als this.getContactpersonen() null is > nooit null, hoogstends leeg
-		// als persoon null is > return false
-		// als persoon geen contactpersoon rol heeft > is al afgevangen in de
-		// add methode
-		return this.getContactpersonen().remove(persoon);
+		if (persoon == null) { // Voorkom NullpointerExceptions
+			return false;
+		}
+		this.getContactpersonen().remove(persoon);
+		persoon.getContactpersoon().removeOrganisatie(this, persoon);
+		return !this.heeftContactpersoon(persoon)
+				&& !persoon.getContactpersoon().heeftOrganisatie(this);
 	}
 
-	public boolean contactpersoonIsToegevoegd(Persoon persoon) {
+	public boolean heeftContactpersoon(Persoon persoon) {
 		return this.getContactpersonen().contains(persoon);
 	}
 
 	public boolean contactpersoonConstraint(Persoon persoon) {
-		/*
-		 * De voorwaarden waar een Contactpersoon aan moet voldoen om te worden
-		 * toegevoegd
-		 */
-		return persoon != null && !this.contactpersoonIsToegevoegd(persoon)
-				&& persoon.hasRol(Contactpersoon.class);
+		return persoon != null && persoon.hasRol(Contactpersoon.class);
 	}
 
 	public boolean contactpersoonMagWordenToegevoegd(Persoon persoon) {
-		return !this.contactpersoonIsToegevoegd(persoon)
+		return !this.heeftContactpersoon(persoon)
 				&& this.contactpersoonConstraint(persoon);
 	}
 
@@ -219,9 +214,7 @@ public class Organisatie extends Relatie {
 	public int hashCode() {
 		final int prime = 67;
 		int hash = 1;
-		hash = prime * hash + this.getNaam().hashCode(); // TODO: We need a
-															// better business
-															// key than this
+		hash = prime * hash + this.getNaam().hashCode();
 		return hash;
 	}
 
