@@ -1,10 +1,11 @@
 package nl.rsvier.icaras.core;
 
 import nl.rsvier.icaras.core.relatiebeheer.AdresTest;
+import nl.rsvier.icaras.core.relatiebeheer.ContactpersoonTest;
+import nl.rsvier.icaras.core.relatiebeheer.CorrespondentieAdresTest;
 import nl.rsvier.icaras.core.relatiebeheer.NfaTest;
 import nl.rsvier.icaras.core.relatiebeheer.OrganisatieTest;
 import nl.rsvier.icaras.core.relatiebeheer.PersoonKandidaatCVGeneratorTest;
-import nl.rsvier.icaras.dao.relatiebeheer.CorrespondentieAdresTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -27,7 +28,7 @@ import org.junit.runners.Suite;
 	
 	OrganisatieTest.class,
 	//BedrijfTest.class,
-	//ContactpersoonTest.class,
+	ContactpersoonTest.class,
 	//AanbiedingTest.class,
 	//VacatureTest.class,
 })

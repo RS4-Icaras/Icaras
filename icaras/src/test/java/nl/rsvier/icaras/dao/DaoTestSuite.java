@@ -3,6 +3,8 @@ package nl.rsvier.icaras.dao;
 import nl.rsvier.icaras.dao.relatiebeheer.AdresDaoHibernateTest;
 import nl.rsvier.icaras.dao.relatiebeheer.NfaDaoHibernateTest;
 import nl.rsvier.icaras.dao.relatiebeheer.OrganisatieDaoHibernateTest;
+import nl.rsvier.icaras.dao.relatiebeheer.OrganisatieRolDaoHibernateTest;
+import nl.rsvier.icaras.dao.relatiebeheer.PersoonsRolDaoHibernateTest;
 import nl.rsvier.icaras.dao.relatiebeheer.RelatieDaoHibernateTest;
 
 import org.junit.runner.RunWith;
@@ -25,6 +27,9 @@ import org.junit.runners.Suite;
 
 	OrganisatieDaoHibernateTest.class, 
 	RelatieDaoHibernateTest.class, 
+	
+	PersoonsRolDaoHibernateTest.class,
+	OrganisatieRolDaoHibernateTest.class,
 })
 public class DaoTestSuite {
 
