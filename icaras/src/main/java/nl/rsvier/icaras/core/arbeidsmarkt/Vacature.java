@@ -58,7 +58,7 @@ public class Vacature implements IEntity {
 	public Vacature(Organisatie organisatie, String omschrijving)
 			throws InvalidBusinessKeyException {
 		this();
-
+		// TODO: samenvoegen zoals in de Aanbieding constructor
 		if (this.organisatieMagWordenToegevoegd(organisatie)) {
 			this.setOrganisatie(organisatie);
 		}
@@ -67,7 +67,7 @@ public class Vacature implements IEntity {
 			this.setOmschrijving(omschrijving);
 		}
 
-		if (this.organisatieIsToegevoegd() && this.omschrijvingIsToegevoegd()) {
+		if (this.heeftOrganisatie() && this.heeftOmschrijving()) {
 			/*
 			 * Add this Vacature IF AND ONLY IF Organisatie has been set!
 			 * addVacature() will indirectly call this Vacature's hashCode() so
@@ -116,7 +116,7 @@ public class Vacature implements IEntity {
 			// de collectie Aanbiedingen.
 			this.getAanbiedingen().removeAll(toRemove);
 		}
-		if (this.organisatieIsToegevoegd()) {
+		if (this.heeftOrganisatie()) {
 			/*
 			 * Remove this Vacature from the collection of Vacatures Bedrijf
 			 * keeps.
@@ -160,28 +160,16 @@ public class Vacature implements IEntity {
 		this.organisatie = organisatie;
 	}
 
-	public static boolean organisatieConstraint(Organisatie organisatie) {
-		/*
-		 * De voorwaarden waar een Organisatie aan moet voldoen. Organisatie mag
-		 * nooit null zijn en moet een bedrijfsrol bevatten
-		 */
-		return organisatie != null && organisatie.hasRol(Bedrijf.class);
+	public boolean organisatieConstraint(Organisatie organisatie) {
+		return organisatie != null && organisatie.heeftRol(Bedrijf.class);
 	}
 
 	public boolean organisatieMagWordenToegevoegd(Organisatie organisatie) {
-		/*
-		 * Om een Organisatie toe te voegen mag deze geen null zijn en moet deze
-		 * aan de voorwaarde voldoen
-		 */
-		return !this.organisatieIsToegevoegd()
-				&& Vacature.organisatieConstraint(organisatie);
+		return !this.heeftOrganisatie()
+				&& this.organisatieConstraint(organisatie);
 	}
 
-	public boolean organisatieIsToegevoegd() {
-		/*
-		 * Organisatie is immutable. Als deze reeds is toegevoegd mag deze niet
-		 * meer worder aangepast
-		 */
+	public boolean heeftOrganisatie() {
 		return this.getOrganisatie() != null;
 	}
 
@@ -199,19 +187,23 @@ public class Vacature implements IEntity {
 		this.aanbiedingen = aanbiedingen;
 	}
 
-	public boolean addAanbieding(Aanbieding aanbieding) {
+	public synchronized boolean addAanbieding(Aanbieding aanbieding) {
 		if (!this.getAanbiedingen().contains(aanbieding)) {
 			return this.getAanbiedingen().add(aanbieding);
 		}
 		return false;
 	}
 
-	public boolean removeAanbieding(Aanbieding aanbieding) {
-		if (aanbieding.getVacature() != null
+	public synchronized boolean removeAanbieding(Aanbieding aanbieding) {
+		if (aanbieding.heeftVacature()
 				&& aanbieding.getVacature().equals(this)) {
 			return this.getAanbiedingen().remove(aanbieding);
 		}
 		return false;
+	}
+	
+	public boolean heeftAanbieding(Aanbieding aanbieding) {
+		return this.getAanbiedingen().contains(aanbieding);
 	}
 
 	/*
@@ -228,27 +220,16 @@ public class Vacature implements IEntity {
 		this.omschrijving = s;
 	}
 
-	public static boolean omschrijvingConstraint(String str) {
-		/*
-		 * De voorwaarden waar een Omschrijving aan moet voldoen
-		 */
+	public boolean omschrijvingConstraint(String str) {
 		return str != null && !str.equals("");
 	}
 
 	public boolean omschrijvingMagWordenToegevoegd(String str) {
-		/*
-		 * Om een Omschrijving toe te voegen mag deze geen null zijn en moet
-		 * deze aan de voorwaarde voldoen
-		 */
-		return !this.omschrijvingIsToegevoegd()
-				&& Vacature.omschrijvingConstraint(str);
+		return !this.heeftOmschrijving()
+				&& this.omschrijvingConstraint(str);
 	}
 
-	public boolean omschrijvingIsToegevoegd() {
-		/*
-		 * Omschrijving is immutable. Als deze reeds is toegevoegd mag deze niet
-		 * meer worder aangepast
-		 */
+	public boolean heeftOmschrijving() {
 		return this.getOmschrijving() != null;
 	}
 
@@ -318,5 +299,7 @@ public class Vacature implements IEntity {
 				+ ") geplaatst door Organisatie: " + this.getOrganisatie()
 				+ ", met als omschrijving: " + this.getOmschrijving();
 	}
+
+	
 
 }
