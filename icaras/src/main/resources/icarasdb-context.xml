@@ -39,19 +39,19 @@
 		</property>
 
 	</bean>
-
+<!--
 	<context:component-scan base-package="nl.rsvier.icaras.dao">
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Repository" />
 	</context:component-scan>
-<!--
+-->
 	<context:component-scan base-package="nl.rsvier.icaras.dao, nl.rsvier.icaras.service">
 	<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Repository" />
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Service" />
 	</context:component-scan>
--->
+
 	<!-- Transaction config -->
 
 	<bean id="transactionManager"
