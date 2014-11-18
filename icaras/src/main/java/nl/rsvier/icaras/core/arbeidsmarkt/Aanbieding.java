@@ -14,9 +14,11 @@ import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
 import nl.rsvier.icaras.core.relatiebeheer.Persoon;
 
 /**
- * Core klasse: Aanbieding
+ * Deze klasse representeert een aanbieding van een kandidaat aan een bedrijf.
+ * Elke aanbieding wordt bidirectioneel vastgelegd; bij het instantiëren van een
+ * aanbieding wordt deze toegevoegd aan zowel het bedrijf van de opgegeven
+ * organisatie als aan de kandidaat van de opgegeven persoon.
  * 
- * @author Mark van Meerten
  */
 
 @Entity
@@ -55,11 +57,18 @@ public class Aanbieding implements IEntity {
 			 * hashCode() so you better be damn sure the business key fields
 			 * have been properly initialized
 			 */
-			this.getPersoon().getKandidaat().addAanbieding(this);
-			this.getOrganisatie().getBedrijf().addAanbieding(this);
-		} else {
+			// this.getPersoon().getKandidaat().addAanbieding(this); // TODO:
+			// remove
+			// this.getOrganisatie().getBedrijf().addAanbieding(this); // TODO:
+			// remove
+			if (!this.getPersoon().getKandidaat().addAanbieding(this)) {
+				throw new InvalidBusinessKeyException("Aanbieding bestaat al");
+			}
+		}
+		if (!this.getPersoon().getKandidaat().heeftAanbieding(this)
+				|| !this.getOrganisatie().getBedrijf().heeftAanbieding(this)) {
 			throw new InvalidBusinessKeyException(
-					"Aanbieding business key has not been properly initialized");
+					"Vacature business key has not been properly initialized");
 		}
 	}
 
@@ -73,20 +82,20 @@ public class Aanbieding implements IEntity {
 	 * data achterblijft in de database die verwijst naar deze Aanbieding die
 	 * niet langer bestaat.
 	 */
-	public boolean removeAllReferences() {
-		boolean tmpA = false;
-		boolean tmpB = false;
-		boolean tmpC = false;
+	public synchronized boolean removeAllReferences() {
+		boolean a = false;
+		boolean b = false;
+		boolean c = false;
 		if (this.getVacature() != null) {
-			tmpA = this.getVacature().removeAanbieding(this);
+			a = this.getVacature().removeAanbieding(this);
 		}
 		if (this.getPersoon() != null) {
-			tmpB = this.getPersoon().getKandidaat().removeAanbieding(this);
+			b = this.getPersoon().getKandidaat().removeAanbieding(this);
 		}
 		if (this.getOrganisatie() != null) {
-			tmpC = this.getOrganisatie().getBedrijf().removeAanbieding(this);
+			c = this.getOrganisatie().getBedrijf().removeAanbieding(this);
 		}
-		return tmpA && tmpB && tmpC;
+		return a && b && c; // TODO: Zinvolle boolean feedback pls
 	}
 
 	/*
@@ -122,27 +131,25 @@ public class Aanbieding implements IEntity {
 	 * Aanbieding dan ook toe aan de Vacature. Sta dit echter alleen toe wanneer
 	 * zowel de Aanbieding als Vacature gebruik maken dezelfde Organisatie
 	 */
-	public boolean setVacatureReferentie(Vacature vacature) {
+	public synchronized boolean setVacatureReferentie(Vacature vacature) {
 		if (this.vacatureMagWordenToegevoegd(vacature)) {
 			this.setVacature(vacature);
-			return vacature.addAanbieding(this);
+			vacature.addAanbieding(this);
+			return this.heeftVacature() && vacature.heeftAanbieding(this);
 		}
 		return false;
 	}
 
-	public static boolean vacatureConstraint(Vacature vacature,
-			Organisatie organisatie) {
+	public boolean vacatureConstraint(Vacature vacature) {
 		/*
 		 * Voeg een vacature alleen toe wanneer de Organisatie van de Vacature
-		 * overeenkomt met de Organisatie waaraan we een Aanbieding willen doen
+		 * overeenkomt met de Organisatie die we een Aanbieding willen doen
 		 */
-		return vacature.getOrganisatie().equals(organisatie);
+		return this.getOrganisatie().equals(vacature.getOrganisatie());
 	}
 
 	public boolean vacatureMagWordenToegevoegd(Vacature vacature) {
-
-		return Aanbieding.vacatureConstraint(vacature,
-						this.getOrganisatie());
+		return this.vacatureConstraint(vacature);
 	}
 
 	/*
@@ -150,20 +157,25 @@ public class Aanbieding implements IEntity {
 	 * collectie Vacatures die we hier bewaren. @See Vacature.destructotron
 	 * wanneer je alle referenties naar Vacature wilt verwijderen.
 	 */
-	public boolean removeVacature(Vacature vacature) {
-		if (this.getVacature() != null && this.getVacature().equals(vacature)) {
+	public synchronized boolean removeVacature(Vacature vacature) {
+		if (vacature != null && this.heeftVacature()
+				&& this.getVacature().equals(vacature)) {
 			/*
 			 * Verwijder de Aanbieding niet omdat deze niet langer aan een
 			 * Vacature is gekoppeld. De Aanbieding kan nog steeds worden
-			 * gebruikt voor de statistieken
+			 * gebruikt voor statistieken
 			 */
-			
+
 			vacature.removeAanbieding(this);
 			this.vacature = null;
 			// TODO: andere kant ook
 			return true;
 		}
 		return false;
+	}
+
+	public boolean heeftVacature() {
+		return this.getVacature() != null;
 	}
 
 	/*
@@ -182,7 +194,7 @@ public class Aanbieding implements IEntity {
 
 	}
 
-	public static boolean persoonConstraint(Persoon persoon) {
+	public boolean persoonConstraint(Persoon persoon) {
 		/*
 		 * De voorwaarden waar een Organisatie aan moet voldoen. Organisatie mag
 		 * nooit null zijn en moet een bedrijfsrol bevatten
@@ -195,11 +207,10 @@ public class Aanbieding implements IEntity {
 		 * Om een Organisatie toe te voegen mag deze geen null zijn en moet deze
 		 * aan de voorwaarde voldoen
 		 */
-		return !this.persoonIsToegevoegd()
-				&& Aanbieding.persoonConstraint(persoon);
+		return !this.heeftPersoon() && this.persoonConstraint(persoon);
 	}
 
-	public boolean persoonIsToegevoegd() {
+	public boolean heeftPersoon() {
 		/*
 		 * Organisatie is immutable. Als deze reeds is toegevoegd mag deze niet
 		 * meer worder aangepast
@@ -222,7 +233,7 @@ public class Aanbieding implements IEntity {
 		this.organisatie = organisatie;
 	}
 
-	public static boolean organisatieConstraint(Organisatie organisatie) {
+	public boolean organisatieConstraint(Organisatie organisatie) {
 		/*
 		 * De voorwaarden waar een Organisatie aan moet voldoen. Organisatie mag
 		 * nooit null zijn en moet een bedrijfsrol bevatten
@@ -235,11 +246,11 @@ public class Aanbieding implements IEntity {
 		 * Om een Organisatie toe te voegen mag deze geen null zijn en moet deze
 		 * aan de voorwaarde voldoen
 		 */
-		return !this.organisatieIsToegevoegd()
-				&& Aanbieding.organisatieConstraint(organisatie);
+		return !this.heeftOrganisatie()
+				&& this.organisatieConstraint(organisatie);
 	}
 
-	public boolean organisatieIsToegevoegd() {
+	public boolean heeftOrganisatie() {
 		/*
 		 * Organisatie is immutable. Als deze reeds is toegevoegd mag deze niet
 		 * meer worder aangepast
