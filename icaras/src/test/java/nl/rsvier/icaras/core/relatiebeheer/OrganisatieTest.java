@@ -66,7 +66,7 @@ public class OrganisatieTest {
 				sterlingcooper_clone, pearsonhardman, pearsonhardman_clone));
 	}
 
-	private Organisatie randomTestOrganisatie()
+	private Organisatie newRandomTestOrganisatie()
 			throws InvalidBusinessKeyException {
 		Random r = new Random();
 		Organisatie o = new Organisatie(String.valueOf(r.nextInt(1000000)));
@@ -74,16 +74,17 @@ public class OrganisatieTest {
 		return o;
 	}
 
-	private Persoon randomTestPersoon() {
+	private Persoon newRandomTestPersoon() {
 		Random r = new Random();
 		Persoon p = new Persoon(String.valueOf(r.nextInt(1000000)),
 				String.valueOf(r.nextInt(1000000)));
 		p.addRol(new Contactpersoon());
+		p.getContactpersoon().setFunctie(String.valueOf(r.nextInt(1000000)));
 		return p;
 	}
 
 	/*
-	 * Methode Tests
+	 * Test methodes
 	 */
 
 	public void test_heeftNaam(Organisatie use_organisatie) {
@@ -113,35 +114,38 @@ public class OrganisatieTest {
 	}
 
 	public void test_heeftContactpersoon(Organisatie use_organisatie) {
+		// Follow rules
 		for (Persoon persoon : use_organisatie.getContactpersonen()) {
 			assertTrue(String.format(
 					"%s is contactpersoon voor organisatie: %s", persoon,
 					use_organisatie),
 					use_organisatie.heeftContactpersoon(persoon));
 		}
+		// Break rules
 		assertFalse(String.format(
 				"%s bevat (onverwacht) een random persoon als contactpersoon",
 				use_organisatie),
-				use_organisatie.heeftContactpersoon(randomTestPersoon()));
+				use_organisatie.heeftContactpersoon(newRandomTestPersoon()));
 	}
 
 	public void test_contactpersoonConstraint(Organisatie use_organisatie) {
+		// Follow rules
 		for (Persoon persoon : use_organisatie.getContactpersonen()) {
-			assertTrue(
-					String.format(
-							"%s voldoet aan de voorwaarden die worden gesteld \""
-									+ "aan een contactpersoon om te worden toegevoegd \""
-									+ "aan een organisatie", persoon),
+			assertTrue(String.format(
+					"%s voldoet aan de voorwaarden die worden gesteld "
+							+ "aan een contactpersoon om te worden toegevoegd "
+							+ "aan een organisatie", persoon),
 					use_organisatie.contactpersoonConstraint(persoon));
 			assertTrue(
 					String.format("%s heeft een Contactpersoonsrol", persoon),
 					persoon.hasRol(Contactpersoon.class));
 		}
+		// Break rules
 		assertFalse(
 				"Om een Contactpersoon aan een Organisatie toe te voegen mag deze geen null zijn",
 				use_organisatie.contactpersoonConstraint(null));
 		assertFalse(
-				"Om een Contactpersoon aan een Organisatie toe te voegen moet de Persoon \""
+				"Om een Contactpersoon aan een Organisatie toe te voegen moet de Persoon "
 						+ "wel een Contactpersoonsrol hebben",
 				use_organisatie.contactpersoonConstraint(new Persoon("Test",
 						"Testerson")));
@@ -154,11 +158,11 @@ public class OrganisatieTest {
 			this.test_heeftContactpersoon(o);
 			this.test_contactpersoonConstraint(o);
 			// Break rules
-			Persoon testpersoon = randomTestPersoon();
+			Persoon testpersoon = newRandomTestPersoon();
 			assertTrue(
 					"Contactpersoon mag worden toegevoegd omdat dit nog niet eerder is gedaan",
 					o.contactpersoonMagWordenToegevoegd(testpersoon));
-			o.addContactpersoon(testpersoon);
+			assertTrue(o.addContactpersoon(testpersoon));
 			assertFalse(
 					"Contactpersoon mag niet worden toegevoegd omdat dit al eerder is gedaan",
 					o.contactpersoonMagWordenToegevoegd(testpersoon));
@@ -175,8 +179,8 @@ public class OrganisatieTest {
 		 * ook toe te voegen aan de collectie organisaties van Contactpersoon
 		 */
 
-		Persoon testpersoon = this.randomTestPersoon();
-		Organisatie testorganisatie = this.randomTestOrganisatie();
+		Persoon testpersoon = this.newRandomTestPersoon();
+		Organisatie testorganisatie = this.newRandomTestOrganisatie();
 
 		// Controleer of de Organisatie nog geen Contactpersoon bevat
 		assertFalse(testorganisatie.heeftContactpersoon(testpersoon));
@@ -186,7 +190,13 @@ public class OrganisatieTest {
 				testorganisatie));
 
 		// Start de bidirectionele toevoeging via een aanroep op Organisatie
-		testorganisatie.addContactpersoon(testpersoon);
+		assertTrue(testorganisatie.addContactpersoon(testpersoon));
+
+		// Start de bidirectionele toevoeging via een aanroep op Contactpersoon
+		assertTrue(String.format(
+				"Voeg Contactpersoon: %s toe aan Organisatie: %s", testpersoon,
+				testorganisatie),
+				testorganisatie.addContactpersoon(testpersoon));
 
 		// Nu heeft de Organisatie wel een referentie naar een Persoon
 		assertTrue(testorganisatie.heeftContactpersoon(testpersoon));
@@ -206,6 +216,27 @@ public class OrganisatieTest {
 		assertFalse(testpersoon.getContactpersoon().heeftOrganisatie(
 				testorganisatie));
 
+		// Try and break some rules
+
+		/*
+		 * Wat als je een contactpersoon probeert toe te voegen aan een
+		 * organisatie via een persoon zonder contactpersoonsrol?
+		 */
+
+		Persoon testpersoon2 = this.newRandomTestPersoon();
+		Persoon testpersoon2_imposter = new Persoon("Aasdafa", "asfagadg");
+		Organisatie testorganisatie2 = this.newRandomTestOrganisatie();
+
+		assertFalse(
+				"Organisatie kan niet worden toegevoegd wanneer de "
+						+ "persoon niet overeenkomt met de houder van de contactpersoonsrol",
+				testorganisatie2.addContactpersoon(testpersoon2_imposter));
+
+		// Check of de bi-directionele relatie ook echt niet is toegevoegd
+		assertFalse(testorganisatie2.heeftContactpersoon(testpersoon2));
+		assertFalse(testorganisatie2.heeftContactpersoon(testpersoon2_imposter));
+		assertFalse(testpersoon2.getContactpersoon().heeftOrganisatie(
+				testorganisatie2));
 	}
 
 	@Test
@@ -234,7 +265,7 @@ public class OrganisatieTest {
 		assertTrue("De collectie bevat slechts 1 rol, geen duplicaten",
 				sterlingcooper.getRollen().size() == 1);
 		assertTrue("De collectie bevat een rol van het type Bedrijf",
-				sterlingcooper.hasRol(Bedrijf.class));
+				sterlingcooper.heeftRol(Bedrijf.class));
 
 		sterlingcooper.addRol(leveranciersrol);
 		sterlingcooper.addRol(leveranciersrol);
@@ -245,7 +276,7 @@ public class OrganisatieTest {
 				sterlingcooper.getRollen().size() == 2);
 
 		assertTrue("De collectie bevat een rol van het type Leverancier",
-				sterlingcooper.hasRol(Bedrijf.class));
+				sterlingcooper.heeftRol(Bedrijf.class));
 	}
 
 	@Test
@@ -264,17 +295,17 @@ public class OrganisatieTest {
 		sterlingcooper.addRol(leveranciersrol);
 
 		assertTrue("De collectie bevat een rol van het type Leverancier",
-				sterlingcooper.hasRol(Leverancier.class));
+				sterlingcooper.heeftRol(Leverancier.class));
 
 		assertFalse(
 				"De collectie bevat geen rol van een ander type dan Leverancier",
-				sterlingcooper.hasRol(Bedrijf.class));
+				sterlingcooper.heeftRol(Bedrijf.class));
 
 		sterlingcooper.addRol(bedrijfsrol);
 
 		assertTrue(
 				"De collectie bevat nu wel een rol van een ander type dan Leverancier",
-				sterlingcooper.hasRol(Bedrijf.class));
+				sterlingcooper.heeftRol(Bedrijf.class));
 
 	}
 
@@ -295,9 +326,9 @@ public class OrganisatieTest {
 		sterlingcooper.addRol(leveranciersrol);
 
 		assertNotNull("Gevonden rol: Bedrijf in de collectie",
-				sterlingcooper.getRol(Bedrijf.class));
+				sterlingcooper.getRolByType(Bedrijf.class));
 		assertNotNull("Gevonden rol: Leverancier in de collectie",
-				sterlingcooper.getRol(Leverancier.class));
+				sterlingcooper.getRolByType(Leverancier.class));
 
 		sterlingcooper.getRollen().clear();
 

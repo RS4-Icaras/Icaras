@@ -79,7 +79,7 @@ public class Organisatie extends Relatie {
 	 * elke subklasse van OrganisatieRol worden toegevoegd
 	 */
 	public boolean addRol(OrganisatieRol rol) {
-		if (rol != null && !this.hasRol(rol.getClass())) {
+		if (rol != null && !this.heeftRol(rol.getClass())) {
 			return this.getRollen().add(rol);
 		}
 		return false;
@@ -91,7 +91,8 @@ public class Organisatie extends Relatie {
 	 * allow duplicates and we check uniqueness before adding a new Rol that
 	 * should be enough.
 	 */
-	public <T extends OrganisatieRol> OrganisatieRol getRol(Class<T> clstype) {
+	public <T extends OrganisatieRol> OrganisatieRol getRolByType(
+			Class<T> clstype) {
 		for (OrganisatieRol rol : this.getRollen()) {
 			if (clstype.isInstance(rol)) {
 				return rol;
@@ -109,18 +110,18 @@ public class Organisatie extends Relatie {
 	 * @return: true wanneer de collectie een OrganisatieRol van het juiste type
 	 *          bevat
 	 */
-	public <T extends OrganisatieRol> boolean hasRol(Class<T> clstype) {
-		return this.getRol(clstype) != null;
+	public <T extends OrganisatieRol> boolean heeftRol(Class<T> clstype) {
+		return this.getRolByType(clstype) != null;
 	}
 
 	@Transient
 	public Bedrijf getBedrijf() {
-		return (Bedrijf) this.getRol(Bedrijf.class);
+		return (Bedrijf) this.getRolByType(Bedrijf.class);
 	}
 
 	@Transient
 	public Leverancier getLeverancier() {
-		return (Leverancier) this.getRol(Leverancier.class);
+		return (Leverancier) this.getRolByType(Leverancier.class);
 	}
 
 	/*
@@ -164,8 +165,18 @@ public class Organisatie extends Relatie {
 		this.contactpersonen = contactpersonen;
 	}
 
-	public boolean addContactpersoon(Persoon persoon) {
-		if (persoon == null) { // Voorkom NullpointerExceptions
+	/**
+	 * Creëer bi-directionele relatie tussen Persoon > Contactpersoon >
+	 * Organisatie
+	 * 
+	 * @param persoon
+	 *            Houder van een contactpersoonsrol om toe te voegen aan de
+	 *            collectie contactpersonen
+	 * 
+	 */
+	public synchronized boolean addContactpersoon(Persoon persoon) {
+		if (persoon == null || persoon.getContactpersoon() == null) {
+			// Voorkom NullpointerExceptions
 			return false;
 		}
 		if (this.contactpersoonMagWordenToegevoegd(persoon)) {
@@ -178,13 +189,17 @@ public class Organisatie extends Relatie {
 				&& persoon.getContactpersoon().heeftOrganisatie(this);
 	}
 
-	/*
-	 * Wat als: o this.getContactpersonen() null is > nooit null, hoogstens leeg
-	 * o persoon geen contactpersoon rol heeft > is al afgevangen in de add
-	 * methode en komt die dus ook niet voor in de collectie
+	/**
+	 * Verbreek bi-directionele relatie tussen Persoon > Contactpersoon >
+	 * Organisatie
+	 * 
+	 * @param persoon
+	 *            Houder van een contactpersoonsrol om toe te verwijderen uit de
+	 *            collectie contactpersonen
 	 */
-	public boolean removeContactpersoon(Persoon persoon) {
-		if (persoon == null) { // Voorkom NullpointerExceptions
+	public synchronized boolean removeContactpersoon(Persoon persoon) {
+		if (persoon == null || persoon.getContactpersoon() == null) {
+			// Voorkom NullpointerExceptions
 			return false;
 		}
 		if (this.heeftContactpersoon(persoon)) {
