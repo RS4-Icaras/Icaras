@@ -11,7 +11,7 @@ import nl.rsvier.icaras.core.arbeidsmarkt.Arbeidsovereenkomst;
 
 /**
  * Deze klasse representeert de werknemersRol. Houdt een lijst van
- * arbeidsovereenkomsten bij.
+ * arbeidsovereenkomsten bij. Zie klasse Arbeidsovereenkomst.
  */
 @Entity
 public class Werknemer extends PersoonsRol {

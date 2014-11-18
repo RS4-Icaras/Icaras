@@ -10,6 +10,11 @@ import javax.persistence.OneToMany;
 import nl.rsvier.icaras.core.arbeidsmarkt.Aanbieding;
 import nl.rsvier.icaras.core.arbeidsmarkt.CvGenerator;
 
+/**
+ * Deze klasse representeert de KandidaatRol. Houdt een lijst van
+ * aanbiedingen bij. Zie klasse Aanbieding.
+ *
+ */
 @Entity
 public class Kandidaat extends PersoonsRol {
 
@@ -30,12 +35,8 @@ public class Kandidaat extends PersoonsRol {
 		return false;
 	}
 
-	/*
-	 * Aanbiedingen
-	 */
-
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
-//	@Cascade(value = { CascadeType.SAVE_UPDATE })
+	// @Cascade(value = { CascadeType.SAVE_UPDATE })
 	public Set<Aanbieding> getAanbiedingen() {
 		return aanbiedingen;
 	}

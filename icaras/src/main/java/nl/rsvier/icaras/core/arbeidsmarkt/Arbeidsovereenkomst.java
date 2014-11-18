@@ -15,14 +15,13 @@ import nl.rsvier.icaras.core.relatiebeheer.Persoon;
 import nl.rsvier.icaras.core.relatiebeheer.Werknemer;
 
 /**
- * De klasse die Arbeidsovereekomst beheert. Heeft een referentie terug naar de
- * persoon die deze arbeidsovereenkomst heeft. Heeft een referentie naar de
- * organisatie waarbij deze overeenkomst is afgesloten. Heeft een referentie
- * naar de aanbieding waaruit de overeenkomst is voortgekomen.
+ * Deze klasse representeert een arbeidsovereenkomst tussen een werknemer en een
+ * bedrijf. Elke arbeidsovereenkomst wordt bidirectioneel vastgelegd; bij het
+ * instantiëren van een arbeidsovereenkomst wordt deze toegevoegd aan zowel het
+ * bedrijf van organisatie van de opgegeven aanbieding als aan de werknemer van
+ * de persoon van de opgegeven aanbieding.
  * 
  */
-// TODO Organisatie attribuut met bijbehorende javadoc en methodes toevoegen.
-
 @Entity
 public class Arbeidsovereenkomst implements IEntity {
 
@@ -33,16 +32,16 @@ public class Arbeidsovereenkomst implements IEntity {
 	private Organisatie organisatie;
 	private Aanbieding aanbieding;
 
-	@SuppressWarnings("unused")
 	// voor Hibernate
+	@SuppressWarnings("unused")
 	private Arbeidsovereenkomst() {
 	}
 
 	public Arbeidsovereenkomst(Aanbieding aanbieding)
 			throws InvalidBusinessKeyException {
 		if (aanbieding != null) {
-			setAanbieding(aanbieding);// setPersoon en setOrganisatie worden
-										// daarin aangeroepen
+			setAanbiedingMetControle(aanbieding);// setPersoon en setOrganisatie
+													// worden daarin aangeroepen
 		} else {
 			throw new InvalidBusinessKeyException(
 					"De arbeidsovereenkomst kon niet worden gecreëerd op basis van de opgegeven aanbieding");
@@ -101,7 +100,7 @@ public class Arbeidsovereenkomst implements IEntity {
 	 * @return True als het toevoegen van de arbeidsovereenkomst op basis van de
 	 *         gegeven aanbieding aan de betreffende werknemer is gelukt.
 	 */
-	private synchronized boolean setAanbieding(Aanbieding aanbieding) {
+	private synchronized boolean setAanbiedingMetControle(Aanbieding aanbieding) {
 		Persoon persoon = aanbieding.getPersoon();
 		Organisatie organisatie = aanbieding.getOrganisatie();
 		if (persoon != null && organisatie != null) {
@@ -117,6 +116,12 @@ public class Arbeidsovereenkomst implements IEntity {
 			return werknemer.addArbeidsovereenkomst(this);
 		}
 		return false;
+	}
+
+	// Voor Hibernate
+	@SuppressWarnings("unused")
+	private void setAanbieding(Aanbieding aanbieding) {
+		this.aanbieding = aanbieding;
 	}
 
 }
