@@ -1,6 +1,7 @@
 package nl.rsvier.icaras.dao.relatiebeheer;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -47,15 +48,13 @@ public class OrganisatieDaoHibernateTest {
 
 	@Test
 	@Transactional
-	public void testSaveUpdate() {
+	public void test_saveOrUpdate() {
 
 		// Test met:
 		Organisatie use_organisatie = sterlingcooper;
 
-		assertFalse(
-				"Organisatie is transient en staat nog niet in de tabel",
-				use_organisatie.getId() > 0
-						&& organisatieDao.getById(use_organisatie.getId()) != null);
+		assertNull("Organisatie staat nog niet in de tabel",
+				organisatieDao.getById(use_organisatie.getId()));
 
 		organisatieDao.getHibernateTemplate().flush();
 		organisatieDao.getHibernateTemplate().clear();
@@ -69,10 +68,8 @@ public class OrganisatieDaoHibernateTest {
 		organisatieDao.getHibernateTemplate().flush();
 		organisatieDao.getHibernateTemplate().clear();
 
-		assertTrue(
-				"Organisatie is niet langer transient en kan worden teruggevonden in de tabel",
-				use_organisatie.getId() > 0
-						&& organisatieDao.getById(use_organisatie.getId()) != null);
+		assertNotNull("Organisatie is teruggevonden in de tabel",
+				organisatieDao.getById(use_organisatie.getId()));
 
 		assertFalse("Organisatie is nog niet gearchiveerd", organisatieDao
 				.getById(use_organisatie.getId()).isGearchiveerd());
@@ -93,8 +90,8 @@ public class OrganisatieDaoHibernateTest {
 		organisatieDao.getHibernateTemplate().flush();
 		organisatieDao.getHibernateTemplate().clear();
 
-		String newString = "Mutiny, see: Sterling Cooper Draper Pryce";
-		use_organisatie.setOpmerking(newString);
+		String teststring = "Mutiny, see: Sterling Cooper Draper Pryce";
+		use_organisatie.setOpmerking(teststring);
 		organisatieDao.update(use_organisatie);
 
 		organisatieDao.getHibernateTemplate().flush();
@@ -102,28 +99,24 @@ public class OrganisatieDaoHibernateTest {
 
 		assertTrue("Organisatie heeft een nieuwe Opmerking",
 				organisatieDao.getById(use_organisatie.getId()).getOpmerking()
-						.equals(newString));
+						.equals(teststring));
 
 	}
 
 	@Test
 	@Transactional()
-	public void testDelete() {
+	public void test_delete() {
 
 		// Test met:
 		Organisatie use_organisatie = sebben;
 
-		assertFalse(
-				"Organisatie is transient en staat nog niet in de tabel",
-				use_organisatie.getId() > 0
-						&& organisatieDao.getById(use_organisatie.getId()) != null);
+		assertNull("Organisatie staat nog niet in de tabel",
+				organisatieDao.getById(use_organisatie.getId()));
 
 		organisatieDao.save(use_organisatie);
 
-		assertTrue(
-				"Organisatie is niet langer transient en kan worden teruggevonden in de tabel",
-				use_organisatie.getId() > 0
-						&& organisatieDao.getById(use_organisatie.getId()) != null);
+		assertNotNull("Organisatie is teruggevonden in de tabel",
+				organisatieDao.getById(use_organisatie.getId()));
 
 		organisatieDao.getHibernateTemplate().flush();
 		organisatieDao.getHibernateTemplate().clear();
@@ -141,15 +134,13 @@ public class OrganisatieDaoHibernateTest {
 
 	@Test
 	@Transactional
-	public void testGetOrganisatie() {
+	public void test_getById() {
 
 		// Test met:
 		Organisatie use_organisatie = pearsonhardman;
 
-		assertFalse(
-				"Organisatie is transient en staat nog niet in de tabel",
-				use_organisatie.getId() > 0
-						&& organisatieDao.getById(use_organisatie.getId()) != null);
+		assertNull("Organisatie staat nog niet in de tabel",
+				organisatieDao.getById(use_organisatie.getId()));
 
 		organisatieDao.save(use_organisatie);
 
@@ -162,9 +153,8 @@ public class OrganisatieDaoHibernateTest {
 		organisatieDao.getHibernateTemplate().flush();
 		organisatieDao.getHibernateTemplate().clear();
 
-		assertTrue(
-				"Organisatie is niet langer transient en kan worden teruggevonden in de tabel",
-				use_organisatie.getId() > 0 && retrieved_organisatie != null);
+		assertNotNull("Organisatie is teruggevonden in de tabel",
+				retrieved_organisatie);
 
 		assertTrue(
 				"Check of we niet twee referenties in het geheugen met elkaar vergelijken",
@@ -177,7 +167,7 @@ public class OrganisatieDaoHibernateTest {
 
 	@Test
 	@Transactional()
-	public void testGetAll() {
+	public void test_getAll() {
 		assertTrue("Begin test met een lege collectie", organisatieDao.getAll()
 				.size() == 0);
 

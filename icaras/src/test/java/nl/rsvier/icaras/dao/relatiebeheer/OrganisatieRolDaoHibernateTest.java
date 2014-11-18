@@ -55,9 +55,6 @@ public class OrganisatieRolDaoHibernateTest {
 			assertNull("Rol staat nog niet in de tabel",
 					organisatierolDao.getById(rol.getId()));
 
-			organisatierolDao.getHibernateTemplate().flush();
-			organisatierolDao.getHibernateTemplate().clear();
-
 			rol.setOpmerking("");
 			rol.setGearchiveerd(false);
 
