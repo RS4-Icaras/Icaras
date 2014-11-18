@@ -2,6 +2,10 @@ package nl.rsvier.icaras.dao;
 
 import nl.rsvier.icaras.dao.relatiebeheer.AdresDaoHibernateTest;
 import nl.rsvier.icaras.dao.relatiebeheer.NfaDaoHibernateTest;
+import nl.rsvier.icaras.dao.relatiebeheer.OrganisatieDaoHibernateTest;
+import nl.rsvier.icaras.dao.relatiebeheer.OrganisatieRolDaoHibernateTest;
+import nl.rsvier.icaras.dao.relatiebeheer.PersoonsRolDaoHibernateTest;
+import nl.rsvier.icaras.dao.relatiebeheer.RelatieDaoHibernateTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -15,11 +19,18 @@ import org.junit.runners.Suite;
  * @author Gerben
  * @author Gordon
  */
+
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ AdresDaoHibernateTest.class, NfaDaoHibernateTest.class })
-// Voeg hier alle DaoTest-klassen aan toe
-// @ContextConfiguration(locations={"classpath:icarasdb-context.xml"})//Per
-// testklasse toevoegen ivm autowiring
+@Suite.SuiteClasses({ 
+	AdresDaoHibernateTest.class, 
+	NfaDaoHibernateTest.class,
+
+	OrganisatieDaoHibernateTest.class, 
+	RelatieDaoHibernateTest.class, 
+	
+	PersoonsRolDaoHibernateTest.class,
+	OrganisatieRolDaoHibernateTest.class,
+})
 public class DaoTestSuite {
 
 }
