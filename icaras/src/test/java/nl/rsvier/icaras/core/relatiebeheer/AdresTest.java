@@ -15,28 +15,24 @@ public class AdresTest {
 	@Before
 	public void initialiseerAdressen(){
 		standaardAdres = new Adres();
-		standaardAdres.setId(1);
 		standaardAdres.setHuisOfPostbusNummer("123A");
 		standaardAdres.maakStraat();
 		standaardAdres.setPlaats("Hilversum");
 		standaardAdres.setPostcode("1234AB");
 		standaardAdres.setStraat("Larenseweg");
 		gelijkAanStandaardAdres = new Adres();
-		gelijkAanStandaardAdres.setId(1);
 		gelijkAanStandaardAdres.setHuisOfPostbusNummer("123A");
 		gelijkAanStandaardAdres.maakStraat();
 		gelijkAanStandaardAdres.setPlaats("Hilversum");
 		gelijkAanStandaardAdres.setPostcode("1234AB");
 		gelijkAanStandaardAdres.setStraat("Larenseweg");
 		metNullAttribuut = new Adres();
-		metNullAttribuut.setId(1);
 		metNullAttribuut.setHuisOfPostbusNummer("123A");
 		metNullAttribuut.maakStraat();
 		metNullAttribuut.setPlaats(null);
 		metNullAttribuut.setPostcode("1234AB");
 		metNullAttribuut.setStraat("Larenseweg");
 		metEenAfwijkendAttribuut = new Adres();
-		metEenAfwijkendAttribuut.setId(1);
 		metEenAfwijkendAttribuut.setHuisOfPostbusNummer("123A");
 		metEenAfwijkendAttribuut.maakPostbus();
 		metEenAfwijkendAttribuut.setPlaats("Hilversum");
