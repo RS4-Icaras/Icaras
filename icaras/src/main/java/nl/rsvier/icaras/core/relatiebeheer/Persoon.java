@@ -33,6 +33,7 @@ import nl.rsvier.icaras.core.IEntity;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "relatie_Id")
+// @org.hibernate.annotations.Proxy(lazy = false)
 public class Persoon extends Relatie implements IEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -114,7 +115,7 @@ public class Persoon extends Relatie implements IEntity {
 	// org.hibernate.annotations.CascadeType.ALL,
 	//
 	// })
-	private List<PersoonsRol> getRollen() {
+	public List<PersoonsRol> getRollen() {
 		return rollen;
 	}
 
@@ -145,31 +146,20 @@ public class Persoon extends Relatie implements IEntity {
 	 * @param PersoonsRol
 	 *            rol
 	 */
-	// TODO: exception toevoegen om zichtbaar te maken wanneer addRol mislukt? Boolean voldoende.
-	//TODO het toevoegen van een kandidaatrol met aanbiedingen is gevaarlijk voor bidirectionele relatie!
-	//Deze methode private maken en maakKandidaat() maakWerknemer() etc als publieke methoden
+	// TODO het toevoegen van een kandidaatrol met aanbiedingen is gevaarlijk
+	// voor bidirectionele relatie!
+	// Toevoegen van lege rollen lost dit probleem op.
+	// Deze methode private maken en maakKandidaat() maakWerknemer() etc als
+	// publieke methoden
 	public synchronized boolean addRol(PersoonsRol rol) {
 		boolean toegevoegd = false;
 		// controleer of deze persoon dit type rol al heeft
-		if (rol != null && !hasRol(rol.getClass())) {
+		if (rol != null && !heeftRol(rol.getClass())) {
 			toegevoegd = this.rollen.add(rol);
-			System.out.println("Rol geadd");
 			if (rol instanceof Kandidaat) {
 				((Kandidaat) rol).getCvGenerator().setPersoonReference(this);
-				System.out
-						.println("Rol geadd instance of kandidaat, Persoon van CVGen van deze kandidaat: "
-								+ ((Kandidaat) rol).getCvGenerator()
-										.getPersoon());
 			}
 			if (rol instanceof Werknemer) {
-				System.out.println("Rol geadd instance of werknemer");
-
-				// TODO Is een arbeidsovereenkomst vereist voor toevoegen
-				// werknemerrol?
-				// Indien vereist moet toegevoegd = this.rollen.add(rol); in if
-				// statement; arbeidsovereenkomst heeft per definitie aanbieding
-				// met zowel een persoon als een organisatie
-
 			}
 		}
 		return toegevoegd;
@@ -184,13 +174,8 @@ public class Persoon extends Relatie implements IEntity {
 	 * @return: true wanneer de collectie een PersoonsRol van het juiste type
 	 *          bevat
 	 */
-	public <T extends PersoonsRol> boolean hasRol(Class<T> clstype) {
-		for (PersoonsRol rol : this.getRollen()) {
-			if (clstype.isInstance(rol)) {
-				return true;
-			}
-		}
-		return false;
+	public <T extends PersoonsRol> boolean heeftRol(Class<T> clstype) {
+		return this.getRolByType(clstype) != null;
 	}
 
 	/**
@@ -272,15 +257,15 @@ public class Persoon extends Relatie implements IEntity {
 	/*
 	 * Utils
 	 */
-	
+
 	@Override
 	public int hashCode() {
-	 final int prime = 41;
-	 int hash = 1;
-	 hash = hash * prime + this.getVoornaam().hashCode();
-	 hash = hash * prime + this.getTussenvoegsels().hashCode();
-	 hash = hash * prime + this.getAchternaam().hashCode();
-	 return hash;
+		final int prime = 41;
+		int hash = 1;
+		hash = hash * prime + this.getVoornaam().hashCode();
+		hash = hash * prime + this.getTussenvoegsels().hashCode();
+		hash = hash * prime + this.getAchternaam().hashCode();
+		return hash;
 	}
 
 	@Override
@@ -307,7 +292,6 @@ public class Persoon extends Relatie implements IEntity {
 							.equals(other.getGeboortedatum())) {
 				return false;
 			}
-			// TODO: Neem rollen mee in de vergelijking
 		}
 		return true;
 	}
@@ -324,12 +308,4 @@ public class Persoon extends Relatie implements IEntity {
 		return "Persoon(id=" + this.getId() + ", hash=" + this.hashCode()
 				+ "): " + this.getVolledigeNaam();
 	}
-
-	public String toVolledigeString() {
-		return "Persoon(id=" + this.getId() + ", hash=" + this.hashCode()
-				+ "): " + this.getVolledigeNaam() + ", bevat "
-				+ this.getRollen().size();
-	}
-
 }
-

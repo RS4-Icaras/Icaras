@@ -203,7 +203,7 @@ public class Organisatie extends Relatie {
 		 * toegevoegd
 		 */
 		return persoon != null && !this.contactpersoonIsToegevoegd(persoon)
-				&& persoon.hasRol(Contactpersoon.class);
+				&& persoon.heeftRol(Contactpersoon.class);
 	}
 
 	public boolean contactpersoonMagWordenToegevoegd(Persoon persoon) {
