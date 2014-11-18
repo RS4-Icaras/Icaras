@@ -1,7 +1,5 @@
 package nl.rsvier.icaras.core.relatiebeheer;
 
-import java.util.ArrayList;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -14,6 +12,7 @@ public class Leverancier extends OrganisatieRol {
 	private String functie;
 
 	// TODO: UUID ipv business key
+	// TODO: @NotNull validator toevoegen?
 
 	/*
 	 * Constructor
