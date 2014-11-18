@@ -8,5 +8,8 @@
 </head>
 <body>
 <p>Welkom bij Icaras!</p>
+
+<p>Als je dit leest, is de applicationContext van project Icaras geladen.</p>
+<p><a href="personenlijst">Klik hier om verder te gaan.</a></p>
 </body>
 </html>
