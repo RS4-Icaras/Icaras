@@ -53,20 +53,14 @@ public class Adres implements IEntity {
 		setPlaats(plaats);
 	}
 
-	/**
-	 * @return the adresId
-	 */
 	@Id
 	@GeneratedValue
 	public int getId() {
 		return id;
 	}
 
-	/**
-	 * @param id
-	 *            the adresId to set
-	 */
-	public void setId(int id) {
+	@SuppressWarnings("unused")
+	private void setId(int id) {
 		this.id = id;
 	}
 
@@ -209,6 +203,19 @@ public class Adres implements IEntity {
 			}
 			straat = straatVoorPostbus;
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 67;
+		int hash = 1;
+		hash = hash + this.getHuisOfPostbusNummer().hashCode();
+		hash = hash + this.getPlaats().hashCode();
+		hash = hash + this.getPostcode().hashCode();
+		hash = hash + this.getStraat().hashCode();
+		hash = hash + this.getIsPostbus().hashCode();
+		hash = prime * hash;// + this.getId();
+		return hash;
 	}
 
 	public boolean equals(Object obj) {
