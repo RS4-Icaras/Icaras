@@ -55,8 +55,7 @@ public abstract class Rol {
 	 * Opmerking
 	 */
 	
-	protected String opmerking = ""; // erm.. ik ben te lui een null check te
-										// doen.
+	protected String opmerking = "";
 	@Column(name = "opmerking")
 	public String getOpmerking() {
 		return this.opmerking;
@@ -71,13 +70,17 @@ public abstract class Rol {
 	 */
 	
 	@Override
-	public boolean equals(Object o) {
-		Rol r = (Rol) o;
-		if (!this.isGearchiveerd() == r.isGearchiveerd()) {
+	public boolean equals(Object obj) {
+		if (obj == null|| !(obj instanceof Rol)) {
 			return false;
-		}
-		if (!this.getOpmerking().equals(r.getOpmerking())) {
-			return false;
+		} else {
+			Rol other = (Rol) obj;
+			if (!this.isGearchiveerd() == other.isGearchiveerd()) {
+				return false;
+			}
+			if (!this.getOpmerking().equals(other.getOpmerking())) {
+				return false;
+			}
 		}
 		return true;
 	}
