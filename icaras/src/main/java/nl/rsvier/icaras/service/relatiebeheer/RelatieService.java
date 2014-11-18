@@ -1,26 +1,27 @@
 package nl.rsvier.icaras.service.relatiebeheer;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
 import javax.transaction.Transactional;
 
+import nl.rsvier.icaras.core.arbeidsmarkt.Aanbieding;
 import nl.rsvier.icaras.core.relatiebeheer.Adres;
-import nl.rsvier.icaras.core.relatiebeheer.Nfa;
+import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
+import nl.rsvier.icaras.core.relatiebeheer.Persoon;
 import nl.rsvier.icaras.core.relatiebeheer.Relatie;
+import nl.rsvier.icaras.dao.relatiebeheer.IRelatieDao;
 import nl.rsvier.icaras.dao.relatiebeheer.RelatieDaoHibernate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 
 /**
  * Servicelaag voor Relatie klasse Let op: klasse zelf kan niet ge-autowired
- * worden door Spring, ivm Transactional en proxy pattern. Wil je deze klasse autowiren, Autowire dan de
- * interface IRelatieService. Deze heeft dezelfde methoden als
- * RelatieService.
+ * worden door Spring, ivm Transactional en proxy pattern. Wil je deze klasse
+ * autowiren, Autowire dan de interface IRelatieService. Deze heeft dezelfde
+ * methoden als RelatieService.
  * 
  * @author Gerben
  *
@@ -29,14 +30,18 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 @Transactional
 public class RelatieService implements IRelatieService {
 
+	// TODO vanwege autowiren van interface (good practice, mogelijkheid om
+	// andere implementatie te gebruiken)
+	// nu cast nodig op getHibernateTemplate. Hierdoor is overstap op andere
+	// implementatie alsnog niet mogelijk
 	@Autowired
-	private RelatieDaoHibernate relatieDao;
+	private IRelatieDao relatieDao;
 
 	/**
 	 * @return relatieDao
 	 */
 
-	public RelatieDaoHibernate getDao() {
+	public IRelatieDao getDao() {
 		return relatieDao;
 	}
 
@@ -56,16 +61,15 @@ public class RelatieService implements IRelatieService {
 	}
 
 	/**
-	 * saved meegegeven Relatie attribuut in de database
-	 * Controleert eerst of de adres en nfa Sets null zijn
-	 * als dit zo is wordt lege HashSet aan dit attribuut toegekend
-	 * zodat dataIntegrity gehandhaafd blijft
+	 * saved meegegeven Relatie attribuut in de database Controleert eerst of de
+	 * adres en nfa Sets null zijn als dit zo is wordt lege HashSet aan dit
+	 * attribuut toegekend zodat dataIntegrity gehandhaafd blijft
 	 * 
 	 * @param r
 	 *            de te saven relatie
 	 */
 	public void save(Relatie r) {
-		
+
 		relatieDao.save(r);
 
 	}
@@ -100,28 +104,28 @@ public class RelatieService implements IRelatieService {
 		return relatieDao.getById(id);
 	}
 
-	
-	
 	public Relatie getByIdMetAdres(int id) {
 
-		Relatie r =  relatieDao.getById(id);
-		relatieDao.getHibernateTemplate().initialize(r.getAdressen());
+		Relatie r = relatieDao.getById(id);
+		((RelatieDaoHibernate) relatieDao).getHibernateTemplate().initialize(
+				r.getAdressen());
 		return r;
-		
+
 	}
 
 	/**
 	 * @return lijst met alle relaties in db, in elke relatie is ook de
 	 *         adreslijst geinstantieerd
 	 */
-	 public List<Relatie> getAllMetAdres() {
+	public List<Relatie> getAllMetAdres() {
 
 		List<Relatie> relatieLijst = relatieDao.getAll();
 		ListIterator<Relatie> listitr = relatieLijst.listIterator();
 
 		while (listitr.hasNext()) {
 			Relatie r = (Relatie) listitr.next();
-			relatieDao.getHibernateTemplate().initialize(r.getAdressen());
+			((RelatieDaoHibernate) relatieDao).getHibernateTemplate()
+					.initialize(r.getAdressen());
 		}
 
 		return relatieLijst;
@@ -129,9 +133,9 @@ public class RelatieService implements IRelatieService {
 	}
 
 	public Set<Adres> getRelatieAdressen(Relatie r) {
-		relatieDao.getHibernateTemplate().initialize(r.getAdressen());
+		((RelatieDaoHibernate) relatieDao).getHibernateTemplate().initialize(
+				r.getAdressen());
 		return r.getAdressen();
-		
-	}
 
+	}
 }

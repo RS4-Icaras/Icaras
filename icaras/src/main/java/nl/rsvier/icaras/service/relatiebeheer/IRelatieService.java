@@ -5,6 +5,7 @@ import java.util.Set;
 
 import nl.rsvier.icaras.core.relatiebeheer.Adres;
 import nl.rsvier.icaras.core.relatiebeheer.Relatie;
+import nl.rsvier.icaras.dao.relatiebeheer.IRelatieDao;
 import nl.rsvier.icaras.dao.relatiebeheer.RelatieDaoHibernate;
 
 
@@ -20,7 +21,7 @@ public interface IRelatieService  {
 	
 	public Relatie getById(int id);
 	
-	public RelatieDaoHibernate getDao();
+	public IRelatieDao getDao();
 	
 	public void setDao(RelatieDaoHibernate dao);
 	
@@ -29,6 +30,4 @@ public interface IRelatieService  {
 	public Set<Adres> getRelatieAdressen(Relatie r);
 	
 	public Relatie getByIdMetAdres(int id);
-	
-
 }
