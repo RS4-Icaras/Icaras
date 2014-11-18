@@ -14,7 +14,7 @@ public class Contactpersoon extends PersoonsRol {
 	private static final long serialVersionUID = 1L;
 
 	private List<Organisatie> organisaties;
-	private String functie;
+	private String functie = "";
 
 	// TODO: UUID ipv business key
 
@@ -44,9 +44,22 @@ public class Contactpersoon extends PersoonsRol {
 	/**
 	 * Creëer bi-directionele relatie tussen Persoon > Contactpersoon >
 	 * Organisatie
+	 * 
+	 * @param organisatie
+	 *            Organisatie waar deze contactpersoon aan moet worden gekoppeld
+	 * @param persoon
+	 *            Houder van deze contactpersoonsrol
 	 */
-	public boolean addOrganisatie(Organisatie organisatie, Persoon persoon) {
-		if (organisatie == null) { // Voorkom NullpointerExceptions
+	public synchronized boolean addOrganisatie(Organisatie organisatie,
+			Persoon persoon) {
+		if (organisatie == null || persoon == null
+				|| persoon.getContactpersoon() == null) {
+			// Voorkom NullpointerExceptions
+			return false;
+		}
+		if (!persoon.getContactpersoon().equals(this)) {
+			// Voorkom dat er een willekeurige persoon word meegegeven aan
+			// Organisatie die niet de houder is van deze contactpersoonsrol
 			return false;
 		}
 		if (this.organisatieMagWordenToegevoegd(organisatie)) {
@@ -62,16 +75,33 @@ public class Contactpersoon extends PersoonsRol {
 	/**
 	 * Verbreek bi-directionele relatie tussen Persoon > Contactpersoon >
 	 * Organisatie
+	 * 
+	 * @param organisatie
+	 *            Organisatie waar deze contactpersoon van moet worden
+	 *            losgekoppeld
+	 * @param persoon
+	 *            Houder van deze contactpersoonsrol
 	 */
-	public boolean removeOrganisatie(Organisatie organisatie, Persoon persoon) {
+	public synchronized boolean removeOrganisatie(Organisatie organisatie,
+			Persoon persoon) {
+		if (organisatie == null || persoon == null
+				|| persoon.getContactpersoon() == null) {
+			// Voorkom NullpointerExceptions
+			return false;
+		}
+		if (!persoon.getContactpersoon().equals(this)) {
+			// Voorkom dat er een willekeurige persoon word verwijderd van
+			// Organisatie die niet de houder is van deze contactpersoonsrol
+			return false;
+		}
 		if (this.heeftOrganisatie(organisatie)) {
 			this.organisaties.remove(organisatie);
 		}
 		if (organisatie.heeftContactpersoon(persoon)) {
 			organisatie.removeContactpersoon(persoon);
 		}
-		return this.heeftOrganisatie(organisatie)
-				&& organisatie.heeftContactpersoon(persoon);
+		return !this.heeftOrganisatie(organisatie)
+				&& !organisatie.heeftContactpersoon(persoon);
 	}
 
 	public boolean heeftOrganisatie(Organisatie organisatie) {
@@ -107,7 +137,6 @@ public class Contactpersoon extends PersoonsRol {
 
 	@Override
 	public boolean equals(Object obj) {
-
 		if (this == obj) {
 			return true;
 		} else if (obj == null || !(obj instanceof Contactpersoon)) {
@@ -123,6 +152,12 @@ public class Contactpersoon extends PersoonsRol {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Contactpersoon(id=%s) functie: %s", this.getId(),
+				this.getFunctie());
 	}
 
 }
