@@ -83,6 +83,13 @@ public class OrganisatieTest {
 		return p;
 	}
 
+	private Persoon newRandomTestPersoonZonderRol() {
+		Random r = new Random();
+		Persoon p = new Persoon(String.valueOf(r.nextInt(1000000)),
+				String.valueOf(r.nextInt(1000000)));
+		return p;
+	}
+
 	/*
 	 * Test methodes
 	 */
@@ -179,6 +186,8 @@ public class OrganisatieTest {
 		 * ook toe te voegen aan de collectie organisaties van Contactpersoon
 		 */
 
+		// Follow rules
+
 		Persoon testpersoon = this.newRandomTestPersoon();
 		Organisatie testorganisatie = this.newRandomTestOrganisatie();
 
@@ -224,7 +233,7 @@ public class OrganisatieTest {
 		 */
 
 		Persoon testpersoon2 = this.newRandomTestPersoon();
-		Persoon testpersoon2_imposter = new Persoon("Aasdafa", "asfagadg");
+		Persoon testpersoon2_imposter = this.newRandomTestPersoonZonderRol();
 		Organisatie testorganisatie2 = this.newRandomTestOrganisatie();
 
 		assertFalse(
@@ -237,6 +246,34 @@ public class OrganisatieTest {
 		assertFalse(testorganisatie2.heeftContactpersoon(testpersoon2_imposter));
 		assertFalse(testpersoon2.getContactpersoon().heeftOrganisatie(
 				testorganisatie2));
+
+		/*
+		 * Wat als je een contactpersoon probeert te verwijderen van een
+		 * organisatie via een nullwaarde, een persoon zonder
+		 * contactpersoonsrol, of een persoon die nog niet is toegevoegd?
+		 */
+
+		Persoon testpersoon3 = this.newRandomTestPersoon();
+		Persoon testpersoon3_imposter = this.newRandomTestPersoonZonderRol();
+		Organisatie testorganisatie3 = this.newRandomTestOrganisatie();
+
+		assertFalse("Organisatie heeft een hekel aan nullwaardes",
+				testorganisatie3.removeContactpersoon(null));
+
+		assertFalse("Contactpersoon kan niet worden verwijderd wanneer de "
+				+ "persoon geen contactpersoonsrol bevat.",
+				testorganisatie3.removeContactpersoon(testpersoon3_imposter));
+
+		assertTrue("Organisatie heeft nog geen contactpersonen. Returnwaarde "
+				+ "is true omdat er alleen gekeken word naar de uitkomst",
+				testorganisatie3.removeContactpersoon(testpersoon3));
+
+		// Check of de bi-directionele relatie ook echt niet is toegevoegd
+		assertFalse(testorganisatie3.heeftContactpersoon(testpersoon3));
+		assertFalse(testorganisatie3
+				.heeftContactpersoon(testpersoon3_imposter));
+		assertFalse(testpersoon3.getContactpersoon().heeftOrganisatie(
+				testorganisatie3));
 	}
 
 	@Test
