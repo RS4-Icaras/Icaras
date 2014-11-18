@@ -41,6 +41,10 @@ public class Aanbieding implements IEntity {
 		if (this.vacatureMagWordenToegevoegd(vacature)) {
 			this.setVacature(vacature);
 			vacature.addAanbieding(this);
+		} else {
+			// TODO: Vacature is nog geen deel van de business key, passende exception?
+			throw new InvalidBusinessKeyException(
+					"Aanbieding business key has not been properly initialized");
 		}
 	}
 
@@ -57,18 +61,12 @@ public class Aanbieding implements IEntity {
 			 * hashCode() so you better be damn sure the business key fields
 			 * have been properly initialized
 			 */
-			// this.getPersoon().getKandidaat().addAanbieding(this); // TODO:
-			// remove
-			// this.getOrganisatie().getBedrijf().addAanbieding(this); // TODO:
-			// remove
 			if (!this.getPersoon().getKandidaat().addAanbieding(this)) {
 				throw new InvalidBusinessKeyException("Aanbieding bestaat al");
 			}
-		}
-		if (!this.getPersoon().getKandidaat().heeftAanbieding(this)
-				|| !this.getOrganisatie().getBedrijf().heeftAanbieding(this)) {
+		} else {
 			throw new InvalidBusinessKeyException(
-					"Vacature business key has not been properly initialized");
+					"Aanbieding business key has not been properly initialized");
 		}
 	}
 
@@ -83,19 +81,20 @@ public class Aanbieding implements IEntity {
 	 * niet langer bestaat.
 	 */
 	public synchronized boolean removeAllReferences() {
-		boolean a = false;
-		boolean b = false;
-		boolean c = false;
 		if (this.getVacature() != null) {
-			a = this.getVacature().removeAanbieding(this);
+			this.getVacature().removeAanbieding(this);
 		}
 		if (this.getPersoon() != null) {
-			b = this.getPersoon().getKandidaat().removeAanbieding(this);
+			this.getPersoon().getKandidaat().removeAanbieding(this);
 		}
 		if (this.getOrganisatie() != null) {
-			c = this.getOrganisatie().getBedrijf().removeAanbieding(this);
+			this.getOrganisatie().getBedrijf().removeAanbieding(this);
 		}
-		return a && b && c; // TODO: Zinvolle boolean feedback pls
+
+		return (this.getVacature() == null || !this.getVacature()
+				.heeftAanbieding(this))
+				&& !this.getPersoon().getKandidaat().heeftAanbieding(this)
+				&& !this.getOrganisatie().getBedrijf().heeftAanbieding(this);
 	}
 
 	/*
@@ -129,9 +128,17 @@ public class Aanbieding implements IEntity {
 	/*
 	 * Wanneer er een Vacature is gekoppeld aan een Aanbieding, voeg deze
 	 * Aanbieding dan ook toe aan de Vacature. Sta dit echter alleen toe wanneer
-	 * zowel de Aanbieding als Vacature gebruik maken dezelfde Organisatie
+	 * zowel de Aanbieding als Vacature gebruik maken dezelfde Organisatie.
+	 * 
+	 * N.B. Ondanks dat Vacature null mag zijn accepteerd deze methode geen null
+	 * waarde. Indien je geen Vacature wilt dan overschrijf je de default null
+	 * waarde niet of gebruik je de methode removeVacature()
 	 */
 	public synchronized boolean setVacatureReferentie(Vacature vacature) {
+		if (vacature == null) {
+			// Voorkom NullpointerExceptions
+			return false;
+		}
 		if (this.vacatureMagWordenToegevoegd(vacature)) {
 			this.setVacature(vacature);
 			vacature.addAanbieding(this);
@@ -141,10 +148,6 @@ public class Aanbieding implements IEntity {
 	}
 
 	public boolean vacatureConstraint(Vacature vacature) {
-		/*
-		 * Voeg een vacature alleen toe wanneer de Organisatie van de Vacature
-		 * overeenkomt met de Organisatie die we een Aanbieding willen doen
-		 */
 		return this.getOrganisatie().equals(vacature.getOrganisatie());
 	}
 
@@ -152,14 +155,10 @@ public class Aanbieding implements IEntity {
 		return this.vacatureConstraint(vacature);
 	}
 
-	/*
-	 * Alleen verantwoordelijk voor het verwijderen van een Vacature uit de
-	 * collectie Vacatures die we hier bewaren. @See Vacature.destructotron
-	 * wanneer je alle referenties naar Vacature wilt verwijderen.
-	 */
 	public synchronized boolean removeVacature(Vacature vacature) {
 		if (vacature != null && this.heeftVacature()
 				&& this.getVacature().equals(vacature)) {
+
 			/*
 			 * Verwijder de Aanbieding niet omdat deze niet langer aan een
 			 * Vacature is gekoppeld. De Aanbieding kan nog steeds worden
@@ -191,30 +190,17 @@ public class Aanbieding implements IEntity {
 
 	private void setPersoon(Persoon persoon) {
 		this.persoon = persoon;
-
 	}
 
 	public boolean persoonConstraint(Persoon persoon) {
-		/*
-		 * De voorwaarden waar een Organisatie aan moet voldoen. Organisatie mag
-		 * nooit null zijn en moet een bedrijfsrol bevatten
-		 */
 		return persoon != null && persoon.getKandidaat() != null;
 	}
 
 	public boolean persoonMagWordenToegevoegd(Persoon persoon) {
-		/*
-		 * Om een Organisatie toe te voegen mag deze geen null zijn en moet deze
-		 * aan de voorwaarde voldoen
-		 */
 		return !this.heeftPersoon() && this.persoonConstraint(persoon);
 	}
 
 	public boolean heeftPersoon() {
-		/*
-		 * Organisatie is immutable. Als deze reeds is toegevoegd mag deze niet
-		 * meer worder aangepast
-		 */
 		return this.getPersoon() != null;
 	}
 
@@ -234,27 +220,15 @@ public class Aanbieding implements IEntity {
 	}
 
 	public boolean organisatieConstraint(Organisatie organisatie) {
-		/*
-		 * De voorwaarden waar een Organisatie aan moet voldoen. Organisatie mag
-		 * nooit null zijn en moet een bedrijfsrol bevatten
-		 */
 		return organisatie != null && organisatie.getBedrijf() != null;
 	}
 
 	public boolean organisatieMagWordenToegevoegd(Organisatie organisatie) {
-		/*
-		 * Om een Organisatie toe te voegen mag deze geen null zijn en moet deze
-		 * aan de voorwaarde voldoen
-		 */
 		return !this.heeftOrganisatie()
 				&& this.organisatieConstraint(organisatie);
 	}
 
 	public boolean heeftOrganisatie() {
-		/*
-		 * Organisatie is immutable. Als deze reeds is toegevoegd mag deze niet
-		 * meer worder aangepast
-		 */
 		return this.getOrganisatie() != null;
 	}
 
