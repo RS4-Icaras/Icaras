@@ -135,7 +135,7 @@ public class OrganisatieTest {
 					use_organisatie.contactpersoonConstraint(persoon));
 			assertTrue(
 					String.format("%s heeft een Contactpersoonsrol", persoon),
-					persoon.hasRol(Contactpersoon.class));
+					persoon.heeftRol(Contactpersoon.class));
 		}
 		assertFalse(
 				"Om een Contactpersoon aan een Organisatie toe te voegen mag deze geen null zijn",
