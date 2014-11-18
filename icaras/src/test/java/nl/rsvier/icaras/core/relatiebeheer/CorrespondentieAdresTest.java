@@ -98,7 +98,7 @@ public class CorrespondentieAdresTest {
 		assertFalse("Na mislukte poging tot correspondentieadres maken, "
 				+ "is adres2 dan ook (nog steeds) geen correspondentieadres",
 				adres2.isCorrespondentieAdres());
-		// Het kan fout gaan door dezelfde adressen aan 2 relaties toe te wijzen
+		// Het kan fout gaan door dezelfde adresinstanties aan 2 relaties toe te wijzen
 		// Het wijzigen van een adres in de ene persoon verandert deze ook bij
 		// de andere
 		assertTrue("Toevoegen adres4 aan organisatie1 slaagt",

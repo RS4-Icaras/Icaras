@@ -117,6 +117,10 @@ public abstract class Relatie implements IEntity {
 	 * Voegt een adres toe aan de lijst. Garandeert dat er precies 1
 	 * correspondentieadres aanwijzig is, tenzij de lijst leeg is.
 	 * 
+	 * Het toevoegen van een adresinstantie uit een andere relatie conflicteert
+	 * met de garantie dat er maar 1 correspondentieadres is. Dit is dan ook
+	 * niet toegestaan.
+	 * 
 	 * @param adres
 	 *            Het toe te voegen adres.
 	 * @return True als toevoegen gelukt is, anders false.
