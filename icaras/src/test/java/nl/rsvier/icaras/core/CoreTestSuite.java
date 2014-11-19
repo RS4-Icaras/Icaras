@@ -1,5 +1,7 @@
 package nl.rsvier.icaras.core;
 
+import nl.rsvier.icaras.core.arbeidsmarkt.AanbiedingTest;
+import nl.rsvier.icaras.core.arbeidsmarkt.VacatureTest;
 import nl.rsvier.icaras.core.relatiebeheer.AdresTest;
 import nl.rsvier.icaras.core.relatiebeheer.ContactpersoonTest;
 import nl.rsvier.icaras.core.relatiebeheer.CorrespondentieAdresTest;
@@ -29,8 +31,8 @@ import org.junit.runners.Suite;
 	OrganisatieTest.class,
 	//BedrijfTest.class,
 	ContactpersoonTest.class,
-	//AanbiedingTest.class,
-	//VacatureTest.class,
+	AanbiedingTest.class,
+	VacatureTest.class,
 })
 public class CoreTestSuite {
 
