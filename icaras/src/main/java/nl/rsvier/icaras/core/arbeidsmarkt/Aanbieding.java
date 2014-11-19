@@ -38,11 +38,12 @@ public class Aanbieding implements IEntity {
 	public Aanbieding(Persoon persoon, Organisatie organisatie,
 			Vacature vacature) throws InvalidBusinessKeyException {
 		this(persoon, organisatie);
-		if (this.vacatureMagWordenToegevoegd(vacature)) {
+		if (this.vacatureMagWordenGezet(vacature)) {
 			this.setVacature(vacature);
 			vacature.addAanbieding(this);
 		} else {
-			// TODO: Vacature is nog geen deel van de business key, passende exception?
+			// TODO: Vacature is nog geen deel van de business key, passende
+			// exception?
 			throw new InvalidBusinessKeyException(
 					"Aanbieding business key has not been properly initialized");
 		}
@@ -139,10 +140,12 @@ public class Aanbieding implements IEntity {
 			// Voorkom NullpointerExceptions
 			return false;
 		}
-		if (this.vacatureMagWordenToegevoegd(vacature)) {
+		if (this.vacatureMagWordenGezet(vacature)
+				&& vacature.aanbiedingMagWordenToegevoegd(this)) {
 			this.setVacature(vacature);
 			vacature.addAanbieding(this);
-			return this.heeftVacature() && vacature.heeftAanbieding(this);
+			return this.heeftVacature(vacature)
+					&& vacature.heeftAanbieding(this);
 		}
 		return false;
 	}
@@ -151,30 +154,31 @@ public class Aanbieding implements IEntity {
 		return this.getOrganisatie().equals(vacature.getOrganisatie());
 	}
 
-	public boolean vacatureMagWordenToegevoegd(Vacature vacature) {
+	public boolean vacatureMagWordenGezet(Vacature vacature) {
 		return this.vacatureConstraint(vacature);
 	}
 
 	public synchronized boolean removeVacature(Vacature vacature) {
-		if (vacature != null && this.heeftVacature()
-				&& this.getVacature().equals(vacature)) {
-
+		if (vacature == null) {
+			// Voorkom NullpointerExceptions
+			return false;
+		}
+		if (this.heeftVacature(vacature) && vacature.heeftAanbieding(this)) {
 			/*
-			 * Verwijder de Aanbieding niet omdat deze niet langer aan een
-			 * Vacature is gekoppeld. De Aanbieding kan nog steeds worden
-			 * gebruikt voor statistieken
+			 * Roep eerst removeAanbieding op vacature aan
 			 */
-
 			vacature.removeAanbieding(this);
-			this.vacature = null;
-			// TODO: andere kant ook
-			return true;
+			this.setVacature(null);
+			return !this.heeftVacature(vacature)
+					&& !vacature.heeftAanbieding(this);
 		}
 		return false;
+		
 	}
 
-	public boolean heeftVacature() {
-		return this.getVacature() != null;
+	public boolean heeftVacature(Vacature vacature) {
+		return this.getVacature() != null
+				&& this.getVacature().equals(vacature);
 	}
 
 	/*
