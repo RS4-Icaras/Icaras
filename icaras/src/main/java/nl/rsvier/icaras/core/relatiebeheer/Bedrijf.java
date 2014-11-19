@@ -37,7 +37,7 @@ public class Bedrijf extends OrganisatieRol {
 	}
 
 	/*
-	 * Arbeidsovereenkomsten
+	 * Colllectie: Arbeidsovereenkomsten
 	 */
 
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
@@ -47,7 +47,7 @@ public class Bedrijf extends OrganisatieRol {
 
 	public boolean heeftArbeidsovereenkomst(
 			Arbeidsovereenkomst arbeidsovereenkomst) {
-		return getArbeidsovereenkomsten().contains(arbeidsovereenkomst);
+		return this.getArbeidsovereenkomsten().contains(arbeidsovereenkomst);
 	}
 
 	@SuppressWarnings("unused")
@@ -83,11 +83,11 @@ public class Bedrijf extends OrganisatieRol {
 			if (medewerker != null && werknemer != null
 					// controleer of het de juiste organisatie is
 					&& organisatie.getBedrijf() == this
-					&& getArbeidsovereenkomsten().add(arbeidsovereenkomst)) {
+					&& this.getArbeidsovereenkomsten().add(arbeidsovereenkomst)) {
 				werknemer.addArbeidsovereenkomst(arbeidsovereenkomst);
-				addMedewerker(medewerker);
-				return heeftArbeidsovereenkomst(arbeidsovereenkomst)
-						&& isMedewerker(medewerker)
+				this.addMedewerker(medewerker);
+				return this.heeftArbeidsovereenkomst(arbeidsovereenkomst)
+						&& this.isMedewerker(medewerker)
 						&& werknemer
 								.heeftArbeidsovereenkomst(arbeidsovereenkomst);
 			}
@@ -118,14 +118,14 @@ public class Bedrijf extends OrganisatieRol {
 	public synchronized boolean removeArbeidsovereenkomst(
 			Arbeidsovereenkomst arbeidsovereenkomst) {
 		if (arbeidsovereenkomst != null
-				&& heeftArbeidsovereenkomst(arbeidsovereenkomst)) {
+				&& this.heeftArbeidsovereenkomst(arbeidsovereenkomst)) {
 			Persoon medewerker = arbeidsovereenkomst.getPersoon();
 			Werknemer werknemer = medewerker.getWerknemer();
 			if (medewerker != null && werknemer != null) {
-				getArbeidsovereenkomsten().remove(arbeidsovereenkomst);
+				this.getArbeidsovereenkomsten().remove(arbeidsovereenkomst);
 				werknemer.removeArbeidsovereenkomst(arbeidsovereenkomst);
-				removeMedewerker(medewerker);
-				return !heeftArbeidsovereenkomst(arbeidsovereenkomst)
+				this.removeMedewerker(medewerker);
+				return !this.heeftArbeidsovereenkomst(arbeidsovereenkomst)
 						&& !werknemer
 								.heeftArbeidsovereenkomst(arbeidsovereenkomst);
 			}
@@ -134,7 +134,7 @@ public class Bedrijf extends OrganisatieRol {
 	}
 
 	/*
-	 * Vacatures
+	 * Collectie: Vacatures
 	 */
 
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
@@ -154,22 +154,30 @@ public class Bedrijf extends OrganisatieRol {
 	 * doen op deze methode zodat er geen tweede insert word gedaan (met als
 	 * gevolg dat de insert een unique restraint breekt)
 	 */
-	public void addVacature(Vacature vacature) {
-		if (vacature != null && !this.getVacatures().contains(vacature)) {
-			this.vacatures.add(vacature);
-		}
-	}
-
-	public boolean removeVacature(Vacature vacature) {
-		if (vacature != null) {
-			return this.vacatures.remove(vacature);
+	public synchronized boolean addVacature(Vacature vacature) {
+		if (vacature != null && !this.heeftVacature(vacature)) {
+			this.getVacatures().add(vacature);
+			return this.heeftVacature(vacature);
 		}
 		return false;
 	}
 
+	public synchronized boolean removeVacature(Vacature vacature) {
+		if (vacature != null) {
+			this.getVacatures().remove(vacature);
+			return !this.heeftVacature(vacature);
+		}
+		return false;
+	}
+
+	public boolean heeftVacature(Vacature vacature) {
+		return this.getVacatures().contains(vacature);
+	}
+
 	/*
-	 * Aanbiedingen
+	 * Collectie: Aanbiedingen
 	 */
+
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
 	public Set<Aanbieding> getAanbiedingen() {
 		return aanbiedingen;
@@ -201,15 +209,15 @@ public class Bedrijf extends OrganisatieRol {
 	public synchronized boolean addAanbieding(Aanbieding aanbieding) {
 		if (aanbieding == null || aanbieding.getPersoon() == null
 				|| aanbieding.getOrganisatie() == null
-				|| heeftAanbieding(aanbieding)) {
+				|| this.heeftAanbieding(aanbieding)) {
 			return false;
 		}
 		Kandidaat kandidaat = aanbieding.getPersoon().getKandidaat();
 		if (kandidaat != null
 				&& aanbieding.getOrganisatie().getBedrijf() == this) {
-			aanbiedingen.add(aanbieding);
+			this.getAanbiedingen().add(aanbieding);
 			kandidaat.addAanbieding(aanbieding);
-			return aanbiedingen.contains(aanbieding)
+			return this.heeftAanbieding(aanbieding)
 					&& kandidaat.getAanbiedingen().contains(aanbieding);
 		}
 		return false;
@@ -234,22 +242,26 @@ public class Bedrijf extends OrganisatieRol {
 	public synchronized boolean removeAanbieding(Aanbieding aanbieding) {
 		if (aanbieding == null || aanbieding.getPersoon() == null
 				|| aanbieding.getOrganisatie() == null
-				|| !aanbiedingen.contains(aanbieding)) {
+				|| !this.heeftAanbieding(aanbieding)) {
 			return false;
 		}
 		Kandidaat kandidaat = aanbieding.getPersoon().getKandidaat();
 		Bedrijf bedrijf = aanbieding.getOrganisatie().getBedrijf();
 		if (kandidaat != null && bedrijf != null && bedrijf == this) {
-			aanbiedingen.remove(aanbieding);
+			this.getAanbiedingen().remove(aanbieding);
 			kandidaat.removeAanbieding(aanbieding);
-			return !aanbiedingen.contains(aanbieding)
+			return !this.heeftAanbieding(aanbieding)
 					&& !kandidaat.getAanbiedingen().contains(aanbieding);
 		}
 		return false;
 	}
 
+	public boolean heeftAanbieding(Aanbieding aanbieding) {
+		return this.getAanbiedingen().contains(aanbieding);
+	}
+
 	/*
-	 * Medewerkers
+	 * Collectie: Medewerkers
 	 */
 
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
@@ -279,10 +291,10 @@ public class Bedrijf extends OrganisatieRol {
 	 *         lijst is toegevoegd.
 	 */
 	public synchronized boolean addMedewerker(Persoon medewerker) {
-		if (medewerker != null && !getMedewerkers().contains(medewerker)
+		if (medewerker != null && !this.getMedewerkers().contains(medewerker)
 				&& medewerker.getWerknemer() != null
 				&& medewerker.getWerknemer().werktBijBedrijf(this)) {
-			return this.medewerkers.add(medewerker);
+			return this.getMedewerkers().add(medewerker);
 		}
 		return false;
 	}
@@ -298,14 +310,14 @@ public class Bedrijf extends OrganisatieRol {
 	 *         arbeidsovereenkomsten na afloop ook niet meer voorkomen in de
 	 *         lijst van de betreffende werknemer en dit bedrijf.
 	 */
-	public boolean removeMedewerker(Persoon medewerker) {
+	public synchronized boolean removeMedewerker(Persoon medewerker) {
 		if (medewerker != null && isMedewerker(medewerker)) {
-			for (Arbeidsovereenkomst a : getArbeidsovereenkomsten()) {
+			for (Arbeidsovereenkomst a : this.getArbeidsovereenkomsten()) {
 				if (a.getPersoon().equals(medewerker)) {
 					return false;
 				}
 			}
-			return getMedewerkers().remove(medewerker);
+			return this.getMedewerkers().remove(medewerker);
 		}
 		return false;
 	}
@@ -325,14 +337,14 @@ public class Bedrijf extends OrganisatieRol {
 	 *         arbeidsovereenkomsten na afloop ook niet meer voorkomen in de
 	 *         lijst van de betreffende werknemer en dit bedrijf.
 	 */
-	public boolean removeMedewerkerMetAlleArbeidsovereenkomsten(
+	public synchronized boolean removeMedewerkerMetAlleArbeidsovereenkomsten(
 			Persoon medewerker) {
-		if (medewerker != null && medewerkers.remove(medewerker)) {
+		if (medewerker != null && this.getMedewerkers().remove(medewerker)) {
 			Werknemer werknemer = medewerker.getWerknemer();
-			boolean stopWhileLoop = false;// om infinite loop uit te sluiten
+			boolean stopWhileLoop = false; // om infinite loop uit te sluiten
 			while (werknemer.werktBijBedrijf(this) && !stopWhileLoop) {
 				Arbeidsovereenkomst arbeidsovereenkomst = null;
-				for (Arbeidsovereenkomst a : getArbeidsovereenkomsten()) {
+				for (Arbeidsovereenkomst a : this.getArbeidsovereenkomsten()) {
 					if (a.getPersoon() == medewerker) {
 						arbeidsovereenkomst = a;
 					}
@@ -340,7 +352,7 @@ public class Bedrijf extends OrganisatieRol {
 				if (arbeidsovereenkomst != null
 						&& werknemer
 								.removeArbeidsovereenkomst(arbeidsovereenkomst)
-						&& removeArbeidsovereenkomst(arbeidsovereenkomst)) {
+						&& this.removeArbeidsovereenkomst(arbeidsovereenkomst)) {
 					arbeidsovereenkomst = null;
 				} else {
 					stopWhileLoop = true;// in geval verwijderen van gevonden
@@ -349,9 +361,9 @@ public class Bedrijf extends OrganisatieRol {
 				}
 			}
 		}
-		return !medewerkers.contains(medewerker)
+		return !this.heeftMedewerker(medewerker)
 				&& !medewerker.getWerknemer().werktBijBedrijf(this)
-				&& isMedewerker(medewerker);
+				&& this.isMedewerker(medewerker);
 	}
 
 	/**
@@ -365,17 +377,16 @@ public class Bedrijf extends OrganisatieRol {
 	 */
 	public boolean isMedewerker(Persoon medewerker) {
 		if (medewerker != null) {
-			for (Persoon p : getMedewerkers())
-				// TODO equals of ==?
-				if (medewerker.equals(p)) {
+			for (Persoon p : this.getMedewerkers())
+				if (medewerker.equals(p)) { // TODO equals of ==?
 					return true;
 				}
 		}
 		return false;
 	}
 
-	public boolean heeftAanbieding(Aanbieding aanbieding) {
-		return getAanbiedingen().contains(aanbieding);
+	public boolean heeftMedewerker(Persoon medewerker) {
+		return this.getMedewerkers().contains(medewerker);
 	}
 
 	/*
@@ -383,23 +394,14 @@ public class Bedrijf extends OrganisatieRol {
 	 */
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int hash = 1;
-		hash = prime * hash + this.getId();
-		return hash;
-	}
-
-	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || !super.equals(obj) || !(obj instanceof Bedrijf)) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null || !(obj instanceof Bedrijf)) {
 			return false;
 		} else {
+			@SuppressWarnings("unused")
 			Bedrijf other = (Bedrijf) obj;
-			if (this.getId() > 0 && other.getId() > 0
-					&& this.getId() != other.getId()) {
-				return false;
-			}
 		}
 		return true;
 	}
