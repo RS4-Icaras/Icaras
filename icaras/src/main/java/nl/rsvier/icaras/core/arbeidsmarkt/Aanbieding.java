@@ -150,14 +150,6 @@ public class Aanbieding implements IEntity {
 		return false;
 	}
 
-	public boolean vacatureConstraint(Vacature vacature) {
-		return this.getOrganisatie().equals(vacature.getOrganisatie());
-	}
-
-	public boolean vacatureMagWordenGezet(Vacature vacature) {
-		return this.vacatureConstraint(vacature);
-	}
-
 	public synchronized boolean removeVacature(Vacature vacature) {
 		if (vacature == null) {
 			// Voorkom NullpointerExceptions
@@ -173,7 +165,15 @@ public class Aanbieding implements IEntity {
 					&& !vacature.heeftAanbieding(this);
 		}
 		return false;
-		
+
+	}
+
+	public boolean vacatureConstraint(Vacature vacature) {
+		return this.getOrganisatie().equals(vacature.getOrganisatie());
+	}
+
+	public boolean vacatureMagWordenGezet(Vacature vacature) {
+		return this.vacatureConstraint(vacature);
 	}
 
 	public boolean heeftVacature(Vacature vacature) {
@@ -263,8 +263,6 @@ public class Aanbieding implements IEntity {
 			if (!this.getOrganisatie().equals(other.getOrganisatie())) {
 				return false;
 			}
-			// TODO: One day we'll probably want to add Vacature to our business
-			// key so we can connect Aanbieding to the latest issued Vacature
 		}
 		return true;
 	}
