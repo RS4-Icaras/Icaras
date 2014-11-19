@@ -137,6 +137,45 @@ public class Bedrijf extends OrganisatieRol {
 	 * Collectie: Vacatures
 	 */
 
+	// @OneToMany(orphanRemoval = true, cascade =
+	// javax.persistence.CascadeType.ALL)
+	// public Set<Vacature> getVacatures() {
+	// return vacatures;
+	// }
+	//
+	// @SuppressWarnings("unused")
+	// private void setVacatures(Set<Vacature> vacatures) {
+	// this.vacatures = vacatures;
+	// }
+	//
+	// /*
+	// * Bij het maken van een nieuwe Aanbieding (die gedaan word n.a.v. een
+	// * vacature) word de vacature al automatisch toegevoegd aan deze instantie
+	// * van Bedrijf. Sta het dus niet toe om verder nog handmatig een aanroep
+	// te
+	// * doen op deze methode zodat er geen tweede insert word gedaan (met als
+	// * gevolg dat de insert een unique restraint breekt)
+	// */
+	// public synchronized boolean addVacature(Vacature vacature) {
+	// if (vacature != null && !this.heeftVacature(vacature)) {
+	// this.getVacatures().add(vacature);
+	// return this.heeftVacature(vacature);
+	// }
+	// return false;
+	// }
+	//
+	// public synchronized boolean removeVacature(Vacature vacature) {
+	// if (vacature != null) {
+	// this.getVacatures().remove(vacature);
+	// return !this.heeftVacature(vacature);
+	// }
+	// return false;
+	// }
+	//
+	// public boolean heeftVacature(Vacature vacature) {
+	// return this.getVacatures().contains(vacature);
+	// }
+
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
 	public Set<Vacature> getVacatures() {
 		return vacatures;
@@ -147,23 +186,28 @@ public class Bedrijf extends OrganisatieRol {
 		this.vacatures = vacatures;
 	}
 
-	/*
-	 * Bij het maken van een nieuwe Aanbieding (die gedaan word n.a.v. een
-	 * vacature) word de vacature al automatisch toegevoegd aan deze instantie
-	 * van Bedrijf. Sta het dus niet toe om verder nog handmatig een aanroep te
-	 * doen op deze methode zodat er geen tweede insert word gedaan (met als
-	 * gevolg dat de insert een unique restraint breekt)
+	/**
+	 * Creëer bi-directionele relatie tussen Vacature > Bedrijf > Organisatie
+	 * 
+	 * @param vacature
+	 *            Vacature waar dit bedrijf aan moet worden gekoppeld
 	 */
 	public synchronized boolean addVacature(Vacature vacature) {
-		if (vacature != null && !this.heeftVacature(vacature)) {
+		if (this.vacatureMagWordenToegevoegd(vacature)) {
 			this.getVacatures().add(vacature);
 			return this.heeftVacature(vacature);
 		}
 		return false;
 	}
 
+	/**
+	 * Verbreek bi-directionele relatie tussen Vacature > Bedrijf > Organisatie
+	 * 
+	 * @param vacature
+	 *            Vacature waar dit bedrijf van moet worden losgekoppeld
+	 */
 	public synchronized boolean removeVacature(Vacature vacature) {
-		if (vacature != null) {
+		if (this.vacatureMagWordenVerwijderd(vacature)) {
 			this.getVacatures().remove(vacature);
 			return !this.heeftVacature(vacature);
 		}
@@ -171,7 +215,24 @@ public class Bedrijf extends OrganisatieRol {
 	}
 
 	public boolean heeftVacature(Vacature vacature) {
-		return this.getVacatures().contains(vacature);
+		return this.getVacatures() != null
+				&& this.getVacatures().contains(vacature);
+	}
+
+	public boolean organisatieConstraint(Vacature vacature) {
+		return vacature.getOrganisatie() != null
+				&& vacature.getOrganisatie().getBedrijf() != null
+				&& vacature.getOrganisatie().getBedrijf().equals(this);
+	}
+
+	public boolean vacatureMagWordenToegevoegd(Vacature vacature) {
+		return vacature != null && !this.heeftVacature(vacature)
+				&& this.organisatieConstraint(vacature);
+	}
+
+	public boolean vacatureMagWordenVerwijderd(Vacature vacature) {
+		return vacature != null && this.heeftVacature(vacature)
+				&& this.organisatieConstraint(vacature);
 	}
 
 	/*
@@ -214,7 +275,7 @@ public class Bedrijf extends OrganisatieRol {
 		}
 		Kandidaat kandidaat = aanbieding.getPersoon().getKandidaat();
 		if (kandidaat != null
-				&& aanbieding.getOrganisatie().getBedrijf() == this) {
+				&& aanbieding.getOrganisatie().getBedrijf().equals(this)) {
 			this.getAanbiedingen().add(aanbieding);
 			kandidaat.addAanbieding(aanbieding);
 			return this.heeftAanbieding(aanbieding)
@@ -400,8 +461,24 @@ public class Bedrijf extends OrganisatieRol {
 		} else if (obj == null || !(obj instanceof Bedrijf)) {
 			return false;
 		} else {
-			@SuppressWarnings("unused")
 			Bedrijf other = (Bedrijf) obj;
+			if (this.getArbeidsovereenkomsten().size() > 0
+					&& !this.getArbeidsovereenkomsten().equals(
+							other.getArbeidsovereenkomsten())) {
+				return false;
+			}
+			if (this.getVacatures().size() > 0
+					&& !this.getVacatures().equals(other.getVacatures())) {
+				return false;
+			}
+			if (this.getAanbiedingen().size() > 0
+					&& !this.getAanbiedingen().equals(other.getAanbiedingen())) {
+				return false;
+			}
+			if (this.getMedewerkers().size() > 0
+					&& !this.getMedewerkers().equals(other.getMedewerkers())) {
+				return false;
+			}
 		}
 		return true;
 	}
