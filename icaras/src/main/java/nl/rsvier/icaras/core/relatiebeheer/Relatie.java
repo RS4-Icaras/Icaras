@@ -96,11 +96,12 @@ public abstract class Relatie implements IEntity {
 	}
 
 	@NotNull
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
 	public Set<Adres> getAdressen() {
 		return adressen;
 	}
 
+	@SuppressWarnings("unused")
 	private void setAdressen(Set<Adres> adressen) {
 		this.adressen = adressen;
 	}
@@ -173,7 +174,7 @@ public abstract class Relatie implements IEntity {
 	 */
 	public boolean verwijderLaatsteAdres() {
 		if (getAdressen().size() == 1) {
-			setAdressen(new HashSet<Adres>());
+			getAdressen().remove(this.getCorrespondentieAdres());
 			return true;
 		} else {
 			return false;
