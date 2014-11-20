@@ -313,7 +313,7 @@ public class OrganisatieTest {
 				sterlingcooper.getRollen().size() == 2);
 
 		assertTrue("De collectie bevat een rol van het type Leverancier",
-				sterlingcooper.heeftRol(Bedrijf.class));
+				sterlingcooper.heeftRol(Leverancier.class));
 	}
 
 	@Test
