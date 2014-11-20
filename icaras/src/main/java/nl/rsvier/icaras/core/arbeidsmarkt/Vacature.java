@@ -33,8 +33,6 @@ import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
  * @author Mark van Meerten
  */
 
-// TODO: Add Expertises
-
 @Entity
 public class Vacature implements IEntity {
 
@@ -58,15 +56,32 @@ public class Vacature implements IEntity {
 	public Vacature(Organisatie organisatie, String omschrijving)
 			throws InvalidBusinessKeyException {
 		this();
-		// TODO: samenvoegen zoals in de Aanbieding constructor
-		if (this.organisatieMagWordenToegevoegd(organisatie)) {
+
+		if (this.organisatieMagWordenToegevoegd(organisatie)
+				&& this.omschrijvingMagWordenToegevoegd(omschrijving)) {
 			this.setOrganisatie(organisatie);
-		}
-
-		if (this.omschrijvingMagWordenToegevoegd(omschrijving)) {
 			this.setOmschrijving(omschrijving);
+			/*
+			 * Add this Vacature IF AND ONLY IF Organisatie & Omschrijving have
+			 * been set! addVacature() will indirectly call this Vacature's
+			 * hashCode() so you better be damn sure the business key fields
+			 * have been properly initialized
+			 */
 		}
+		// if (!this.getOrganisatie().getBedrijf().addVacature(this)) {
+		// throw new InvalidBusinessKeyException("Vacature bestaat al");
+		// }
+		// } else {
+		// throw new InvalidBusinessKeyException(
+		// "Vacature business key has not been properly initialized");
+		// }
 
+		// if (this.organisatieMagWordenToegevoegd(organisatie)
+		// && this.omschrijvingMagWordenToegevoegd(omschrijving)) {
+		// this.setOrganisatie(organisatie);
+		// this.setOmschrijving(omschrijving);
+		// }
+		//
 		if (this.heeftOrganisatie() && this.heeftOmschrijving()) {
 			/*
 			 * Add this Vacature IF AND ONLY IF Organisatie has been set!
@@ -74,7 +89,10 @@ public class Vacature implements IEntity {
 			 * you better be damn sure the business key fields have been
 			 * properly initialized
 			 */
-			this.getOrganisatie().getBedrijf().addVacature(this);
+			if (!this.getOrganisatie().getBedrijf().addVacature(this)) {
+				throw new InvalidBusinessKeyException("Vacature bestaat al");
+			}
+
 		} else {
 			/*
 			 * Let's just make our business key immutable and be required to be
@@ -83,6 +101,7 @@ public class Vacature implements IEntity {
 			throw new InvalidBusinessKeyException(
 					"Vacature business key has not been properly initialized");
 		}
+
 	}
 
 	private Vacature() {
@@ -177,7 +196,7 @@ public class Vacature implements IEntity {
 	 * Aanbiedingen
 	 */
 
-	@OneToMany()
+	@OneToMany(orphanRemoval = true)
 	public Set<Aanbieding> getAanbiedingen() {
 		return this.aanbiedingen;
 	}
@@ -188,20 +207,44 @@ public class Vacature implements IEntity {
 	}
 
 	public synchronized boolean addAanbieding(Aanbieding aanbieding) {
-		if (!this.getAanbiedingen().contains(aanbieding)) {
-			return this.getAanbiedingen().add(aanbieding);
+		if (aanbieding == null) {
+			// Voorkom NullpointerExceptions
+			return false;
+		}
+		if (this.aanbiedingMagWordenToegevoegd(aanbieding)
+				&& aanbieding.vacatureMagWordenGezet(this)) {
+			this.getAanbiedingen().add(aanbieding);
+			aanbieding.setVacatureReferentie(this);
+			return this.heeftAanbieding(aanbieding)
+					&& aanbieding.heeftVacature(this);
 		}
 		return false;
 	}
 
 	public synchronized boolean removeAanbieding(Aanbieding aanbieding) {
-		if (aanbieding.heeftVacature()
-				&& aanbieding.getVacature().equals(this)) {
-			return this.getAanbiedingen().remove(aanbieding);
+		if (aanbieding == null) {
+			// Voorkom NullpointerExceptions
+			return false;
+		}
+		if (this.heeftAanbieding(aanbieding) && aanbieding.heeftVacature(this)) {
+			this.getAanbiedingen().remove(aanbieding);
+			aanbieding.removeVacature(this);
+			return !this.heeftAanbieding(aanbieding)
+					&& !aanbieding.heeftVacature(this);
 		}
 		return false;
 	}
-	
+
+	public boolean aanbiedingConstraint(Aanbieding aanbieding) {
+		return aanbieding != null
+				&& aanbieding.getOrganisatie().equals(this.getOrganisatie());
+	}
+
+	public boolean aanbiedingMagWordenToegevoegd(Aanbieding aanbieding) {
+		return !this.heeftAanbieding(aanbieding)
+				&& this.aanbiedingConstraint(aanbieding);
+	}
+
 	public boolean heeftAanbieding(Aanbieding aanbieding) {
 		return this.getAanbiedingen().contains(aanbieding);
 	}
@@ -225,8 +268,7 @@ public class Vacature implements IEntity {
 	}
 
 	public boolean omschrijvingMagWordenToegevoegd(String str) {
-		return !this.heeftOmschrijving()
-				&& this.omschrijvingConstraint(str);
+		return !this.heeftOmschrijving() && this.omschrijvingConstraint(str);
 	}
 
 	public boolean heeftOmschrijving() {
@@ -299,7 +341,5 @@ public class Vacature implements IEntity {
 				+ ") geplaatst door Organisatie: " + this.getOrganisatie()
 				+ ", met als omschrijving: " + this.getOmschrijving();
 	}
-
-	
 
 }

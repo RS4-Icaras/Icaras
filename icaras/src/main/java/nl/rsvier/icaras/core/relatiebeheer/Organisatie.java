@@ -1,8 +1,6 @@
 package nl.rsvier.icaras.core.relatiebeheer;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -42,7 +40,7 @@ public class Organisatie extends Relatie {
 	private static final long serialVersionUID = 1L;
 	private Set<OrganisatieRol> rollen;
 	private String naam;
-	private List<Persoon> contactpersonen; // Kijk, een lijst!
+	private Set<Persoon> contactpersonen;
 
 	/*
 	 * Constructoren
@@ -57,7 +55,7 @@ public class Organisatie extends Relatie {
 
 	private Organisatie() {
 		this.rollen = new HashSet<OrganisatieRol>();
-		this.contactpersonen = new ArrayList<Persoon>();
+		this.contactpersonen = new HashSet<Persoon>();
 	}
 
 	/*
@@ -156,12 +154,12 @@ public class Organisatie extends Relatie {
 	 */
 
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
-	public List<Persoon> getContactpersonen() {
+	public Set<Persoon> getContactpersonen() {
 		return contactpersonen;
 	}
 
 	@SuppressWarnings("unused")
-	private void setContactpersonen(List<Persoon> contactpersonen) {
+	private void setContactpersonen(Set<Persoon> contactpersonen) {
 		this.contactpersonen = contactpersonen;
 	}
 

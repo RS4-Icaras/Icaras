@@ -1,7 +1,6 @@
 package nl.rsvier.icaras.core.relatiebeheer;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -16,7 +15,6 @@ import nl.rsvier.icaras.core.arbeidsmarkt.Arbeidsovereenkomst;
 import nl.rsvier.icaras.core.arbeidsmarkt.Vacature;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class RelatiebeheerVerbindingsklassenTest {
@@ -43,7 +41,6 @@ public class RelatiebeheerVerbindingsklassenTest {
 
 	private Vacature vacature1;
 	private Vacature vacature2;
-	private Vacature vacature3;
 
 	private Arbeidsovereenkomst arbeidsovereenkomst1;
 	private Arbeidsovereenkomst arbeidsovereenkomst2;
@@ -390,9 +387,14 @@ public class RelatiebeheerVerbindingsklassenTest {
 				"http://www.google.com");
 		// voeg deze toe aan via een nieuwe aanbieding
 		aanbieding2 = new Aanbieding(persoon1, organisatie2, vacature2);
-		assertTrue(// geeft terug of beide referenties erin staan, niet of
-					// toevoegen lukt
-		aanbieding2.setVacatureReferentie(vacature2));
+		assertFalse("Returned of toevoegen lukt, aangezien de constructor van "
+				+ "Aanbieding de Vacature al heeft geinitialiseerd "
+				+ "returned deze methode false",
+				aanbieding2.setVacatureReferentie(vacature2));
+		assertTrue(
+				" Test of onze vorige aanname (dat de constructor van Aanbieding de "
+						+ "Vacature al heeft geinitialiseerd) correct is",
+				aanbieding2.getVacature().equals(vacature2));
 		assertTrue("de vacature van aanbieding2 is de toegekende vacature2",
 				aanbieding2.getVacature() == vacature2);
 		assertTrue("vacature2 heeft aanbieding2", vacature2.getAanbiedingen()

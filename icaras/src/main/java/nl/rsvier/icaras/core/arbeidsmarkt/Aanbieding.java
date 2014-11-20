@@ -38,11 +38,12 @@ public class Aanbieding implements IEntity {
 	public Aanbieding(Persoon persoon, Organisatie organisatie,
 			Vacature vacature) throws InvalidBusinessKeyException {
 		this(persoon, organisatie);
-		if (this.vacatureMagWordenToegevoegd(vacature)) {
+		if (this.vacatureMagWordenGezet(vacature)) {
 			this.setVacature(vacature);
 			vacature.addAanbieding(this);
 		} else {
-			// TODO: Vacature is nog geen deel van de business key, passende exception?
+			// TODO: Vacature is nog geen deel van de business key, passende
+			// exception?
 			throw new InvalidBusinessKeyException(
 					"Aanbieding business key has not been properly initialized");
 		}
@@ -139,42 +140,45 @@ public class Aanbieding implements IEntity {
 			// Voorkom NullpointerExceptions
 			return false;
 		}
-		if (this.vacatureMagWordenToegevoegd(vacature)) {
+		if (this.vacatureMagWordenGezet(vacature)
+				&& vacature.aanbiedingMagWordenToegevoegd(this)) {
 			this.setVacature(vacature);
 			vacature.addAanbieding(this);
-			return this.heeftVacature() && vacature.heeftAanbieding(this);
+			return this.heeftVacature(vacature)
+					&& vacature.heeftAanbieding(this);
 		}
 		return false;
+	}
+
+	public synchronized boolean removeVacature(Vacature vacature) {
+		if (vacature == null) {
+			// Voorkom NullpointerExceptions
+			return false;
+		}
+		if (this.heeftVacature(vacature) && vacature.heeftAanbieding(this)) {
+			/*
+			 * Roep eerst removeAanbieding op vacature aan
+			 */
+			vacature.removeAanbieding(this);
+			this.setVacature(null);
+			return !this.heeftVacature(vacature)
+					&& !vacature.heeftAanbieding(this);
+		}
+		return false;
+
 	}
 
 	public boolean vacatureConstraint(Vacature vacature) {
 		return this.getOrganisatie().equals(vacature.getOrganisatie());
 	}
 
-	public boolean vacatureMagWordenToegevoegd(Vacature vacature) {
+	public boolean vacatureMagWordenGezet(Vacature vacature) {
 		return this.vacatureConstraint(vacature);
 	}
 
-	public synchronized boolean removeVacature(Vacature vacature) {
-		if (vacature != null && this.heeftVacature()
-				&& this.getVacature().equals(vacature)) {
-
-			/*
-			 * Verwijder de Aanbieding niet omdat deze niet langer aan een
-			 * Vacature is gekoppeld. De Aanbieding kan nog steeds worden
-			 * gebruikt voor statistieken
-			 */
-
-			vacature.removeAanbieding(this);
-			this.vacature = null;
-			// TODO: andere kant ook
-			return true;
-		}
-		return false;
-	}
-
-	public boolean heeftVacature() {
-		return this.getVacature() != null;
+	public boolean heeftVacature(Vacature vacature) {
+		return this.getVacature() != null
+				&& this.getVacature().equals(vacature);
 	}
 
 	/*
@@ -259,8 +263,6 @@ public class Aanbieding implements IEntity {
 			if (!this.getOrganisatie().equals(other.getOrganisatie())) {
 				return false;
 			}
-			// TODO: One day we'll probably want to add Vacature to our business
-			// key so we can connect Aanbieding to the latest issued Vacature
 		}
 		return true;
 	}

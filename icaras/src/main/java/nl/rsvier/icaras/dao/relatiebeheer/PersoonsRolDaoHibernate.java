@@ -11,5 +11,5 @@ public class PersoonsRolDaoHibernate extends GenericDaoHibernate<PersoonsRol> im
 	public PersoonsRolDaoHibernate() {
 		super(PersoonsRol.class);
 	}
-	//TODO Testklasse schrijven
+	
 }

@@ -1,5 +1,7 @@
 package nl.rsvier.icaras.dao;
 
+import nl.rsvier.icaras.dao.arbeidsmarkt.AanbiedingDaoHibernateTest;
+import nl.rsvier.icaras.dao.arbeidsmarkt.VacatureDaoHibernateTest;
 import nl.rsvier.icaras.dao.relatiebeheer.AdresDaoHibernateTest;
 import nl.rsvier.icaras.dao.relatiebeheer.NfaDaoHibernateTest;
 import nl.rsvier.icaras.dao.relatiebeheer.OrganisatieDaoHibernateTest;
@@ -30,6 +32,9 @@ import org.junit.runners.Suite;
 	
 	PersoonsRolDaoHibernateTest.class,
 	OrganisatieRolDaoHibernateTest.class,
+	
+	AanbiedingDaoHibernateTest.class, 
+	VacatureDaoHibernateTest.class, 
 })
 public class DaoTestSuite {
 
