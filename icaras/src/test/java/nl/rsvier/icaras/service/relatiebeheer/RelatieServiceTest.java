@@ -25,13 +25,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 //TODO Embedded database voor deze test
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:icarasdb-context.xml" })
+@ContextConfiguration(locations = { "classpath:icarastestdb-context.xml" })
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class RelatieServiceTest {
 
 	@Autowired
@@ -144,15 +147,15 @@ public class RelatieServiceTest {
 		service.save(relatie2);
 	}
 
-	@After
-	public void tearDown() {
-		/**
-		 * Schoon de tabel op na elke test zodat deze bruikbaar is in een
-		 * volgende test
-		 */
-		service.delete(relatie1);
-		service.delete(relatie2);
-	}
+//	@After
+//	public void tearDown() {
+//		/**
+//		 * Schoon de tabel op na elke test zodat deze bruikbaar is in een
+//		 * volgende test
+//		 */
+//		service.delete(relatie1);
+//		service.delete(relatie2);
+//	}
 
 	@Test
 	public void testSaveEnGet() {
