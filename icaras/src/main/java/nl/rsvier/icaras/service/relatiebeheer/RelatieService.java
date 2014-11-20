@@ -6,10 +6,7 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
-import nl.rsvier.icaras.core.arbeidsmarkt.Aanbieding;
 import nl.rsvier.icaras.core.relatiebeheer.Adres;
-import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
-import nl.rsvier.icaras.core.relatiebeheer.Persoon;
 import nl.rsvier.icaras.core.relatiebeheer.Relatie;
 import nl.rsvier.icaras.dao.relatiebeheer.IRelatieDao;
 import nl.rsvier.icaras.dao.relatiebeheer.RelatieDaoHibernate;
@@ -42,14 +39,18 @@ public class RelatieService implements IRelatieService {
 	 */
 
 	public IRelatieDao getDao() {
+		
 		return relatieDao;
+		
 	}
 
 	/**
 	 * 
 	 */
 	public void setDao(RelatieDaoHibernate dao) {
+		
 		this.relatieDao = dao;
+		
 	}
 
 	/**
@@ -58,6 +59,7 @@ public class RelatieService implements IRelatieService {
 	public List<Relatie> getAll() {
 
 		return relatieDao.getAll();
+		
 	}
 
 	/**
@@ -69,7 +71,7 @@ public class RelatieService implements IRelatieService {
 	 *            de te saven relatie
 	 */
 	public void save(Relatie r) {
-
+		
 		relatieDao.save(r);
 
 	}
@@ -81,6 +83,7 @@ public class RelatieService implements IRelatieService {
 	 *            de te deleten Relatie
 	 */
 	public void delete(Relatie r) {
+		
 		relatieDao.delete(r);
 
 	}
@@ -89,6 +92,7 @@ public class RelatieService implements IRelatieService {
 	 * update meegegeven relatie
 	 */
 	public void update(Relatie r) {
+		
 		relatieDao.update(r);
 
 	}
@@ -107,8 +111,10 @@ public class RelatieService implements IRelatieService {
 	public Relatie getByIdMetAdres(int id) {
 
 		Relatie r = relatieDao.getById(id);
+
 		((RelatieDaoHibernate) relatieDao).getHibernateTemplate().initialize(
 				r.getAdressen());
+
 		return r;
 
 	}
@@ -133,9 +139,9 @@ public class RelatieService implements IRelatieService {
 	}
 
 	public Set<Adres> getRelatieAdressen(Relatie r) {
+
 		((RelatieDaoHibernate) relatieDao).getHibernateTemplate().initialize(
 				r.getAdressen());
 		return r.getAdressen();
-
 	}
 }
