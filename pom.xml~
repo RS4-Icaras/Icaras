@@ -10,7 +10,7 @@
 	<url>http://www.rsvier.nl/icaras</url>
 
 	<modules>
-		<module>icaras</module>
+		<module>Icaras</module>
 	</modules>
 
 	<dependencyManagement>
