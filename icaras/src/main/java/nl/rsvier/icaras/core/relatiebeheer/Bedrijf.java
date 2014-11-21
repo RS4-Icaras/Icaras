@@ -82,7 +82,7 @@ public class Bedrijf extends OrganisatieRol {
 			Organisatie organisatie = arbeidsovereenkomst.getOrganisatie();
 			if (medewerker != null && werknemer != null
 					// controleer of het de juiste organisatie is
-					&& organisatie.getBedrijf() == this
+					&& organisatie.getBedrijf().equals(this)
 					&& this.getArbeidsovereenkomsten().add(arbeidsovereenkomst)) {
 				werknemer.addArbeidsovereenkomst(arbeidsovereenkomst);
 				this.addMedewerker(medewerker);
@@ -136,45 +136,6 @@ public class Bedrijf extends OrganisatieRol {
 	/*
 	 * Collectie: Vacatures
 	 */
-
-	// @OneToMany(orphanRemoval = true, cascade =
-	// javax.persistence.CascadeType.ALL)
-	// public Set<Vacature> getVacatures() {
-	// return vacatures;
-	// }
-	//
-	// @SuppressWarnings("unused")
-	// private void setVacatures(Set<Vacature> vacatures) {
-	// this.vacatures = vacatures;
-	// }
-	//
-	// /*
-	// * Bij het maken van een nieuwe Aanbieding (die gedaan word n.a.v. een
-	// * vacature) word de vacature al automatisch toegevoegd aan deze instantie
-	// * van Bedrijf. Sta het dus niet toe om verder nog handmatig een aanroep
-	// te
-	// * doen op deze methode zodat er geen tweede insert word gedaan (met als
-	// * gevolg dat de insert een unique restraint breekt)
-	// */
-	// public synchronized boolean addVacature(Vacature vacature) {
-	// if (vacature != null && !this.heeftVacature(vacature)) {
-	// this.getVacatures().add(vacature);
-	// return this.heeftVacature(vacature);
-	// }
-	// return false;
-	// }
-	//
-	// public synchronized boolean removeVacature(Vacature vacature) {
-	// if (vacature != null) {
-	// this.getVacatures().remove(vacature);
-	// return !this.heeftVacature(vacature);
-	// }
-	// return false;
-	// }
-	//
-	// public boolean heeftVacature(Vacature vacature) {
-	// return this.getVacatures().contains(vacature);
-	// }
 
 	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
 	public Set<Vacature> getVacatures() {
@@ -308,7 +269,7 @@ public class Bedrijf extends OrganisatieRol {
 		}
 		Kandidaat kandidaat = aanbieding.getPersoon().getKandidaat();
 		Bedrijf bedrijf = aanbieding.getOrganisatie().getBedrijf();
-		if (kandidaat != null && bedrijf != null && bedrijf == this) {
+		if (kandidaat != null && bedrijf != null && bedrijf.equals(this)) {
 			this.getAanbiedingen().remove(aanbieding);
 			kandidaat.removeAanbieding(aanbieding);
 			return !this.heeftAanbieding(aanbieding)
