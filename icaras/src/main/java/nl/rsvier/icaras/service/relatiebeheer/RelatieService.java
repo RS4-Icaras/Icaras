@@ -1,12 +1,8 @@
 package nl.rsvier.icaras.service.relatiebeheer;
 
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-
 import javax.transaction.Transactional;
 
-import nl.rsvier.icaras.core.relatiebeheer.Adres;
 import nl.rsvier.icaras.core.relatiebeheer.Relatie;
 import nl.rsvier.icaras.dao.relatiebeheer.IRelatieDao;
 import nl.rsvier.icaras.dao.relatiebeheer.RelatieDaoHibernate;
@@ -27,10 +23,6 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class RelatieService implements IRelatieService {
 
-	// TODO vanwege autowiren van interface (good practice, mogelijkheid om
-	// andere implementatie te gebruiken)
-	// nu cast nodig op getHibernateTemplate. Hierdoor is overstap op andere
-	// implementatie alsnog niet mogelijk
 	@Autowired
 	private IRelatieDao relatieDao;
 
@@ -108,15 +100,13 @@ public class RelatieService implements IRelatieService {
 		return relatieDao.getById(id);
 	}
 
+	/**
+	 * @return Relatie uit database met geinitialiseerde adressenlijst
+	 * @param de id van de op te vragen relatie
+	 */
 	public Relatie getByIdMetAdres(int id) {
 
-		Relatie r = relatieDao.getById(id);
-
-		((RelatieDaoHibernate) relatieDao).getHibernateTemplate().initialize(
-				r.getAdressen());
-
-		return r;
-
+		return relatieDao.getByIdMetAdres(id);
 	}
 
 	/**
@@ -125,16 +115,7 @@ public class RelatieService implements IRelatieService {
 	 */
 	public List<Relatie> getAllMetAdres() {
 
-		List<Relatie> relatieLijst = relatieDao.getAll();
-		ListIterator<Relatie> listitr = relatieLijst.listIterator();
-
-		while (listitr.hasNext()) {
-			Relatie r = (Relatie) listitr.next();
-			((RelatieDaoHibernate) relatieDao).getHibernateTemplate()
-					.initialize(r.getAdressen());
-		}
-
-		return relatieLijst;
+		return relatieDao.getAllMetAdressen();
 	}
 	
 }
