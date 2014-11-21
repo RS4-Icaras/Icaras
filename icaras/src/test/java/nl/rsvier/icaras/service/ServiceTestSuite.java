@@ -1,6 +1,7 @@
 package nl.rsvier.icaras.service;
 
 import nl.rsvier.icaras.service.relatiebeheer.RelatieRelatiesTest;
+import nl.rsvier.icaras.service.relatiebeheer.RelatieServiceTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -16,6 +17,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ 
 	RelatieRelatiesTest.class, 
+	RelatieServiceTest.class
 })
 public class ServiceTestSuite {
 

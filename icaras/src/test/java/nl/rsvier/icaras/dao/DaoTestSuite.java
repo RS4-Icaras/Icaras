@@ -8,6 +8,7 @@ import nl.rsvier.icaras.dao.relatiebeheer.OrganisatieDaoHibernateTest;
 import nl.rsvier.icaras.dao.relatiebeheer.OrganisatieRolDaoHibernateTest;
 import nl.rsvier.icaras.dao.relatiebeheer.PersoonsRolDaoHibernateTest;
 import nl.rsvier.icaras.dao.relatiebeheer.RelatieDaoHibernateTest;
+import nl.rsvier.icaras.dao.relatiebeheer.TestDaoAdapterTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -35,6 +36,8 @@ import org.junit.runners.Suite;
 	
 	AanbiedingDaoHibernateTest.class, 
 	VacatureDaoHibernateTest.class, 
+	
+	TestDaoAdapterTest.class
 })
 public class DaoTestSuite {
 
