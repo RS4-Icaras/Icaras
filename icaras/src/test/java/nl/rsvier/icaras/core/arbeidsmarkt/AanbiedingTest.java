@@ -105,8 +105,8 @@ public class AanbiedingTest {
 		 */
 
 		for (Aanbieding a : aanbiedingen_correct) {
-			assertTrue("Organisatie is gezet", a.heeftPersoon());
-			assertTrue("Omschrijving is gezet", a.heeftOrganisatie());
+			assertTrue("Persoon is gezet", a.heeftPersoon());
+			assertTrue("Organisatie is gezet", a.heeftOrganisatie());
 
 			assertTrue("Bi-directionele relatie geinitialiseerd", a
 					.getOrganisatie().getBedrijf().heeftAanbieding(a));
