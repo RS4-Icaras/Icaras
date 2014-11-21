@@ -30,7 +30,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-	"classpath:icarasdb-context.xml"
+	"classpath:icarastestdb-context.xml"
 })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class PersoonDaoHibernateTest {

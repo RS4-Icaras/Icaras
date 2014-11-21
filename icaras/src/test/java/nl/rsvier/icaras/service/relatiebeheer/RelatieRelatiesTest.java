@@ -32,7 +32,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:icarasdb-context.xml" })
+@ContextConfiguration(locations = { "classpath:icarastestdb-context.xml" })
 @TransactionConfiguration(defaultRollback = true)
 public class RelatieRelatiesTest {
 
