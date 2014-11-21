@@ -30,10 +30,11 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-//TODO Embedded database voor deze test
+ 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:icarastestdb-context.xml" })
+//Zorgt voor herladen van de applicatieContext na elke test. 
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class RelatieServiceTest {
 
@@ -242,11 +243,11 @@ public class RelatieServiceTest {
 				"Controleer of de adressen die bij de relatie horen ook zijn verwijderd",
 				0, adresDao.getAll().size());
 
-		service.save(relatie1_clone);
-		service.save(relatie2_clone);
+//		service.save(relatie1_clone);
+//		service.save(relatie2_clone);
 
-		relatie1 = relatie1_clone;
-		relatie2 = relatie2_clone;
+//		relatie1 = relatie1_clone;
+//		relatie2 = relatie2_clone;
 	}
 
 	@Test
@@ -313,22 +314,6 @@ public class RelatieServiceTest {
 
 	}
 
-	@Test
-	public void testGetRelatieAdressen() {
-
-		Set<Adres> relatie1Adressen = service.getRelatieAdressen(relatie1);
-		Set<Adres> relatie2Adressen = service.getRelatieAdressen(relatie2);
-
-		assertFalse("relatie1 AdressenSet is leeg ", relatie1Adressen.isEmpty());
-		assertFalse("relatie2 AdressenSet is leeg ", relatie2Adressen.isEmpty());
-		assertTrue(
-				"relatie1 adressen set is niet gelijk aan relatie1.getadressen",
-				relatie1Adressen.equals(relatie1.getAdressen()));
-		assertTrue(
-				"relatie2 adressen set is niet gelijk aan relatie1.getadressen",
-				relatie2Adressen.equals(relatie2.getAdressen()));
-
-	}
 
 	@Test
 	public void testGetByIdMetAdressen() {

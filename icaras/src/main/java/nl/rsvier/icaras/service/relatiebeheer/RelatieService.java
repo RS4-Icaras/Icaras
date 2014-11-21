@@ -135,13 +135,6 @@ public class RelatieService implements IRelatieService {
 		}
 
 		return relatieLijst;
-
 	}
-
-	public Set<Adres> getRelatieAdressen(Relatie r) {
-
-		((RelatieDaoHibernate) relatieDao).getHibernateTemplate().initialize(
-				r.getAdressen());
-		return r.getAdressen();
-	}
+	
 }

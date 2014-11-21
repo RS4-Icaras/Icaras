@@ -27,7 +27,6 @@ public interface IRelatieService  {
 	
 	public List<Relatie> getAllMetAdres();
 	
-	public Set<Adres> getRelatieAdressen(Relatie r);
 	
 	public Relatie getByIdMetAdres(int id);
 }
