@@ -13,7 +13,7 @@ import javax.persistence.InheritanceType;
 public abstract class Rol {
 
 	private int id;
-	protected boolean isGearchiveerd;
+	protected boolean gearchiveerd;
 	protected String opmerking = "";
 
 	/*
@@ -35,8 +35,9 @@ public abstract class Rol {
 	 * Archief
 	 */
 
-	private boolean getIsGearchiveerd() {
-		return this.isGearchiveerd;
+	@Column(name = "isGearchiveerd")
+	private boolean getGearchiveerd() {
+		return this.gearchiveerd;
 	}
 
 	/*
@@ -44,18 +45,17 @@ public abstract class Rol {
 	 * boolean getters is: "isBoolean()", provide an "isGearchiveerd()" method
 	 */
 	public boolean isGearchiveerd() {
-		return this.getIsGearchiveerd();
+		return this.getGearchiveerd();
 	}
 
-	public void setIsGearchiveerd(boolean b) {
-		this.isGearchiveerd = b;
+	public void setGearchiveerd(boolean b) {
+		this.gearchiveerd = b;
 	}
 
 	/*
 	 * Opmerking
 	 */
 
-	@Column(name = "opmerking")
 	public String getOpmerking() {
 		return this.opmerking;
 	}
