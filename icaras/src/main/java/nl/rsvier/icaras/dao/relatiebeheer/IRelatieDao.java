@@ -13,7 +13,9 @@ public interface IRelatieDao extends IGenericDao<Relatie> {
 	 *         adreslijst geinstantieerd
 	 */
 	public List<Relatie> getAllMetAdressen();
-	
+	//TODO methodeNaam aanpassen Adressen wordt Adreslijst
+	//ook voor onderstaande methode en dus bijbehorende 
+	// implementatie en ook in servicelaag
 	/**
 	 * @return Relatie uit database met geinitialiseerde adressenlijst
 	 * @param de id van de op te vragen relatie
