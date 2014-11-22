@@ -169,45 +169,46 @@ public class AanbiedingTest {
 	@Test
 	public void test_removeAllReferences() {
 
-		// Use object to test
-		Aanbieding use_aanbieding = aanbieding1;
+		for (Aanbieding use_aanbieding : aanbiedingen_correct) {
 
-		if (use_aanbieding.getVacature() != null) {
+			if (use_aanbieding.getVacature() != null) {
+				assertTrue(
+						"De collectie Aanbiedingen van Vacature bevat een referentie naar de Aanbieding",
+						use_aanbieding.getVacature().heeftAanbieding(
+								use_aanbieding));
+			}
+
 			assertTrue(
-					"De collectie Aanbiedingen van Vacature bevat een referentie naar de Aanbieding",
-					use_aanbieding.getVacature()
+					"De collectie Aanbiedingen van Bedrijf bevat een referentie naar de Aanbieding",
+					use_aanbieding.getOrganisatie().getBedrijf()
 							.heeftAanbieding(use_aanbieding));
-		}
 
-		assertTrue(
-				"De collectie Aanbiedingen van Bedrijf bevat een referentie naar de Aanbieding",
-				use_aanbieding.getOrganisatie().getBedrijf()
-						.heeftAanbieding(use_aanbieding));
+			assertTrue(
+					"De collectie Aanbiedingen van Kandidaat bevat een referentie naar de Aanbieding",
+					use_aanbieding.getPersoon().getKandidaat()
+							.heeftAanbieding(use_aanbieding));
 
-		assertTrue(
-				"De collectie Aanbiedingen van Kandidaat bevat een referentie naar de Aanbieding",
-				use_aanbieding.getPersoon().getKandidaat()
-						.heeftAanbieding(use_aanbieding));
+			assertTrue("Alle referenties naar deze Aanbieding zijn verwijderd",
+					use_aanbieding.removeAllReferences());
 
-		assertTrue("Alle referenties naar deze Aanbieding zijn verwijderd",
-				use_aanbieding.removeAllReferences());
+			if (use_aanbieding.getVacature() != null) {
+				assertFalse(
+						"Aanbieding is verwijderd uit de collectie Aanbiedingen van Vacature",
+						use_aanbieding.getVacature().heeftAanbieding(
+								use_aanbieding));
+			}
 
-		if (use_aanbieding.getVacature() != null) {
 			assertFalse(
-					"Aanbieding is verwijderd uit de collectie Aanbiedingen van Vacature",
-					use_aanbieding.getVacature()
+					"Aanbieding is verwijderd uit de collectie Aanbiedingen van Bedrijf",
+					use_aanbieding.getOrganisatie().getBedrijf()
 							.heeftAanbieding(use_aanbieding));
+
+			assertFalse(
+					"Aanbieding is verwijderd uit de collectie Aanbiedingen van Kandidaat",
+					use_aanbieding.getPersoon().getKandidaat()
+							.heeftAanbieding(use_aanbieding));
+
 		}
-
-		assertFalse(
-				"Aanbieding is verwijderd uit de collectie Aanbiedingen van Bedrijf",
-				use_aanbieding.getOrganisatie().getBedrijf()
-						.heeftAanbieding(use_aanbieding));
-
-		assertFalse(
-				"Aanbieding is verwijderd uit de collectie Aanbiedingen van Kandidaat",
-				use_aanbieding.getPersoon().getKandidaat()
-						.heeftAanbieding(use_aanbieding));
 
 	}
 
@@ -359,16 +360,16 @@ public class AanbiedingTest {
 		// assertTrue("Vergeleken met clone van zichzelf",
 		// aanbieding3.equals(aanbieding3_clone));
 
-		assertFalse("Vergeleken met gelijke objecten",
+		assertFalse("Vergeleken met een ander object van hetzelfde type",
 				aanbieding1.equals(aanbieding2));
 
-		assertFalse("Vergeleken met gelijke objecten",
+		assertFalse("Vergeleken met een ander object van hetzelfde type",
 				aanbieding2.equals(aanbieding3));
 
-		assertFalse("Vergeleken met gelijke objecten",
+		assertFalse("Vergeleken met een ander object van hetzelfde type",
 				aanbieding1.equals(aanbieding3));
 
-		assertFalse("Vergeleken met ander type object (String)",
+		assertFalse("Vergeleken met een ander object van een ander type (String)",
 				aanbieding1.equals(new String("willekeurige string")));
 
 	}
