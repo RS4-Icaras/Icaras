@@ -16,30 +16,27 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * Deze klasse is bedoeld om alle Core Tests gezamenlijk te runnen binnen dezelfde
- * JUnit test.
+ * Deze klasse is bedoeld om alle Core Tests gezamenlijk te runnen binnen
+ * dezelfde JUnit test.
  * 
  * @author Gerben
  * @author Gordon
  */
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-	AdresTest.class, 
-	NfaTest.class,
-	CorrespondentieAdresTest.class,
-	
-	PersoonKandidaatCVGeneratorTest.class,
-	RelatiebeheerVerbindingsklassenTest.class, 
-	
-	OrganisatieTest.class,
-	//BedrijfTest.class,
-	ContactpersoonTest.class,
-	LeverancierTest.class,
-	
-	AanbiedingTest.class,
-	VacatureTest.class,
-})
+@Suite.SuiteClasses({ AdresTest.class, NfaTest.class,
+		CorrespondentieAdresTest.class,
+
+		PersoonKandidaatCVGeneratorTest.class,
+		RelatiebeheerVerbindingsklassenTest.class,
+
+		OrganisatieTest.class,
+		// wordt door RelatiebeheerVerbindingsklassenTest gedekt.
+		// BedrijfTest.class,
+		LeverancierTest.class,
+		ContactpersoonTest.class, LeverancierTest.class,
+
+		AanbiedingTest.class, VacatureTest.class, })
 public class CoreTestSuite {
 
 }

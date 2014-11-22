@@ -13,6 +13,6 @@ import org.junit.runners.Suite;
 	DaoTestSuite.class, 
 	ServiceTestSuite.class,
 })
-public class TestSuite {
+public class TestSuiteContainer {
 
 }

@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Testklasse voor de core klasse: Contactpersoon
+ * Testklasse voor de core klasse: Leverancier
  * 
  * @author Mark van Meerten
  */
