@@ -33,7 +33,6 @@
 				value="${adres.plaats}" />
 			<br />
 
-
 			<input type="checkbox"
 				name="adressen[${status.index}].isCorrespondentieAdres" value="true"
 				<c:if test="${adres.isCorrespondentieAdres}">checked</c:if>>Is dit adres het correspendentieadres?<br />

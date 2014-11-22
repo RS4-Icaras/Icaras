@@ -73,19 +73,18 @@
 			</c:when>
 			
 		</c:choose>
-<fieldset>
-					<legend>Adressen</legend>
-		
-		<ul id="adressenlist">
-			<c:forEach items="${relatie.adressen}" var="adres">
-				<li class="adres <c:if test="${adres.isCorrespondentieAdres}">correspondentieadres</c:if>">
-					<a href="/Icaras/voegAdresToe/${relatie.id}"> ${adres} </a>
-				</li>
-			</c:forEach>
-			<li style="margin-top: 12px;" class="new"><a
-				href="/Icaras/voegAdresToe/${relatie.id}">Adres</a></li>
-		</ul>
-</fieldset>
+			<fieldset>
+			<legend>Adressen</legend>
+				<ul id="adressenlist">
+					<c:forEach items="${relatie.adressen}" var="adres">
+						<li class="adres <c:if test="${adres.isCorrespondentieAdres}">correspondentieadres</c:if>">
+							<a href="/Icaras/voegAdresToe/${relatie.id}"> ${adres} </a>
+						</li>
+					</c:forEach>
+					<li style="margin-top: 12px;" class="new"><a
+						href="/Icaras/voegAdresToe/${relatie.id}">Adres</a></li>
+				</ul>
+			</fieldset>
 	</c:if>
 
 </body>

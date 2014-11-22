@@ -23,76 +23,67 @@
 	</ul>
 	</div>
 	
-	<form:form method="post" action="/Icaras/updateAdressen"
-		modelAttribute="relatie">
-		<fieldset>
-			<legend>Bekende Adressen:</legend>
-			<c:forEach items="${relatie.adressen}" var="adres">
-				
-				<input type="hidden" name="id" value="${adres.id}">
-				<input type="hidden" name="isCorrespondentieAdres"
-					value="${adres.isCorrespondentieAdres}">
-				<input type="hidden" name="isPostbus" value="${adres.isPostbus}" />
-				
+	<c:if test="${not empty relatie}">
+	
+		<form:form method="post" action="/Icaras/updateAdressen"
+			modelAttribute="relatie">
+			<fieldset>
+				<legend>Bekende Adressen:</legend>
+				<c:forEach items="${relatie.adressen}" var="adres">
+					<input type="hidden" name="id" value="${adres.id}">
+					<input type="hidden" name="isCorrespondentieAdres"
+						value="${adres.isCorrespondentieAdres}">
+					<input type="hidden" name="isPostbus" value="${adres.isPostbus}" />
+					
+					<label for="straat">Straat</label>
+					<input type="text" name="straat" value="${adres.straat}" /><br />
+					
+					<label for="huisOfPostbusNummer">huisOfPostbusNummer</label>
+					<input type="text" name="huisOfPostbusNummer"
+						value="${adres.huisOfPostbusNummer}" /><br />
+					
+					<label for="postcode">postcode</label>
+					<input type="text" name="postcode" value="${adres.postcode}" /><br />
+					
+					<label for="plaats">plaats</label>
+					<input type="text" name="plaats" value="${adres.plaats}" /><br />
+					
+					<input type="checkbox" name="isCorrespondentieAdres" value="true" <c:if test="${adres.isCorrespondentieAdres}">checked</c:if>>Is dit adres het correspendentieadres?<br />
+					<input type="checkbox" name="isPostbus" value="true" <c:if test="${adres.isPostbus}">checked</c:if>>Is dit adres een Postbus?<br />
+					
+					<br />
+				</c:forEach>
+				<input type="submit" value="Wijzig adres(sen)" disabled="disabled" />
+				<p class="warning">Hoe slaan we meerdere</p>
+			</fieldset>
+		</form:form>
+	
+		<form:form method="post" action="/Icaras/voegAdresToe/${relatie.id}"
+			modelAttribute="adresForm">
+			<fieldset>
+				<legend>Voeg een nieuw adres toe:</legend>
+	
 				<label for="straat">Straat</label>
-				<input type="text" name="straat" value="${adres.straat}" /><br />
+				<input type="text" name="straat" value="" /><br /> 
 				
 				<label for="huisOfPostbusNummer">huisOfPostbusNummer</label>
-				<input type="text" name="huisOfPostbusNummer"
-					value="${adres.huisOfPostbusNummer}" /><br />
+				<input type="text" name="huisOfPostbusNummer" value="" /><br /> 
 				
 				<label for="postcode">postcode</label>
-				<input type="text" name="postcode" value="${adres.postcode}" /><br />
+				<input type="text" name="postcode"value="" /><br />
 				
 				<label for="plaats">plaats</label>
-				<input type="text" name="plaats" value="${adres.plaats}" /><br />
+				<input type="text" name="plaats" value="" /><br />
 				
-				<input type="checkbox" name="isCorrespondentieAdres" value="true" <c:if test="${adres.isCorrespondentieAdres}">checked</c:if>>Is dit adres het correspendentieadres?<br />
-				<input type="checkbox" name="isPostbus" value="true" <c:if test="${adres.isPostbus}">checked</c:if>>Is dit adres een Postbus?<br />
-				<!--<input type="checkbox" name="test" value="true" <c:if test="${adres.test}">checked</c:if>>Is dit adres een test?<br />-->
-			
-				<br />
+				<input type="checkbox" name="correspondentieAdres" value="true" checked>Stuur de post hiernaartoe?<br />
+				<input type="checkbox" name="postbus" value="true" checked>Is dit adres een postbus?<br />
 				
-			</c:forEach>
+				<input type="submit" value="Voeg adres toe" />
+				
+			</fieldset>
+		</form:form>
 
-			<input type="submit" value="Wijzig adres(sen)" disabled="disabled" />
-			
-			
-		</fieldset>
-
-	</form:form>
-
-	<form:form method="post" action="/Icaras/voegAdresToe/${relatie.id}"
-		modelAttribute="adres">
-
-		<fieldset>
-			<legend>Voeg een nieuw adres toe:</legend>
-
-			<input type="hidden" name="id" value="0" />
-
-			<label for="straat">Straat</label>
-			<input type="text" name="straat" value="" /><br /> 
-			
-			<label for="huisOfPostbusNummer">huisOfPostbusNummer</label>
-			<input type="text" name="huisOfPostbusNummer" value="" /><br /> 
-			
-			<label for="postcode">postcode</label>
-			<input type="text" name="postcode"value="" /><br />
-			
-			<label for="plaats">plaats</label>
-			<input type="text" name="plaats" value="" /><br />
-			
-			<input type="checkbox" name="isCorrespondentieAdres" value="true" checked />Maak dit adres het correspendentie adres?<br />
-			<input type="checkbox" name="isPostbus" value="true" checked />Is dit adres een Postbus?<br />
-			<!--<input type="checkbox" name="test" value="true" checked />Is dit adres een test?<br />-->
-			
-			<input type="submit" value="Voeg adres toe" />
-			
-			<p class="warning">Ik krijg het nog niet voor elkaar om een Adres op te slaan als Postbus Adres</p>
-
-		</fieldset>
-
-	</form:form>
+	</c:if>
 
 </body>
 </html>
