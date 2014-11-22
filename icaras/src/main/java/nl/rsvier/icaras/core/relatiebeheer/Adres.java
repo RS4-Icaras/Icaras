@@ -23,6 +23,7 @@ import nl.rsvier.icaras.core.IEntity;
 public class Adres implements IEntity {
 
 	private static final long serialVersionUID = 1L;
+
 	private int id;
 	private boolean isCorrespondentieAdres;
 	private boolean isPostbus;
@@ -35,7 +36,7 @@ public class Adres implements IEntity {
 
 	public Adres() {
 		setIsPostbus(false);
-		setCorrespondentieAdres(false);
+		setIsCorrespondentieAdres(false);
 	}
 
 	public Adres(boolean isCorrespondentieAdres, boolean isPostbus,
@@ -47,7 +48,7 @@ public class Adres implements IEntity {
 			setIsPostbus(false);
 			setStraat(straat);
 		}
-		setCorrespondentieAdres(isCorrespondentieAdres);
+		setIsCorrespondentieAdres(isCorrespondentieAdres);
 		setPostcode(postcode);
 		setHuisOfPostbusNummer(huisOfPostbusNummer);
 		setPlaats(plaats);
@@ -64,11 +65,20 @@ public class Adres implements IEntity {
 		this.id = id;
 	}
 
-	public boolean isCorrespondentieAdres() {
+	public boolean getIsCorrespondentieAdres() {
 		return isCorrespondentieAdres;
 	}
 
-	private void setCorrespondentieAdres(boolean isCorrespondentieAdres) {
+	/*
+	 * Reflection requires a getter, even though standard naming convention for
+	 * boolean getters is: "isBoolean()", provide an "isPostbus()" method
+	 */
+	@Transient
+	public boolean isCorrespondentieAdres() {
+		return this.getIsCorrespondentieAdres();
+	}
+
+	private void setIsCorrespondentieAdres(boolean isCorrespondentieAdres) {
 		this.isCorrespondentieAdres = isCorrespondentieAdres;
 	}
 
@@ -91,7 +101,7 @@ public class Adres implements IEntity {
 			return true;
 		}
 		if (relatie.heeftAdres(this)) {
-			setCorrespondentieAdres(true);
+			setIsCorrespondentieAdres(true);
 			// mogelijk nu 2 correspondentieadressen
 			// verwijder de andere als dit het geval is
 			for (Adres r : relatie.getAdressen()) {
@@ -128,7 +138,7 @@ public class Adres implements IEntity {
 		if (relatie.heeftAdres(this)) {
 			for (Adres r : relatie.getAdressen()) {
 				if (r.isCorrespondentieAdres && !r.equals(this)) {
-					setCorrespondentieAdres(false);
+					setIsCorrespondentieAdres(false);
 					return true;
 				}
 			}
@@ -138,6 +148,15 @@ public class Adres implements IEntity {
 
 	public Boolean getIsPostbus() {
 		return isPostbus;
+	}
+
+	/*
+	 * Reflection requires a getter, even though standard naming convention for
+	 * boolean getters is: "isBoolean()", provide an "isPostbus()" method
+	 */
+	@Transient
+	public Boolean isPostbus() {
+		return this.getIsPostbus();
 	}
 
 	private void setIsPostbus(Boolean isPostbus) {// private ter verplichting
@@ -204,7 +223,7 @@ public class Adres implements IEntity {
 			straat = straatVoorPostbus;
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 67;
