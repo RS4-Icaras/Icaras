@@ -30,7 +30,23 @@ import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
  * De levensduur van een Vacature is flexibel. Vacatures kunnen verlopen, worden
  * opgeruimd om plaats te maken, etc.
  * 
+ * Wanneer je een Vacature probeert aan te maken met een gelijke Organisatie die
+ * al bekend is bij de bedrijfsrol van die Organisatie volgt een
+ * InvalidBusinessKeyException. Verder is het onmogelijk gemaakt om van een
+ * vacature de Organiatie en/of Omschrijving aan te passen. Deze combinatie
+ * zorgt ervoor dat Vacature immutable is. Mocht het in de toekomst nodig zijn
+ * om meerdere indentieke Vacatures aan te kunnen maken, dan is een mogelijke
+ * oplossing om een attribuut toe te voegen dat de datum van plaatsing bijhoud.
+ * 
+ * Waarom is de Vacature immutable? Omdat aanbiedingen gebruik kunnen maken van
+ * deze klasse. Een vacature heeft slechts 2 interessante eigenschappen. De
+ * Organisatie die op zoek is naar personeel, en de Omschrijving die zij
+ * meesturen. Aanpassingen aan de Organisatie heeft gevolgen voor andere
+ * klassen, en voor aanpassingen aan de Omschrijving kan een nieuwe Vacature
+ * worden aangemaakt.
+ * 
  * @author Mark van Meerten
+ * 
  */
 
 @Entity
@@ -61,42 +77,21 @@ public class Vacature implements IEntity {
 				&& this.omschrijvingMagWordenToegevoegd(omschrijving)) {
 			this.setOrganisatie(organisatie);
 			this.setOmschrijving(omschrijving);
-			/*
-			 * Add this Vacature IF AND ONLY IF Organisatie & Omschrijving have
-			 * been set! addVacature() will indirectly call this Vacature's
-			 * hashCode() so you better be damn sure the business key fields
-			 * have been properly initialized
-			 */
 		}
-		// if (!this.getOrganisatie().getBedrijf().addVacature(this)) {
-		// throw new InvalidBusinessKeyException("Vacature bestaat al");
-		// }
-		// } else {
-		// throw new InvalidBusinessKeyException(
-		// "Vacature business key has not been properly initialized");
-		// }
-
-		// if (this.organisatieMagWordenToegevoegd(organisatie)
-		// && this.omschrijvingMagWordenToegevoegd(omschrijving)) {
-		// this.setOrganisatie(organisatie);
-		// this.setOmschrijving(omschrijving);
-		// }
-		//
 		if (this.heeftOrganisatie() && this.heeftOmschrijving()) {
 			/*
 			 * Add this Vacature IF AND ONLY IF Organisatie has been set!
 			 * addVacature() will indirectly call this Vacature's hashCode() so
-			 * you better be damn sure the business key fields have been
-			 * properly initialized
+			 * you better be sure the business key fields have been properly
+			 * initialized
 			 */
 			if (!this.getOrganisatie().getBedrijf().addVacature(this)) {
 				throw new InvalidBusinessKeyException("Vacature bestaat al");
 			}
-
 		} else {
 			/*
 			 * Let's just make our business key immutable and be required to be
-			 * set in the constructor
+			 * set in the constructor.
 			 */
 			throw new InvalidBusinessKeyException(
 					"Vacature business key has not been properly initialized");
@@ -307,8 +302,8 @@ public class Vacature implements IEntity {
 		 * Null checks zijn niet nodig. Organisatie en Omschrijving zijn
 		 * onderdeel van de businesskey en mogen dus niet null zijn.
 		 * 
-		 * N.B. Overflow is gebruikelijk, standaard Object.hashCode() maakt ook
-		 * gebruik van int
+		 * N.B. Overflow is gebruikelijk, en zelfs wenselijk, standaard
+		 * Object.hashCode() maakt ook gebruik van int
 		 */
 		final int prime = 32589;
 		int hash = 1;
