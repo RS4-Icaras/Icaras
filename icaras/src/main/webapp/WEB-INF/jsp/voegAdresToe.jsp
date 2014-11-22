@@ -49,7 +49,7 @@
 				
 				<input type="checkbox" name="isCorrespondentieAdres" value="true" <c:if test="${adres.isCorrespondentieAdres}">checked</c:if>>Is dit adres het correspendentieadres?<br />
 				<input type="checkbox" name="isPostbus" value="true" <c:if test="${adres.isPostbus}">checked</c:if>>Is dit adres een Postbus?<br />
-				<input type="checkbox" name="test" value="true" <c:if test="${adres.test}">checked</c:if>>Is dit adres een test?<br />
+				<!--<input type="checkbox" name="test" value="true" <c:if test="${adres.test}">checked</c:if>>Is dit adres een test?<br />-->
 			
 				<br />
 				
@@ -84,7 +84,7 @@
 			
 			<input type="checkbox" name="isCorrespondentieAdres" value="true" checked />Maak dit adres het correspendentie adres?<br />
 			<input type="checkbox" name="isPostbus" value="true" checked />Is dit adres een Postbus?<br />
-			<input type="checkbox" name="test" value="true" checked />Is dit adres een test?<br />
+			<!--<input type="checkbox" name="test" value="true" checked />Is dit adres een test?<br />-->
 			
 			<input type="submit" value="Voeg adres toe" />
 			
