@@ -1,4 +1,3 @@
-
 package nl.rsvier.icaras.core.relatiebeheer;
 
 import javax.persistence.Column;
@@ -12,66 +11,66 @@ import javax.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Rol {
-	
+
+	private int id;
+	protected boolean isGearchiveerd;
+	protected String opmerking = "";
+
 	/*
 	 * Identifier
 	 */
-	
-	private int id;
-	
+
 	@Id
-	@Column (name = "rolId")
+	@Column(name = "rolId")
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	public int getId() {
 		return id;
 	}
-	
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	/*
 	 * Archief
 	 */
-	
-	protected boolean gearchiveerd;
-	
-	@Column(name = "isGearchiveerd")
-	private boolean getGearchiveerd() {
-		return this.gearchiveerd;
+
+	private boolean getIsGearchiveerd() {
+		return this.isGearchiveerd;
 	}
-	
-	// Reflection requires a getter, even though standard naming convention for
-	// boolean getters is: "isBoolean()", provide an "isGearchiveerd()" method
+
+	/*
+	 * Reflection requires a getter, even though standard naming convention for
+	 * boolean getters is: "isBoolean()", provide an "isGearchiveerd()" method
+	 */
 	public boolean isGearchiveerd() {
-		return this.getGearchiveerd();
+		return this.getIsGearchiveerd();
 	}
-	
-	public void setGearchiveerd(boolean b) {
-		this.gearchiveerd = b;
+
+	public void setIsGearchiveerd(boolean b) {
+		this.isGearchiveerd = b;
 	}
-	
+
 	/*
 	 * Opmerking
 	 */
-	
-	protected String opmerking = "";
+
 	@Column(name = "opmerking")
 	public String getOpmerking() {
 		return this.opmerking;
 	}
-	
+
 	public void setOpmerking(String s) {
 		this.opmerking = s;
 	}
-	
+
 	/*
 	 * Utils
 	 */
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null|| !(obj instanceof Rol)) {
+		if (obj == null || !(obj instanceof Rol)) {
 			return false;
 		} else {
 			Rol other = (Rol) obj;
@@ -84,5 +83,5 @@ public abstract class Rol {
 		}
 		return true;
 	}
-	
+
 }
