@@ -198,12 +198,12 @@ public class ContactpersoonTest {
 				testorganisatie1));
 
 	}
-	
-	@Test 
+
+	@Test
 	public void test_addOrganisatieFail() throws InvalidBusinessKeyException {
-		
+
 		// Try and break some rules
-		
+
 		Persoon testpersoon2 = this.newRandomTestPersoon();
 		Persoon testpersoon2_imposter = this.newRandomTestPersoon();
 		Organisatie testorganisatie2 = this.newRandomTestOrganisatie();
@@ -222,6 +222,18 @@ public class ContactpersoonTest {
 		// Check of de bi-directionele relatie ook echt niet is toegevoegd
 		assertFalse(testorganisatie2.heeftContactpersoon(testpersoon2));
 		assertFalse(testorganisatie2.heeftContactpersoon(testpersoon2_imposter));
+		assertFalse(testpersoon2.getContactpersoon().heeftOrganisatie(
+				testorganisatie2));
+		// Zelfde test, maar met contactpersoon zonder persoon die deze rol
+		// bezit
+		Contactpersoon contactpersoon = new Contactpersoon();
+		assertFalse(
+				"Organisatie kan niet worden toegevoegd wanneer de "
+						+ "houder van de contactpersoonsrol niet bestaat",
+				contactpersoon.addOrganisatie(testorganisatie2, testpersoon2));
+
+		// Check of de bi-directionele relatie ook echt niet is toegevoegd
+		assertFalse(testorganisatie2.heeftContactpersoon(testpersoon2));
 		assertFalse(testpersoon2.getContactpersoon().heeftOrganisatie(
 				testorganisatie2));
 
@@ -243,14 +255,14 @@ public class ContactpersoonTest {
 		assertFalse(testorganisatie3.heeftContactpersoon(testpersoon3));
 		assertFalse(testpersoon3.getContactpersoon().heeftOrganisatie(
 				testorganisatie3));
-		
+
 	}
-	
+
 	@Test
 	public void test_RemoveOrganisatieFail() throws InvalidBusinessKeyException {
-		
+
 		// Try and break some rules
-		
+
 		Persoon testpersoon4 = this.newRandomTestPersoon();
 		Persoon testpersoon4_zonderrol = this.newRandomTestPersoonZonderRol();
 		Persoon testpersoon4_imposter = this.newRandomTestPersoon();
@@ -307,7 +319,7 @@ public class ContactpersoonTest {
 		assertFalse(testorganisatie4.heeftContactpersoon(testpersoon4_imposter));
 		assertFalse(testpersoon4.getContactpersoon().heeftOrganisatie(
 				testorganisatie4));
-		
+
 	}
 
 	@Test
