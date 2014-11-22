@@ -151,6 +151,7 @@ public class Persoon extends Relatie implements IEntity {
 	// Toevoegen van lege rollen lost dit probleem op.
 	// Deze methode private maken en maakKandidaat() maakWerknemer() etc als
 	// publieke methoden
+	//TODO via getRollen is het nog steeds publiek toegankelijk getRollen().add(kandidaatrol)...
 	public synchronized boolean addRol(PersoonsRol rol) {
 		boolean toegevoegd = false;
 		// controleer of deze persoon dit type rol al heeft
