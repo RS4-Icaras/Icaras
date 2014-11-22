@@ -191,17 +191,17 @@ public class OrganisatieTest {
 		Persoon testpersoon = this.newRandomTestPersoon();
 		Organisatie testorganisatie = this.newRandomTestOrganisatie();
 
-		// Controleer of de Organisatie nog geen Contactpersoon bevat
+		// Controleer of de Organisatie nog niet deze Contactpersoon bevat
 		assertFalse(testorganisatie.heeftContactpersoon(testpersoon));
 
-		// Controleer of de Contactpersoon nog geen Organisatie bevat
+		// Controleer of de Contactpersoon nog niet deze Organisatie bevat
 		assertFalse(testpersoon.getContactpersoon().heeftOrganisatie(
 				testorganisatie));
 
 		// Start de bidirectionele toevoeging via een aanroep op Organisatie
 		assertTrue(testorganisatie.addContactpersoon(testpersoon));
+		// TODO wordt hierna nog een keer aangeroepen, moet false teruggeven
 
-		// Start de bidirectionele toevoeging via een aanroep op Contactpersoon
 		assertTrue(String.format(
 				"Voeg Contactpersoon: %s toe aan Organisatie: %s", testpersoon,
 				testorganisatie),
@@ -225,6 +225,34 @@ public class OrganisatieTest {
 		assertFalse(testpersoon.getContactpersoon().heeftOrganisatie(
 				testorganisatie));
 
+		/*
+		 * Doe dit geheel nog een keer vanuit met toevoegen vanuit
+		 * contactpersoon
+		 */
+
+		assertTrue(String.format(
+				"Voeg Organisatie: %s toe aan Contactpersoon: %s",
+				testorganisatie, testpersoon), testpersoon.getContactpersoon()
+				.addOrganisatie(testorganisatie, testpersoon));
+
+		// Nu heeft de Contactpersoon wel een referentie naar een Organisatie
+		assertTrue(testpersoon.getContactpersoon().heeftOrganisatie(
+				testorganisatie));
+		
+		// Nu heeft de Organisatie wel een referentie naar een Persoon
+		assertTrue(testorganisatie.heeftContactpersoon(testpersoon));
+
+		// Verbreek de bidirectionele relatie via een aanroep op Organisatie
+		testorganisatie.removeContactpersoon(testpersoon);
+
+		// Nu heeft de Contactpersoon niet langer een referentie naar een
+		// Organisatie
+		assertFalse(testpersoon.getContactpersoon().heeftOrganisatie(
+				testorganisatie));
+
+		// Nu heeft de Organisatie niet langer een referentie naar een Persoon
+		assertFalse(testorganisatie.heeftContactpersoon(testpersoon));
+
 		// Try and break some rules
 
 		/*
@@ -236,9 +264,8 @@ public class OrganisatieTest {
 		Persoon testpersoon2_imposter = this.newRandomTestPersoonZonderRol();
 		Organisatie testorganisatie2 = this.newRandomTestOrganisatie();
 
-		assertFalse(
-				"Organisatie kan niet worden toegevoegd wanneer de "
-						+ "persoon niet overeenkomt met de houder van de contactpersoonsrol",
+		assertFalse("Organisatie kan niet worden toegevoegd wanneer de "
+				+ "persoon geen contactpersoonsrol heeft",
 				testorganisatie2.addContactpersoon(testpersoon2_imposter));
 
 		// Check of de bi-directionele relatie ook echt niet is toegevoegd
@@ -260,18 +287,19 @@ public class OrganisatieTest {
 		assertFalse("Organisatie heeft een hekel aan nullwaardes",
 				testorganisatie3.removeContactpersoon(null));
 
+		// TODO de persoon komt niet voor in de lijst, dus geen zuivere test
 		assertFalse("Contactpersoon kan niet worden verwijderd wanneer de "
 				+ "persoon geen contactpersoonsrol bevat.",
 				testorganisatie3.removeContactpersoon(testpersoon3_imposter));
 
+		// TODO return value van de methode aanpassen?
 		assertTrue("Organisatie heeft nog geen contactpersonen. Returnwaarde "
 				+ "is true omdat er alleen gekeken word naar de uitkomst",
 				testorganisatie3.removeContactpersoon(testpersoon3));
 
 		// Check of de bi-directionele relatie ook echt niet is toegevoegd
 		assertFalse(testorganisatie3.heeftContactpersoon(testpersoon3));
-		assertFalse(testorganisatie3
-				.heeftContactpersoon(testpersoon3_imposter));
+		assertFalse(testorganisatie3.heeftContactpersoon(testpersoon3_imposter));
 		assertFalse(testpersoon3.getContactpersoon().heeftOrganisatie(
 				testorganisatie3));
 	}
@@ -317,7 +345,7 @@ public class OrganisatieTest {
 	}
 
 	@Test
-	public void test_hasRol() {
+	public void test_heeftRol() {
 
 		/*
 		 * Test of er een rol van een gespecificeerd type bestaat in de
