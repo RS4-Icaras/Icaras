@@ -5,7 +5,8 @@ import nl.rsvier.icaras.core.relatiebeheer.Adres;
 import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
 import nl.rsvier.icaras.core.relatiebeheer.Persoon;
 import nl.rsvier.icaras.core.relatiebeheer.Relatie;
-import nl.rsvier.icaras.form.relatiebeheer.organisatieForm;
+import nl.rsvier.icaras.form.relatiebeheer.AdresForm;
+import nl.rsvier.icaras.form.relatiebeheer.OrganisatieForm;
 import nl.rsvier.icaras.service.relatiebeheer.IRelatieService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,8 +134,7 @@ public class PersonenlijstController {
 
 	@RequestMapping(value = "/voegOrganisatieToe", method = RequestMethod.GET)
 	public String voegOrganisatieToeForm(Model model) {
-		organisatieForm invulOrganisatie = new organisatieForm();
-		model.addAttribute("invulOrganisatie", invulOrganisatie);
+		model.addAttribute("invulOrganisatie", new OrganisatieForm());
 		return "voegOrganisatieToe";
 	}
 
@@ -142,6 +142,7 @@ public class PersonenlijstController {
 	public String voegAdresToeForm(@PathVariable int relatie_id, Model model) {
 		Relatie relatie = relatieService.getByIdMetAdres(relatie_id);
 		model.addAttribute("relatie", relatie);
+		model.addAttribute("adresForm", new AdresForm());
 		return "voegAdresToe";
 	}
 
@@ -151,7 +152,7 @@ public class PersonenlijstController {
 
 	@RequestMapping(value = "/voegOrganisatieToe", method = RequestMethod.POST)
 	public String voegOrganisatieToeSubmit(
-			@ModelAttribute organisatieForm invulOrganisatie, Model model) {
+			@ModelAttribute OrganisatieForm invulOrganisatie, Model model) {
 		try {
 			Organisatie organisatie = new Organisatie(
 					invulOrganisatie.getNaam());
@@ -171,15 +172,22 @@ public class PersonenlijstController {
 
 	@RequestMapping(value = "/voegAdresToe/{relatie_id}", method = RequestMethod.POST)
 	public String voegAdresToeSubmit(@PathVariable int relatie_id,
-			@ModelAttribute Adres adres, Model model) {
+			@ModelAttribute AdresForm adresForm, Model model) {
+
+		System.out.println(String.format("-------> %s, %s, %s, %s, %s, %s",
+				adresForm.getCorrespondentieAdres(), adresForm.getPostbus(),
+				adresForm.getPostcode(), adresForm.getHuisOfPostbusNummer(),
+				adresForm.getPlaats(), adresForm.getStraat()));
 
 		Relatie relatie = relatieService.getByIdMetAdres(relatie_id);
-		// relatie.addAdres(adres);
-		// Adres adres2 = new Adres();
+		Adres adres = new Adres(adresForm.getCorrespondentieAdres(),
+				adresForm.getPostbus(), adresForm.getPostcode(),
+				adresForm.getHuisOfPostbusNummer(), adresForm.getPlaats(),
+				adresForm.getStraat());
 
 		relatie.addAdres(adres);
 		relatieService.update(relatie);
+		
 		return "redirect:/getRelatie/" + relatie_id;
 	}
-
 }
