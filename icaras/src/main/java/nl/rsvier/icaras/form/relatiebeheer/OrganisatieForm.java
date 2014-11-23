@@ -1,8 +1,5 @@
 package nl.rsvier.icaras.form.relatiebeheer;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class OrganisatieForm {
 
 	private int id;
