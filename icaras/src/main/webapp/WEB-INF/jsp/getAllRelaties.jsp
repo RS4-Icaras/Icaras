@@ -24,7 +24,8 @@
 	</ul>
 	</div>	
 
-	<h1>Lijst van relaties</h1>
+	<fieldset>
+	<legend>Relaties</legend>
 	<ul id="relatielist">
 		<c:if test="${not empty relaties}">
 			<c:forEach items="${relaties}" var="relatie">
@@ -48,6 +49,7 @@
 			href="voegPersoonToe">Persoon</a></li>
 		<li class="new"><a href="voegOrganisatieToe">Organisatie</a></li>
 	</ul>
+	</fieldset>
 
 </body>
 </html>
