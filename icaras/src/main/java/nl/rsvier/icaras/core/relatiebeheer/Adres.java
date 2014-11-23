@@ -27,6 +27,7 @@ public class Adres implements IEntity {
 	private int id;
 	private boolean isCorrespondentieAdres;
 	private boolean isPostbus;
+
 	private String straat;
 	private String huisOfPostbusNummer;
 	private String postcode;
@@ -42,6 +43,7 @@ public class Adres implements IEntity {
 	public Adres(boolean isCorrespondentieAdres, boolean isPostbus,
 			String postcode, String huisOfPostbusNummer, String plaats,
 			String straat) {
+
 		if (isPostbus) {
 			maakPostbus();
 		} else {
@@ -71,7 +73,8 @@ public class Adres implements IEntity {
 
 	/*
 	 * Reflection requires a getter, even though standard naming convention for
-	 * boolean getters is: "isBoolean()", provide an "isPostbus()" method
+	 * boolean getters is: "isBoolean()", provide an "isCorrespondentieAdres()"
+	 * method for convenience
 	 */
 	@Transient
 	public boolean isCorrespondentieAdres() {
@@ -152,7 +155,8 @@ public class Adres implements IEntity {
 
 	/*
 	 * Reflection requires a getter, even though standard naming convention for
-	 * boolean getters is: "isBoolean()", provide an "isPostbus()" method
+	 * boolean getters is: "isBoolean()", provide an "isPostbus()" method for
+	 * convenience
 	 */
 	@Transient
 	public Boolean isPostbus() {
@@ -205,7 +209,6 @@ public class Adres implements IEntity {
 		setIsPostbus(true);
 		straatVoorPostbus = straat;
 		straat = "nvt";
-
 	}
 
 	/**
@@ -214,7 +217,6 @@ public class Adres implements IEntity {
 	 * straatVoorPostcode De boolean isPostbus krijgt de waarde false
 	 */
 	public void maakStraat() {
-
 		if (isPostbus) {
 			setIsPostbus(false);
 			if (straatVoorPostbus == null) {
@@ -252,4 +254,15 @@ public class Adres implements IEntity {
 		return isEqual;
 	}
 
+	public String toString() {
+		if (isPostbus()) {
+			return String.format("Postbus %s, %s %s",
+					this.getHuisOfPostbusNummer(), this.getPostcode(),
+					this.getPlaats());
+		} else {
+			return String.format("%s %s, %s %s", this.getStraat(),
+					this.getHuisOfPostbusNummer(), this.getPostcode(),
+					this.getPlaats());
+		}
+	}
 }
