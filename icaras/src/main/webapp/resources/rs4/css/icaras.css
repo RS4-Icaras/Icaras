@@ -79,35 +79,65 @@ ul#menubar li.active {
 }
 
 
+#personenlist ul{
+	width:40%;
+	vertical-align: top;
+	float:right;
+	list-style: none;
+}
+
+#organisatielist ul{
+	width:40%;
+	vertical-align: top;
+	float:left;
+	list-style: none;
+}
 
 
-#relatielist li {
+#organisatielist li {
 	list-style: none;
 	margin-top: 2px;
 }
 
-#relatielist li a {
+#personenlist li {
+	list-style: none;
+	margin-top: 2px;
+}
+
+#organisatielist li a {
 	font-family: Arial;
 	font-size: 14px;
 	padding-left: 22px;
 }
 
-#relatielist li.organisatie {
+#personenlist li a {
+	font-family: Arial;
+	font-size: 14px;
+	padding-left: 22px;
+}
+
+
+#organisatielist li.organisatie {
 	background-image: url("../images/icons/silk/lorry.png");
 	background-repeat: no-repeat;
 	background-position: left center;
 }
 
-#relatielist li.persoon {
+#personenlist li.persoon {
 	background-image: url("../images/icons/silk/user.png");
 	background-repeat: no-repeat;
 	background-position: left center;
 }
 
-#relatielist li.new {
+#organisatielist li.new {
 	background-image: url("../images/icons/silk/add.png");
 	background-repeat: no-repeat;
 	background-position: left center;
+}
+#personenlist li.new {
+	background-image: url("../images/icons/silk/add.png");
+	background-repeat: no-repeat;
+	background-position: left center;	
 }
 
 
