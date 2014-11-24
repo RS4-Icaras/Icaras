@@ -69,18 +69,6 @@ public class RelatieService implements IRelatieService {
 	}
 
 	/**
-	 * verwijderd meegegeven Relatie uit de database
-	 * 
-	 * @param r
-	 *            de te deleten Relatie
-	 */
-	public void delete(Relatie r) {
-		
-		relatieDao.delete(r);
-
-	}
-
-	/**
 	 * update meegegeven relatie
 	 */
 	public void update(Relatie r) {

@@ -1,12 +1,8 @@
 package nl.rsvier.icaras.service.relatiebeheer;
 
 import java.util.List;
-import java.util.Set;
 
-import nl.rsvier.icaras.core.relatiebeheer.Adres;
 import nl.rsvier.icaras.core.relatiebeheer.Relatie;
-import nl.rsvier.icaras.dao.relatiebeheer.IRelatieDao;
-import nl.rsvier.icaras.dao.relatiebeheer.RelatieDaoHibernate;
 
 
 public interface IRelatieService  {
@@ -15,18 +11,11 @@ public interface IRelatieService  {
 	
 	public void save(Relatie r);
 	
-	public void delete(Relatie r);
-	
 	public void update(Relatie r);
 	
 	public Relatie getById(int id);
-	
-	public IRelatieDao getDao();
-	
-	public void setDao(RelatieDaoHibernate dao);
-	
-	public List<Relatie> getAllMetAdres();
-	
+	//TODO getAllMetCorrespondentieAdres ipv onderstaande.
+	public List<Relatie> getAllMetAdres();	
 	
 	public Relatie getByIdMetAdres(int id);
 }
