@@ -51,6 +51,10 @@
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Service" />
 	</context:component-scan>
+	
+		<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	
 
 	<!-- Transaction config -->
 
