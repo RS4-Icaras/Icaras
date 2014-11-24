@@ -12,6 +12,8 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import nl.rsvier.icaras.core.IEntity;
 
@@ -62,7 +64,8 @@ public class Persoon extends Relatie implements IEntity {
 		this.rollen = new ArrayList<PersoonsRol>();
 	}
 
-	@Column(nullable = false)
+	//@Column(nullable = false)
+	@NotNull
 	public String getVoornaam() {
 		return voornaam;
 	}
@@ -71,7 +74,8 @@ public class Persoon extends Relatie implements IEntity {
 		this.voornaam = voornaam;
 	}
 
-	@Column(nullable = false)
+	//@Column(nullable = false)
+	@NotNull
 	public String getAchternaam() {
 		return achternaam;
 	}
@@ -80,7 +84,8 @@ public class Persoon extends Relatie implements IEntity {
 		this.achternaam = achternaam;
 	}
 
-	@Column(nullable = false)
+	//@Column(nullable = false)
+	@NotNull
 	public String getTussenvoegsels() {
 		return tussenvoegsels;
 	}
@@ -90,6 +95,7 @@ public class Persoon extends Relatie implements IEntity {
 	}
 
 	@Temporal(TemporalType.DATE)
+	@NotNull
 	public Calendar getGeboortedatum() {
 		return geboortedatum;
 	}
@@ -263,8 +269,11 @@ public class Persoon extends Relatie implements IEntity {
 	public int hashCode() {
 		final int prime = 41;
 		int hash = 1;
+		if (getVoornaam() != null)
 		hash = hash * prime + this.getVoornaam().hashCode();
+		if (getTussenvoegsels() != null)
 		hash = hash * prime + this.getTussenvoegsels().hashCode();
+		if (getAchternaam() != null)
 		hash = hash * prime + this.getAchternaam().hashCode();
 		return hash;
 	}
