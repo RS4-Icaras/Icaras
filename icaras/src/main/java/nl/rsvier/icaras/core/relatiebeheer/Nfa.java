@@ -71,7 +71,7 @@ public abstract class Nfa implements IEntity {
 		this.nfaAdres = nfaAdres;
 	}
 
-	@NotNull
+	//@NotNull
 	public String getExtraInfo() {
 		return extraInfo;
 	}

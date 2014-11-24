@@ -27,7 +27,7 @@ public class Leverancier extends OrganisatieRol {
 	 */
 
 	@Column(unique = true, updatable = false)
-	@NotNull
+	//@NotNull
 	public String getFunctie() {
 		return this.functie;
 	}

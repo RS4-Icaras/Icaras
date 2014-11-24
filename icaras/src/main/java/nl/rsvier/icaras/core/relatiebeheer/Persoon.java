@@ -95,7 +95,7 @@ public class Persoon extends Relatie implements IEntity {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@NotNull
+	//@NotNull
 	public Calendar getGeboortedatum() {
 		return geboortedatum;
 	}
