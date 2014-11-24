@@ -31,10 +31,14 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 		return organisaties;
 	}
 
+	/**
+	 * initialiseert ook de lijst met contactpersonen
+	 */
 	@Override
 	public List<Organisatie> getAllMetRollen() {
 		List<Organisatie> organisaties = getAll();
 		for (Organisatie organisatie : organisaties) {
+			organisatie.getContactpersonen().size();
 			if (organisatie.heeftRol(Bedrijf.class)) {
 				Bedrijf bedrijf = organisatie.getBedrijf();
 				bedrijf.getAanbiedingen().size();
@@ -54,6 +58,7 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 		for (Organisatie organisatie : organisaties) {
 			organisatie.getAdressen().size();
 			organisatie.getNfaLijst().size();
+			organisatie.getContactpersonen().size();
 			if (organisatie.heeftRol(Bedrijf.class)) {
 				Bedrijf bedrijf = organisatie.getBedrijf();
 				bedrijf.getAanbiedingen().size();
@@ -75,9 +80,13 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 		return organisatie;
 	}
 
+	/**
+	 * initialiseert ook de lijst met contactpersonen
+	 */
 	@Override
 	public Organisatie getByIdMetRollen(int id) {
 		Organisatie organisatie = getById(id);
+		organisatie.getContactpersonen().size();
 		if (organisatie.heeftRol(Bedrijf.class)) {
 			Bedrijf bedrijf = organisatie.getBedrijf();
 			bedrijf.getAanbiedingen().size();
@@ -93,6 +102,7 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 	@Override
 	public Organisatie getByIdCompleet(int id) {
 		Organisatie organisatie = getById(id);
+		organisatie.getContactpersonen().size();
 		organisatie.getAdressen().size();
 		organisatie.getNfaLijst().size();
 		if (organisatie.heeftRol(Bedrijf.class)) {

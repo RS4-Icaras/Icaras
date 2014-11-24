@@ -9,6 +9,9 @@ public interface IOrganisatieDao extends IGenericDao<Organisatie> {
 
 	public Organisatie getByIdMetAdressenEnNfaLijst(int id);
 	
+	/**
+	 * initialiseert ook de lijst met contactpersonen
+	 */
 	public Organisatie getByIdMetRollen(int id);
 
 	/**
@@ -21,6 +24,9 @@ public interface IOrganisatieDao extends IGenericDao<Organisatie> {
 	
 	public List<Organisatie> getAllMetAdressenenNfaLijst();
 
+	/**
+	 * initialiseert ook de lijst met contactpersonen
+	 */
 	public List<Organisatie> getAllMetRollen();
 	
 	/**
