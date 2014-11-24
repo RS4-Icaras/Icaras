@@ -13,6 +13,8 @@
 <title>Icaras - Relatie Overzicht</title>
 <link href="<c:url value="/resources/rs4/css/icaras.css"/>"
 	rel="stylesheet">
+		
+
 </head>
 
 <body>
@@ -26,9 +28,15 @@
 
 	<fieldset>
 	<legend>Relaties</legend>
-	<ul id="relatielist">
+	
+	
+	<ul style="float: left; width:40%; vertical-align:top;" id="organisatielist"> <h3>OrganisatieLijst</h3>
 		<c:if test="${not empty relaties}">
 			<c:forEach items="${relaties}" var="relatie">
+			
+			
+			
+			
 				<c:choose>
 					<c:when
 						test="${relatie.getClass().name == 'nl.rsvier.icaras.core.relatiebeheer.Organisatie'}">
@@ -36,6 +44,25 @@
 							class="organisatie" href="getRelatie/${relatie.id}"><c:out
 									value="${relatie.naam}" /></a>
 					</c:when>
+	
+				</c:choose>
+			</c:forEach>
+		</c:if>
+		<li style="margin-top: 12px;" class="new"><a
+			href="voegOrganisatieToe">Oganisatie</a></li>
+		</ul>
+		
+	<ul style="float: right; width:40%; vertical-align:top;" id="personenlist"> <h3>PersonenLijst</h3>
+	
+		
+		<c:if test="${not empty relaties}">
+			<c:forEach items="${relaties}" var="relatie">
+			
+			
+			
+			
+				<c:choose>
+
 					<c:when
 						test="${relatie.getClass().name == 'nl.rsvier.icaras.core.relatiebeheer.Persoon'}">
 						<li class="persoon"><a id="${relatie.id}" class="persoon"
@@ -47,8 +74,11 @@
 		</c:if>
 		<li style="margin-top: 12px;" class="new"><a
 			href="voegPersoonToe">Persoon</a></li>
-		<li class="new"><a href="voegOrganisatieToe">Organisatie</a></li>
+		
 	</ul>
+	
+	
+	
 	</fieldset>
 
 </body>
