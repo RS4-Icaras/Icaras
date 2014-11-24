@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:icarastestdb-context.xml" })
 @TransactionConfiguration(defaultRollback = true)
-public class RelatieRelatiesTest {
+public class RelatieAdresNfaTest {
 
 	@Autowired
 	private AdresDaoHibernate adresDao;
