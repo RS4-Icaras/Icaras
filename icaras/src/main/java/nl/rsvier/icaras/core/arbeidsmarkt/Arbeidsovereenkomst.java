@@ -124,4 +124,16 @@ public class Arbeidsovereenkomst implements IEntity {
 		this.aanbieding = aanbieding;
 	}
 
+	// TODO equals methode implementeren
+	public boolean equals(Object obj) {
+		if (obj == null || !(obj instanceof Arbeidsovereenkomst)) {
+			return false;
+		}
+		Arbeidsovereenkomst aoObj = (Arbeidsovereenkomst) obj;
+		// Null checks vertrouwen we vanuit constructor aanbieding en this
+		return (getId() == aoObj.getId()
+				&& getPersoon().equals(aoObj.getPersoon())
+				&& getOrganisatie().equals(aoObj.getOrganisatie()) && getAanbieding()
+				.equals(aoObj.getAanbieding()));
+	}
 }
