@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
@@ -286,7 +287,7 @@ public class Bedrijf extends OrganisatieRol {
 	 * Collectie: Medewerkers
 	 */
 
-	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
+	@ManyToMany(cascade = javax.persistence.CascadeType.ALL)
 	@NotNull
 	public Set<Persoon> getMedewerkers() {
 		return medewerkers;
