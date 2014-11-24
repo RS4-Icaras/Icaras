@@ -1,5 +1,7 @@
 package nl.rsvier.icaras.form.relatiebeheer;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 public class AdresForm {
 
 	private int relatie_id = 0;
@@ -11,11 +13,11 @@ public class AdresForm {
 	// Maak een custom annotation die @NotEmpty is op voorwaarde dat postbus
 	// true is, zoals: @StraatNotBlank?
 	private String straat = "";
-	// @NotBlank
+	@NotBlank(message="hoi")
 	private String huisOfPostbusNummer = "";
-	// @NotBlank
+	@NotBlank
 	private String postcode = "";
-	// @NotBlank
+	@NotBlank
 	private String plaats = "";
 
 	// Dan kan deze methode weg, en kunnen we Bindingresult gaan gebruiken in

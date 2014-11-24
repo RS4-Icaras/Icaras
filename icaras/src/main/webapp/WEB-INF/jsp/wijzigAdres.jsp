@@ -36,14 +36,21 @@
 					value="${adresForm.relatie_id}"> <input type="hidden"
 					name="id" value="${adresForm.id}"> <br /> <label
 					for="straat">Straat</label> <input type="text" name="straat"
-					value="${adresForm.straat}" /><br /> <label
-					for="huisOfPostbusNummer">huisOfPostbusNummer</label> <input
-					type="text" name="huisOfPostbusNummer"
-					value="${adresForm.huisOfPostbusNummer}" /><br /> <label
-					for="postcode">postcode</label> <input type="text" name="postcode"
-					value="${adresForm.postcode}" /><br /> <label for="plaats">plaats</label>
-				<input type="text" name="plaats" value="${adresForm.plaats}" /><br />
+					value="${adresForm.straat}" />
+				<form:errors path="straat" cssclass="error"></form:errors>
+				<br /> <label for="huisOfPostbusNummer">huisOfPostbusNummer</label>
+				<input type="text" name="huisOfPostbusNummer"
+					value="${adresForm.huisOfPostbusNummer}" />
+				<form:errors path="huisOfPostbusNummer" cssclass="error"></form:errors>
+				<br /> <label for="postcode">postcode</label> <input type="text"
+					name="postcode" value="${adresForm.postcode}" />
+				<form:errors path="postcode" cssclass="error"></form:errors>
 				<br />
+
+				<br /> <label for="plaats">plaats</label>
+				<input type="text" name="plaats" value="${adresForm.plaats}" />
+				<form:errors path="plaats" cssclass="error"></form:errors>
+				<br /> <br />
 
 
 				<c:choose>

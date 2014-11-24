@@ -3,6 +3,8 @@ package nl.rsvier.icaras.controller.relatiebeheer;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import nl.rsvier.icaras.core.InvalidBusinessKeyException;
 import nl.rsvier.icaras.core.relatiebeheer.Adres;
 import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
@@ -15,6 +17,7 @@ import nl.rsvier.icaras.service.relatiebeheer.IRelatieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -134,6 +137,12 @@ public class PersonenlijstController {
 	public String voegAdresToeForm(@PathVariable int relatie_id,
 			@PathVariable int adres_id, Model model) {
 		AdresForm adresForm = new AdresForm();
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		Relatie relatie = relatieService.getByIdMetAdres(relatie_id);
 		for (Adres adres : relatie.getAdressen()) {
 			if (adres.getId() == adres_id) {
@@ -156,16 +165,27 @@ public class PersonenlijstController {
 		return "wijzigAdres";
 	}
 
+	/**
+	 * 
+	 * TODO: schrijf echte javadoc
+	 * 
+	 * N.B. The BindingResult must come right after the model object that is
+	 * validated or else Spring will fail to validate the object and throw an
+	 * exception.
+	 * 
+	 * @param relatie_id
+	 * @param adres_id
+	 * @param adresForm
+	 * @param result
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "/wijzigAdres/{relatie_id}/{adres_id}", method = RequestMethod.POST)
 	public String wijzigAdresForm(@PathVariable int relatie_id,
-			@PathVariable int adres_id, @ModelAttribute AdresForm adresForm,
+			@PathVariable int adres_id, @Valid AdresForm adresForm, BindingResult adresFormResult,
 			Model model) {
 
-		// Tijdelijk handmatig voorbeeld van validatie
-		Map<String, String> feedbackMap = new HashMap<String, String>();
-
-		// Tijdelijke validatie
-		if (adresForm.isValid()) {
+		if (!adresFormResult.hasErrors()) {
 			Relatie relatie = relatieService.getByIdMetAdres(relatie_id);
 			for (Adres adres : relatie.getAdressen()) {
 				if (adres.getId() == adres_id) {
@@ -186,22 +206,81 @@ public class PersonenlijstController {
 			}
 			relatieService.update(relatie);
 			return "redirect:/getRelatie/" + relatie_id;
-		}
+        } else {
+        	model.addAttribute("adresForm", adresForm);
+    		return "wijzigAdres";
+        }
+		
+		
+		// Tijdelijke validatie
+//		if (adresForm.isValid()) {
+//			Relatie relatie = relatieService.getByIdMetAdres(relatie_id);
+//			for (Adres adres : relatie.getAdressen()) {
+//				if (adres.getId() == adres_id) {
+//					adres.setHuisOfPostbusNummer(adresForm
+//							.getHuisOfPostbusNummer());
+//					adres.setPostcode(adresForm.getPostcode());
+//					adres.setPlaats(adresForm.getPlaats());
+//					if (adresForm.getPostbus()) {
+//						adres.maakPostbus();
+//					} else {
+//						adres.maakStraat();
+//						adres.setStraat(adresForm.getStraat());
+//					}
+//					if (adresForm.getCorrespondentieAdres()) {
+//						adres.maakCorrespondentieAdres(relatie);
+//					}
+//				}
+//			}
+//			relatieService.update(relatie);
+//			return "redirect:/getRelatie/" + relatie_id;
+//		}
 
-		if (!adresForm.isAllesIngevuld() && !adresForm.isStraatZonderStraat()) {
-			feedbackMap.put("algemeen", "Hey joh, vul alle velden eens in!");
-		}
+		//model.addAttribute("adresForm", adresForm);
 
-		if (adresForm.isStraatZonderStraat()) {
-			feedbackMap
-					.put("straatzonderstraat",
-							"Straat mag alleen leeg zijn wanneer het adres geen postbus is");
-		}
-
-		model.addAttribute("adresForm", adresForm);
-		model.addAttribute("feedback", feedbackMap);
-
-		return "wijzigAdres";
+		//return "wijzigAdres";
+		
+//		// Tijdelijk handmatig voorbeeld van validatie
+//		Map<String, String> feedbackMap = new HashMap<String, String>();
+//
+//		// Tijdelijke validatie
+//		if (adresForm.isValid()) {
+//			Relatie relatie = relatieService.getByIdMetAdres(relatie_id);
+//			for (Adres adres : relatie.getAdressen()) {
+//				if (adres.getId() == adres_id) {
+//					adres.setHuisOfPostbusNummer(adresForm
+//							.getHuisOfPostbusNummer());
+//					adres.setPostcode(adresForm.getPostcode());
+//					adres.setPlaats(adresForm.getPlaats());
+//					if (adresForm.getPostbus()) {
+//						adres.maakPostbus();
+//					} else {
+//						adres.maakStraat();
+//						adres.setStraat(adresForm.getStraat());
+//					}
+//					if (adresForm.getCorrespondentieAdres()) {
+//						adres.maakCorrespondentieAdres(relatie);
+//					}
+//				}
+//			}
+//			relatieService.update(relatie);
+//			return "redirect:/getRelatie/" + relatie_id;
+//		}
+//
+//		if (!adresForm.isAllesIngevuld() && !adresForm.isStraatZonderStraat()) {
+//			feedbackMap.put("algemeen", "Hey joh, vul alle velden eens in!");
+//		}
+//
+//		if (adresForm.isStraatZonderStraat()) {
+//			feedbackMap
+//					.put("straatzonderstraat",
+//							"Straat mag alleen leeg zijn wanneer het adres geen postbus is");
+//		}
+//
+//		model.addAttribute("adresForm", adresForm);
+//		model.addAttribute("feedback", feedbackMap);
+//
+//		return "wijzigAdres";
 
 	}
 
@@ -235,7 +314,6 @@ public class PersonenlijstController {
 	public String voegOrganisatieToeSubmit(
 			@ModelAttribute OrganisatieForm organisatieForm, Model model) {
 		try {
-			System.out.println(organisatieForm.getNaam() + " ??????????????????? ");
 			Organisatie organisatie = new Organisatie(organisatieForm.getNaam());
 			relatieService.save(organisatie);
 		} catch (InvalidBusinessKeyException e) {
