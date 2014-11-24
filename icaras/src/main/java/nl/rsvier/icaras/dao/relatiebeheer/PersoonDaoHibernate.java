@@ -4,7 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import nl.rsvier.icaras.core.relatiebeheer.Contactpersoon;
+import nl.rsvier.icaras.core.relatiebeheer.Kandidaat;
 import nl.rsvier.icaras.core.relatiebeheer.Persoon;
+import nl.rsvier.icaras.core.relatiebeheer.Werknemer;
 import nl.rsvier.icaras.dao.GenericDaoHibernate;
 
 @Repository("IPersoonDao")
@@ -26,8 +29,11 @@ public class PersoonDaoHibernate extends GenericDaoHibernate<Persoon> implements
 	@Override
 	public Persoon getByIdMetRollen(int id) {
 		Persoon persoon = getById(id);
+		if (persoon.heeftRol(Kandidaat.class))
 		persoon.getKandidaat().getAanbiedingen().size();
+		if (persoon.heeftRol(Werknemer.class))
 		persoon.getWerknemer().getArbeidsovereenkomsten().size();
+		if (persoon.heeftRol(Contactpersoon.class))
 		persoon.getContactpersoon().getOrganisaties().size();
 		return persoon;
 	}
@@ -36,9 +42,11 @@ public class PersoonDaoHibernate extends GenericDaoHibernate<Persoon> implements
 	public Persoon getByIdCompleet(int id) {
 		Persoon persoon = getById(id);
 		persoon.getAdressen().size();
-		persoon.getNfaLijst().size();
+		if (persoon.heeftRol(Kandidaat.class))
 		persoon.getKandidaat().getAanbiedingen().size();
+		if (persoon.heeftRol(Werknemer.class))
 		persoon.getWerknemer().getArbeidsovereenkomsten().size();
+		if (persoon.heeftRol(Contactpersoon.class))
 		persoon.getContactpersoon().getOrganisaties().size();
 		return persoon;
 	}
@@ -57,9 +65,12 @@ public class PersoonDaoHibernate extends GenericDaoHibernate<Persoon> implements
 	public List<Persoon> getAllMetRollen() {
 		List<Persoon> personenlijst = getAll();
 		for (Persoon persoon : personenlijst) {
-			persoon.getKandidaat().getAanbiedingen().size();
-			persoon.getWerknemer().getArbeidsovereenkomsten().size();
-			persoon.getContactpersoon().getOrganisaties().size();
+			if (persoon.heeftRol(Kandidaat.class))
+				persoon.getKandidaat().getAanbiedingen().size();
+				if (persoon.heeftRol(Werknemer.class))
+				persoon.getWerknemer().getArbeidsovereenkomsten().size();
+				if (persoon.heeftRol(Contactpersoon.class))
+				persoon.getContactpersoon().getOrganisaties().size();
 		}
 		return personenlijst;
 	}
@@ -70,9 +81,12 @@ public class PersoonDaoHibernate extends GenericDaoHibernate<Persoon> implements
 		for (Persoon persoon : personenlijst) {
 			persoon.getAdressen().size();
 			persoon.getNfaLijst().size();
-			persoon.getKandidaat().getAanbiedingen().size();
-			persoon.getWerknemer().getArbeidsovereenkomsten().size();
-			persoon.getContactpersoon().getOrganisaties().size();
+			if (persoon.heeftRol(Kandidaat.class))
+				persoon.getKandidaat().getAanbiedingen().size();
+				if (persoon.heeftRol(Werknemer.class))
+				persoon.getWerknemer().getArbeidsovereenkomsten().size();
+				if (persoon.heeftRol(Contactpersoon.class))
+				persoon.getContactpersoon().getOrganisaties().size();
 		}
 		return personenlijst;
 	}

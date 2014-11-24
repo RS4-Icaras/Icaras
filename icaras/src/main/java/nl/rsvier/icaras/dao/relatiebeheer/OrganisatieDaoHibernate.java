@@ -3,6 +3,7 @@ package nl.rsvier.icaras.dao.relatiebeheer;
 import java.util.List;
 
 import nl.rsvier.icaras.core.relatiebeheer.Bedrijf;
+import nl.rsvier.icaras.core.relatiebeheer.Leverancier;
 import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
 import nl.rsvier.icaras.dao.GenericDaoHibernate;
 
@@ -19,7 +20,7 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 	public OrganisatieDaoHibernate() {
 		super(Organisatie.class);
 	}
-	
+
 	@Override
 	public List<Organisatie> getAllMetAdressenenNfaLijst() {
 		List<Organisatie> organisaties = getAll();
@@ -30,17 +31,19 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 		return organisaties;
 	}
 
-
-
 	@Override
 	public List<Organisatie> getAllMetRollen() {
 		List<Organisatie> organisaties = getAll();
 		for (Organisatie organisatie : organisaties) {
-			Bedrijf bedrijf = organisatie.getBedrijf();
-			bedrijf.getAanbiedingen().size();
-			bedrijf.getArbeidsovereenkomsten().size();
-			bedrijf.getMedewerkers().size();
-			organisatie.getLeverancier();
+			if (organisatie.heeftRol(Bedrijf.class)) {
+				Bedrijf bedrijf = organisatie.getBedrijf();
+				bedrijf.getAanbiedingen().size();
+				bedrijf.getArbeidsovereenkomsten().size();
+				bedrijf.getMedewerkers().size();
+			}
+			if (organisatie.heeftRol(Leverancier.class)) {
+				organisatie.getLeverancier();
+			}
 		}
 		return organisaties;
 	}
@@ -51,11 +54,15 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 		for (Organisatie organisatie : organisaties) {
 			organisatie.getAdressen().size();
 			organisatie.getNfaLijst().size();
-			Bedrijf bedrijf = organisatie.getBedrijf();
-			bedrijf.getAanbiedingen().size();
-			bedrijf.getArbeidsovereenkomsten().size();
-			bedrijf.getMedewerkers().size();
-			organisatie.getLeverancier();
+			if (organisatie.heeftRol(Bedrijf.class)) {
+				Bedrijf bedrijf = organisatie.getBedrijf();
+				bedrijf.getAanbiedingen().size();
+				bedrijf.getArbeidsovereenkomsten().size();
+				bedrijf.getMedewerkers().size();
+			}
+			if (organisatie.heeftRol(Leverancier.class)) {
+				organisatie.getLeverancier();
+			}
 		}
 		return organisaties;
 	}
@@ -71,24 +78,32 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 	@Override
 	public Organisatie getByIdMetRollen(int id) {
 		Organisatie organisatie = getById(id);
-		Bedrijf bedrijf = organisatie.getBedrijf();
-		bedrijf.getAanbiedingen().size();
-		bedrijf.getArbeidsovereenkomsten().size();
-		bedrijf.getMedewerkers().size();
-		organisatie.getLeverancier();
+		if (organisatie.heeftRol(Bedrijf.class)) {
+			Bedrijf bedrijf = organisatie.getBedrijf();
+			bedrijf.getAanbiedingen().size();
+			bedrijf.getArbeidsovereenkomsten().size();
+			bedrijf.getMedewerkers().size();
+		}
+		if (organisatie.heeftRol(Leverancier.class)) {
+			organisatie.getLeverancier();
+		}
 		return organisatie;
 	}
-	
+
 	@Override
 	public Organisatie getByIdCompleet(int id) {
 		Organisatie organisatie = getById(id);
 		organisatie.getAdressen().size();
 		organisatie.getNfaLijst().size();
-		Bedrijf bedrijf = organisatie.getBedrijf();
-		bedrijf.getAanbiedingen().size();
-		bedrijf.getArbeidsovereenkomsten().size();
-		bedrijf.getMedewerkers().size();
-		organisatie.getLeverancier();
+		if (organisatie.heeftRol(Bedrijf.class)) {
+			Bedrijf bedrijf = organisatie.getBedrijf();
+			bedrijf.getAanbiedingen().size();
+			bedrijf.getArbeidsovereenkomsten().size();
+			bedrijf.getMedewerkers().size();
+		}
+		if (organisatie.heeftRol(Leverancier.class)) {
+			organisatie.getLeverancier();
+		}
 		return organisatie;
 	}
 }
