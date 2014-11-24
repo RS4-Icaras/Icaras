@@ -6,10 +6,10 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 import nl.rsvier.icaras.core.InvalidBusinessKeyException;
 
@@ -156,7 +156,7 @@ public class Organisatie extends Relatie {
 	 * Collectie: Contactpersonen
 	 */
 
-	@OneToMany(orphanRemoval = true, cascade = javax.persistence.CascadeType.ALL)
+	@ManyToMany(cascade = javax.persistence.CascadeType.ALL)
 	public Set<Persoon> getContactpersonen() {
 		return contactpersonen;
 	}
