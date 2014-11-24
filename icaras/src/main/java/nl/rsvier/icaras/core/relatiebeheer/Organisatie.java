@@ -50,6 +50,9 @@ public class Organisatie extends Relatie {
 		this();
 		if (this.naamMagWordenToegevoegd(str)) {
 			this.setNaam(str);
+		} else {
+			throw new InvalidBusinessKeyException(
+					"Organisatie business key has not been properly initialized");
 		}
 	}
 
@@ -128,7 +131,7 @@ public class Organisatie extends Relatie {
 	 */
 
 	@Column(unique = true, updatable = false)
-	@NotNull
+	//@NotNull
 	public String getNaam() {
 		return this.naam;
 	}

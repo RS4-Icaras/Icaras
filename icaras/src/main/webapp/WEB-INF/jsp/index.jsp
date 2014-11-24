@@ -7,7 +7,7 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>Icaras - Relatie Overzicht</title>
+<title>Icaras</title>
 <link href="<c:url value="/resources/rs4/css/icaras.css" />"
 	rel="stylesheet">
 </head>
@@ -18,8 +18,7 @@
 	<h1>Welkom</h1>
 	<p>
 		klik <a href="/Icaras/start">hier</a> om de database te vullen met
-		test personen en organisaties, en maak vervolgens een keuze in het
-		menu hierboven
+		test personen en organisaties.
 	</p>
 
 </body>
