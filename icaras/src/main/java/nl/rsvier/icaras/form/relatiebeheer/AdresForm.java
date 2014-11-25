@@ -1,5 +1,7 @@
 package nl.rsvier.icaras.form.relatiebeheer;
 
+import javax.validation.constraints.Pattern;
+
 import org.hibernate.validator.constraints.NotBlank;
 
 public class AdresForm {
@@ -16,16 +18,20 @@ public class AdresForm {
 
 	private boolean correspondentieAdres = true;
 
-	@NotBlank
+	@NotBlank(message = "")
+	@Pattern(regexp = "[a-zA-Z'-[\\s]]{2,100}", message = "Geef de straatnaam op")
 	private String straat;
 
-	@NotBlank
+	@NotBlank(message = "")
+	@Pattern(regexp = "[0-9]{1}.{0,24}", message = "Geef het huisnummer, gevolgd door eventuele toevoeging")
 	private String huisnummer;
 
-	@NotBlank
+	@NotBlank(message = "")
+	@Pattern(regexp = "[0-9]{4}[a-zA-Z]{2}", message = " Vul 4 cijfers gevolgd door 2 letters in (1234AB)")
 	private String postcode;
 
 	@NotBlank
+	@Pattern(regexp = "[a-zA-Z'-[\\s]]{2,100}", message = "Geef een geldige plaatsnaam")
 	private String plaats;
 
 	/*
