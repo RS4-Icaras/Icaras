@@ -22,34 +22,40 @@ public class PersoonDaoHibernate extends GenericDaoHibernate<Persoon> implements
 	@Override
 	public Persoon getByIdMetAdressenEnNfaLijst(int id) {
 		Persoon persoon = getById(id);
-		persoon.getAdressen().size();
-		persoon.getNfaLijst().size();
+		if (persoon != null) {
+			persoon.getAdressen().size();
+			persoon.getNfaLijst().size();
+		}
 		return persoon;
 	}
 
 	@Override
 	public Persoon getByIdMetRollen(int id) {
 		Persoon persoon = getById(id);
-		if (persoon.heeftRol(Kandidaat.class))
-			persoon.getKandidaat().getAanbiedingen().size();
-		if (persoon.heeftRol(Werknemer.class))
-			persoon.getWerknemer().getArbeidsovereenkomsten().size();
-		if (persoon.heeftRol(Contactpersoon.class))
-			persoon.getContactpersoon().getOrganisaties().size();
+		if (persoon != null) {
+			if (persoon.heeftRol(Kandidaat.class))
+				persoon.getKandidaat().getAanbiedingen().size();
+			if (persoon.heeftRol(Werknemer.class))
+				persoon.getWerknemer().getArbeidsovereenkomsten().size();
+			if (persoon.heeftRol(Contactpersoon.class))
+				persoon.getContactpersoon().getOrganisaties().size();
+		}
 		return persoon;
 	}
 
 	@Override
 	public Persoon getByIdCompleet(int id) {
 		Persoon persoon = getById(id);
-		persoon.getAdressen().size();
-		persoon.getNfaLijst().size();
-		if (persoon.heeftRol(Kandidaat.class))
-			persoon.getKandidaat().getAanbiedingen().size();
-		if (persoon.heeftRol(Werknemer.class))
-			persoon.getWerknemer().getArbeidsovereenkomsten().size();
-		if (persoon.heeftRol(Contactpersoon.class))
-			persoon.getContactpersoon().getOrganisaties().size();
+		if (persoon != null) {
+			persoon.getAdressen().size();
+			persoon.getNfaLijst().size();
+			if (persoon.heeftRol(Kandidaat.class))
+				persoon.getKandidaat().getAanbiedingen().size();
+			if (persoon.heeftRol(Werknemer.class))
+				persoon.getWerknemer().getArbeidsovereenkomsten().size();
+			if (persoon.heeftRol(Contactpersoon.class))
+				persoon.getContactpersoon().getOrganisaties().size();
+		}
 		return persoon;
 	}
 
@@ -111,7 +117,7 @@ public class PersoonDaoHibernate extends GenericDaoHibernate<Persoon> implements
 				// p moet een kandidaatrol hebben voor de aanbieding van
 				// arbeidsovereenkomst
 				if (p.heeftRol(Kandidaat.class)) {
-				p.getKandidaat().getAanbiedingen().size();
+					p.getKandidaat().getAanbiedingen().size();
 				}
 				werknemers.add(p);
 			}

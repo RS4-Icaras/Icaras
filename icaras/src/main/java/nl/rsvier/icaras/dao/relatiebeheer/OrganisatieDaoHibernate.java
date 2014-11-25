@@ -86,9 +86,11 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 	@Override
 	public Organisatie getByIdMetAdressenEnNfaLijst(int id) {
 		Organisatie organisatie = getById(id);
-		organisatie.getContactpersonen().size();
-		organisatie.getAdressen().size();
-		organisatie.getNfaLijst().size();
+		if (organisatie != null) {
+			organisatie.getContactpersonen().size();
+			organisatie.getAdressen().size();
+			organisatie.getNfaLijst().size();
+		}
 		return organisatie;
 	}
 
@@ -98,16 +100,18 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 	@Override
 	public Organisatie getByIdMetRollen(int id) {
 		Organisatie organisatie = getById(id);
-		organisatie.getContactpersonen().size();
-		if (organisatie.heeftRol(Bedrijf.class)) {
-			Bedrijf bedrijf = organisatie.getBedrijf();
-			bedrijf.getAanbiedingen().size();
-			bedrijf.getArbeidsovereenkomsten().size();
-			bedrijf.getMedewerkers().size();
-			bedrijf.getVacatures().size();
-		}
-		if (organisatie.heeftRol(Leverancier.class)) {
-			organisatie.getLeverancier();
+		if (organisatie != null) {
+			organisatie.getContactpersonen().size();
+			if (organisatie.heeftRol(Bedrijf.class)) {
+				Bedrijf bedrijf = organisatie.getBedrijf();
+				bedrijf.getAanbiedingen().size();
+				bedrijf.getArbeidsovereenkomsten().size();
+				bedrijf.getMedewerkers().size();
+				bedrijf.getVacatures().size();
+			}
+			if (organisatie.heeftRol(Leverancier.class)) {
+				organisatie.getLeverancier();
+			}
 		}
 		return organisatie;
 	}
@@ -115,18 +119,20 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 	@Override
 	public Organisatie getByIdCompleet(int id) {
 		Organisatie organisatie = getById(id);
-		organisatie.getContactpersonen().size();
-		organisatie.getAdressen().size();
-		organisatie.getNfaLijst().size();
-		if (organisatie.heeftRol(Bedrijf.class)) {
-			Bedrijf bedrijf = organisatie.getBedrijf();
-			bedrijf.getAanbiedingen().size();
-			bedrijf.getArbeidsovereenkomsten().size();
-			bedrijf.getMedewerkers().size();
-			bedrijf.getVacatures().size();
-		}
-		if (organisatie.heeftRol(Leverancier.class)) {
-			organisatie.getLeverancier();
+		if (organisatie != null) {
+			organisatie.getContactpersonen().size();
+			organisatie.getAdressen().size();
+			organisatie.getNfaLijst().size();
+			if (organisatie.heeftRol(Bedrijf.class)) {
+				Bedrijf bedrijf = organisatie.getBedrijf();
+				bedrijf.getAanbiedingen().size();
+				bedrijf.getArbeidsovereenkomsten().size();
+				bedrijf.getMedewerkers().size();
+				bedrijf.getVacatures().size();
+			}
+			if (organisatie.heeftRol(Leverancier.class)) {
+				organisatie.getLeverancier();
+			}
 		}
 		return organisatie;
 	}
