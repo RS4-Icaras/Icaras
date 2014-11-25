@@ -39,13 +39,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class RelatieServiceTest {
 
 	@Autowired
-	public IRelatieService service;
+	private IRelatieService relatieService;
+	
+	@Autowired
+	private IPersoonService persoonService;
+	
+	@Autowired
+	private IOrganisatieService organisatieService;
 
 	@Autowired
 	private IAdresDao adresDao;
-
-	@Autowired
-	private IRelatieDao relatieDao;
+;
 
 	private Persoon relatie1;
 	private Persoon relatie1_clone;
@@ -144,8 +148,8 @@ public class RelatieServiceTest {
 		 * Save de relatie
 		 */
 
-		service.save(relatie1);
-		service.save(relatie2);
+		relatieService.save(relatie1);
+		relatieService.save(relatie2);
 	}
 
 //	@After
@@ -161,8 +165,8 @@ public class RelatieServiceTest {
 	@Test
 	public void testSaveEnGet() {
 
-		relatie1 = (Persoon) service.getById(relatie1.getId());
-		relatie2 = (Organisatie) service.getById(relatie2.getId());
+		relatie1 = (Persoon) relatieService.getById(relatie1.getId());
+		relatie2 = (Organisatie) relatieService.getById(relatie2.getId());
 
 		assertTrue("gesavede relatie1 is gelijke aan opgehaalde relatie",
 				relatie1.equals(relatie1));
@@ -177,11 +181,11 @@ public class RelatieServiceTest {
 		relatie1.setVoornaam("Kees");
 		relatie2.setOpmerking("Bijna alles");
 
-		service.update(relatie1);
-		service.update(relatie2);
+		relatieService.update(relatie1);
+		relatieService.update(relatie2);
 
-		relatie1 = (Persoon) service.getById(relatie1.getId());
-		relatie2 = (Organisatie) service.getById(relatie2.getId());
+		relatie1 = (Persoon) relatieService.getById(relatie1.getId());
+		relatie2 = (Organisatie) relatieService.getById(relatie2.getId());
 
 		assertTrue("opgehaalde relatie1 gelijk aan relatie1Updated",
 				relatie1.equals(relatie1));
@@ -193,8 +197,8 @@ public class RelatieServiceTest {
 	@Test
 	public void testDeleteAdresVanRelatie() {
 
-		relatie1 = (Persoon) service.getByIdMetAdres(relatie1.getId());
-		relatie2 = (Organisatie) service.getByIdMetAdres(relatie2.getId());
+		relatie1 = (Persoon) relatieService.getByIdMetAdres(relatie1.getId());
+		relatie2 = (Organisatie) relatieService.getByIdMetAdres(relatie2.getId());
 
 		relatie1.verwijderLaatsteAdres();
 
@@ -207,14 +211,14 @@ public class RelatieServiceTest {
 		assertTrue("Adres kan niet worden verwijderd",
 				relatie2.removeAdres(tmp));
 
-		service.update(relatie1);
-		service.update(relatie2);
+		relatieService.update(relatie1);
+		relatieService.update(relatie2);
 
 		assertNotNull("Relatie kan niet worden gevonden",
-				relatie1 = (Persoon) service.getByIdMetAdres(relatie1.getId()));
+				relatie1 = (Persoon) relatieService.getByIdMetAdres(relatie1.getId()));
 		assertNotNull(
 				"Relatie kan niet worden gevonden",
-				relatie2 = (Organisatie) service.getByIdMetAdres(relatie2
+				relatie2 = (Organisatie) relatieService.getByIdMetAdres(relatie2
 						.getId()));
 
 		assertTrue("Relatie bevat nog een adres", relatie1.getAdressen().isEmpty());
@@ -225,16 +229,16 @@ public class RelatieServiceTest {
 	@Test
 	public void testDelete() {
 
-		relatie1 = (Persoon) service.getByIdMetAdres(relatie1.getId());
-		relatie2 = (Organisatie) service.getByIdMetAdres(relatie2.getId());
+		relatie1 = (Persoon) relatieService.getByIdMetAdres(relatie1.getId());
+		relatie2 = (Organisatie) relatieService.getByIdMetAdres(relatie2.getId());
 
-		service.delete(relatie1);
-		service.delete(relatie2);
+		persoonService.delete(relatie1);
+		organisatieService.delete(relatie2);
 
 		assertNull("Gedelete relatie1 is null",
-				service.getById(relatie1.getId()));
+				relatieService.getById(relatie1.getId()));
 		assertNull("Gedelete relatie2 is null",
-				service.getById(relatie2.getId()));
+				relatieService.getById(relatie2.getId()));
 
 		assertNull(
 				"Controleer of de adressen die bij de relatie horen ook zijn verwijderd",
@@ -253,7 +257,7 @@ public class RelatieServiceTest {
 	@Test
 	public void testGetAll() {
 
-		List<Relatie> relatieLijst = service.getAll();
+		List<Relatie> relatieLijst = relatieService.getAll();
 
 		assertTrue("relatieLijst bevat " + relatieLijst.size()
 				+ " relaties, dit zou 2 moeten zijn", relatieLijst.size() == 2);
@@ -280,7 +284,7 @@ public class RelatieServiceTest {
 	@Test
 	public void testGetAllMetAdres() {
 
-		List<Relatie> relatieLijst = service.getAllMetAdres();
+		List<Relatie> relatieLijst = relatieService.getAllMetAdres();
 
 		assertTrue("relatieLijst bevat " + relatieLijst.size()
 				+ " relaties, dit zou 2 moeten zijn", relatieLijst.size() == 2);
@@ -320,9 +324,9 @@ public class RelatieServiceTest {
 
 		int verwachtAantal = -1;
 
-		Persoon returnRelatie1MetAdres = (Persoon) service
+		Persoon returnRelatie1MetAdres = (Persoon) relatieService
 				.getByIdMetAdres(relatie1.getId());
-		Organisatie returnRelatie2MetAdres = (Organisatie) service
+		Organisatie returnRelatie2MetAdres = (Organisatie) relatieService
 				.getByIdMetAdres(relatie2.getId());
 
 		assertFalse(
