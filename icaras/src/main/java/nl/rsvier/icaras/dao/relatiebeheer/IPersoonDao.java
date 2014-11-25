@@ -29,5 +29,10 @@ public interface IPersoonDao extends IGenericDao<Persoon> {
 	 *         adressen en Nfalijst
 	 */
 	public List<Persoon> getAllCompleet();
-
+	
+	public List<Persoon> getAllMetKandidaat();
+	
+	public List<Persoon> getAllMetWerknemerEnKandidaat();
+	
+	public List<Persoon> getAllMetContactPersoon();
 }

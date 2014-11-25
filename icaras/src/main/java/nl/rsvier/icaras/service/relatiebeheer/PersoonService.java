@@ -105,4 +105,15 @@ public class PersoonService implements IPersoonService {
 		return persoonDao.getAllCompleet();
 	}
 
+	public List<Persoon> getAllMetKandidaat() {
+		return persoonDao.getAllMetKandidaat();
+	}
+
+	public List<Persoon> getAllMetWerknemerEnKandidaat() {
+		return persoonDao.getAllMetWerknemerEnKandidaat();
+	}
+
+	public List<Persoon> getAllMetContactPersoon() {
+		return persoonDao.getAllMetContactPersoon();
+	}
 }
