@@ -1,6 +1,3 @@
-<%@ page
-	import="java.io.*, java.util.*, java.sql.*, javax.servlet.http.*, javax.servlet.*, nl.rsvier.icaras.core.relatiebeheer.Adres, nl.rsvier.icaras.core.relatiebeheer.Relatie"%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
@@ -26,27 +23,6 @@
 			<li class="menubar_item"><a href="/Icaras/getAllOrganisaties">organisaties</a></li>
 		</ul>
 	</div>
-
-	<c:if test="${not empty organisatieForm}">
-		<form:form action="/Icaras/updateOrganisatie" method="post"
-			commandName="organisatieForm">
-			<div class="fieldset"><fieldset>
-				<legend>Gegevens</legend>
-				<br />
-
-				<form:input type="hidden" name="id" path="id" readonly="true" />
-
-				<label for="naam">Naam</label>
-				<form:input name="naam" path="naam" readonly="true" />
-				<form:errors path="naam" cssClass="validationError"></form:errors>
-				<br /><br />
-
-				<input type="submit" value="Wijzig gegevens" disabled="disabled" />
-				<br />
-
-			</fieldset></div>
-		</form:form>
-	</c:if>
 
 	<c:if test="${not empty persoonForm}">
 		<form:form action="/Icaras/updatePersoon" method="post"
@@ -89,26 +65,61 @@
 
 	</c:if>
 	
-	<c:if test="${not empty relatie}">
+	<c:if test="${not empty persoon}">
 	<div class="fieldset"><fieldset>
 		<legend>Adressen</legend>
 		<ul id="adressenlist">
-			<c:forEach items="${relatie.adressen}" var="adres">
+			<c:forEach items="${persoon.adressen}" var="adres">
 			<li class="adres edit <c:if test="${adres.isCorrespondentieAdres}">correspondentie</c:if>">
 				<c:choose>
 					<c:when test="${adres.isPostbus}">
-						<a href="/Icaras/getPostbus/${relatie.id}/${adres.id}">${adres}</a>
+						<a href="/Icaras/getPostbus/${persoon.id}/${adres.id}">${adres}</a>
 					</c:when>
 					<c:otherwise>
-						<a href="/Icaras/getAdres/${relatie.id}/${adres.id}">${adres}</a>
+						<a href="/Icaras/getAdres/${persoon.id}/${adres.id}">${adres}</a>
 					</c:otherwise>
 				</c:choose>
 			</li>
 			</c:forEach>
-			<li style="margin-top: 12px;" class="new"><a
-				href="/Icaras/voegAdresToe/${relatie.id}">Voeg adres toe</a></li>
 			<li class="new"><a
-				href="/Icaras/voegPostbusToe/${relatie.id}">Voeg postbus toe</a></li>
+				href="/Icaras/voegAdresToe/${persoon.id}">Voeg adres toe</a></li>
+			<li class="new"><a
+				href="/Icaras/voegPostbusToe/${persoon.id}">Voeg postbus toe</a></li>
+		</ul>
+	</fieldset></div>
+	
+	<div class="fieldset"><fieldset>
+		<legend>Nfa's</legend>
+		<ul id="nfalist">
+			<c:forEach items="${persoon.nfaLijst}" var="nfa">
+			<li class="nfa edit <c:out value="${nfa.nfaSoort}"/>">
+				<a href="/Icaras/getNfa/${persoon.id}/${nfa.id}">${nfa.nfaAdres}</a>
+			</li>
+			</c:forEach>
+			<li class="new"><a
+				href="/Icaras/voegNfaToe/${persoon.id}">Voeg een nfa toe</a></li>
+		</ul>
+	</fieldset></div>
+	
+	<div class="fieldset"><fieldset>
+		<legend>Rollen</legend>
+		<ul id="rollenlist">
+			<c:forEach items="${persoon.rollen}" var="rol">
+			<li class="rol edit <c:if test="${rol.gearchiveerd}">gearchiveerd</c:if>">
+				
+				<c:choose>
+					<c:when test="${rol.getClass().name == 'nl.rsvier.icaras.core.relatiebeheer.Kandidaat'}">
+						<a href="/Icaras/getKandidaat/${persoon.id}">Kandidatenrol</a>
+					</c:when>
+				</c:choose>
+				
+			</li>
+			</c:forEach>
+			
+			<li class="new"><a href="/Icaras/voegKandidaatToe/${persoon.id}">Voeg kandidatenrol toe</a></li>
+			<li class="new"><a href="#">Voeg werknemersrol toe</a></li>
+			<li class="new"><a href="#">Voeg contactpersoonsrol toe</a></li>
+			
 		</ul>
 	</fieldset></div>
 	</c:if>

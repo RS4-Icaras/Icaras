@@ -29,48 +29,51 @@
 		<form:form method="post"
 			action="/Icaras/getPostbus"
 			modelAttribute="postbusForm">
-			<fieldset>
+			<div class="fieldset"><fieldset>
 				<legend>Postbus</legend>
-				<br />
 				
 				<form:input type="hidden" path="relatieId" />
 				<form:input type="hidden" path="postbusId" />
 				
+				<p>
 				<label for="postbusnummer">Postbusnummer</label>
 				<form:input name="postbusnummer" path="postbusnummer" />
 				<form:errors path="postbusnummer" cssClass="validationError" />
-				<br /><br />
+				</p>
 				
+				<p>
 				<label for="postcode">Postcode</label>
 				<form:input name="postcode" path="postcode" />
 				<form:errors path="postcode" cssClass="validationError" />
-				<br /><br />
+				</p>
 				
+				<p>
 				<label for="plaats">Plaats</label>
 				<form:input name="plaats" path="plaats" />
 				<form:errors path="plaats" cssClass="validationError" />
-				<br /><br />
+				</p>
 				
+				<p>
 				<c:choose>
 					<c:when test="${postbusForm.correspondentieAdres}">
 						<input type="checkbox" name="nepwaarde" value="true" checked
 							disabled>
 							Stuur de post hiernaartoe?
-							<br /><br />
 						<input type="hidden" name="correspondentieAdres" value="true" />
 						<form:input type="hidden" path="correspondentieAdres" />
 					</c:when>
 					<c:otherwise>
 						<input type="checkbox" name="correspondentieAdres" value="true">
 						Stuur de post hiernaartoe?
-						<br /><br />
 					</c:otherwise>
 				</c:choose>
+				</p>
 				
+				<p>
 				<input type="submit" value="Voeg postbus toe" />
-				<br />
+				</p>
 
-			</fieldset>
+			</fieldset></div>
 		</form:form>
 	</c:if>
 

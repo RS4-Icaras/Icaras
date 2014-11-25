@@ -19,6 +19,14 @@ h1 {
 	font-size: 120%;
 }
 
+fieldset {
+	border: 1px solid #EEE;
+}
+
+div.fieldset {
+	margin-top: 24px;
+}
+
 legend {
 	font-family: Arial;
 	color: #000;
@@ -46,9 +54,8 @@ input {
     height: 24px;
 }
 
-fieldset {
-	border: 1px solid #EEE;
-}
+
+
 
 .error {
 	padding: 6px;
@@ -85,7 +92,7 @@ p.warning:before {
 	width: 100%;
 	min-width: 100%;
 	border-bottom: 3px solid #a01126;
-	margin-bottom: 26px;
+	margin-bottom: 32px;
 }
 
 ul#menubar {
@@ -102,7 +109,7 @@ ul#menubar li {
 	border-bottom: 6px solid #e51937;
 }
 
-#menubar li:hover {
+ul#menubar li:hover {
 	border-bottom: 6px solid #b7142c;
 }
 
@@ -110,7 +117,7 @@ ul#menubar li.active {
 	border-bottom: 6px solid #a01126;
 }
 
-#menubar li a {
+ul#menubar li a {
 	padding: 6px 12px;
 	display: block;
 	font-family: Arial;
@@ -188,6 +195,11 @@ ul#menubar li.active {
 
 
 
+li.new {
+	margin-top: 12px;
+}
+
+
 
 /* Start of Column CSS */
 #container2 {
@@ -207,16 +219,16 @@ ul#menubar li.active {
 
 #col1 {
 	float: left;
-	width: 46%;
+	width: 50%;
 	position: relative;
-	left: 52%;
+	left: 50%;
 	overflow: hidden;
 }
 
 #col2 {
 	float: left;
-	width: 46%;
+	width: 50;
 	position: relative;
-	left: 56%;
+	left: 50%;
 	overflow: hidden;
 }

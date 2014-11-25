@@ -29,53 +29,57 @@
 		<form:form method="post"
 			action="/Icaras/getAdres"
 			modelAttribute="adresForm">
-			<fieldset>
+			<div class="fieldset"><fieldset>
 				<legend>Adres</legend>
-				<br />
 				
 				<form:input type="hidden" path="relatieId" />
 				<form:input type="hidden" path="adresId" />
 				
+				<p>
 				<label for="straat">Straat</label>
 				<form:input name="straat" path="straat" />
 				<form:errors path="straat" cssClass="validationError" />
-				<br /><br />
+				</p>
 				
+				<p>
 				<label for="huisnummer">Huisnummer</label>
 				<form:input name="huisnummer" path="huisnummer" />
 				<form:errors path="huisnummer" cssClass="validationError" />
-				<br /><br />
+				</p>
 				
+				<p>
 				<label for="postcode">Postcode</label>
 				<form:input name="postcode" path="postcode" />
 				<form:errors path="postcode" cssClass="validationError" />
-				<br /><br />
+				</p>
 				
+				<p>
 				<label for="plaats">Plaats</label>
 				<form:input name="plaats" path="plaats" />
 				<form:errors path="plaats" cssClass="validationError" />
-				<br /><br />
+				</p>
 				
+				<p>
 				<c:choose>
 					<c:when test="${adresForm.correspondentieAdres}">
 						<input type="checkbox" name="nepwaarde" value="true" checked
 							disabled>
 							Stuur de post hiernaartoe?
-							<br /><br />
 						<input type="hidden" name="correspondentieAdres" value="true" />
 						<form:input type="hidden" path="correspondentieAdres" />
 					</c:when>
 					<c:otherwise>
 						<input type="checkbox" name="correspondentieAdres" value="true">
 						Stuur de post hiernaartoe?
-						<br /><br />
 					</c:otherwise>
 				</c:choose>
+				</p>
 				
-				<input type="submit" value="Voeg adres toe" />
-				<br />
+				<p>
+				<input type="submit" value="Wijzig adres" />
+				</p>
 
-			</fieldset>
+			</fieldset></div>
 		</form:form>
 	</c:if>
 

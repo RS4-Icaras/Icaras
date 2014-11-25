@@ -22,13 +22,13 @@
 		</ul>
 	</div>
 	
-	<fieldset>
+	<div class="fieldset"><fieldset>
 	<legend>Welkom</legend>
 	<p>
 		klik <a href="/Icaras/start">hier</a> om de database te vullen met
 		test personen en organisaties.
 	</p>
-	</fieldset>
+	</fieldset></div>
 	
 </body>
 </html>

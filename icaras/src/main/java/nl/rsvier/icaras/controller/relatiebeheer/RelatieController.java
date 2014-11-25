@@ -3,23 +3,39 @@ package nl.rsvier.icaras.controller.relatiebeheer;
 import javax.validation.Valid;
 
 import nl.rsvier.icaras.core.InvalidBusinessKeyException;
+import nl.rsvier.icaras.core.arbeidsmarkt.Aanbieding;
 import nl.rsvier.icaras.core.relatiebeheer.Adres;
+import nl.rsvier.icaras.core.relatiebeheer.Bedrijf;
+import nl.rsvier.icaras.core.relatiebeheer.Email;
+import nl.rsvier.icaras.core.relatiebeheer.Facebook;
+import nl.rsvier.icaras.core.relatiebeheer.Fax;
+import nl.rsvier.icaras.core.relatiebeheer.Kandidaat;
+import nl.rsvier.icaras.core.relatiebeheer.LinkedIn;
+import nl.rsvier.icaras.core.relatiebeheer.Nfa;
 import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
 import nl.rsvier.icaras.core.relatiebeheer.Persoon;
 import nl.rsvier.icaras.core.relatiebeheer.Relatie;
+import nl.rsvier.icaras.core.relatiebeheer.TelefoonNummer;
+import nl.rsvier.icaras.core.relatiebeheer.Twitter;
+import nl.rsvier.icaras.core.relatiebeheer.Website;
 import nl.rsvier.icaras.form.relatiebeheer.AdresForm;
+import nl.rsvier.icaras.form.relatiebeheer.NfaForm;
 import nl.rsvier.icaras.form.relatiebeheer.OrganisatieForm;
 import nl.rsvier.icaras.form.relatiebeheer.PersoonForm;
 import nl.rsvier.icaras.form.relatiebeheer.PostbusForm;
+import nl.rsvier.icaras.service.relatiebeheer.IOrganisatieService;
+import nl.rsvier.icaras.service.relatiebeheer.IPersoonService;
 import nl.rsvier.icaras.service.relatiebeheer.IRelatieService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class RelatieController {
@@ -43,6 +59,25 @@ public class RelatieController {
 	@Autowired
 	private IRelatieService relatieService;
 
+	@Autowired
+	private IPersoonService persoonService;
+
+	@Autowired
+	private IOrganisatieService organisatieService;
+
+	/*
+	 * Tijdelijke hulpmethode totdat relatieService een nfalijst initialiseert
+	 */
+	public boolean isPersoonsId(int relatie_id) {
+		// TODO: Is het echt nodig twee keer de database aan te roepen zonder
+		// relatieService?!
+		Relatie relatie = relatieService.getById(relatie_id);
+		if (relatie instanceof Persoon) {
+			return true;
+		}
+		return false;
+	}
+
 	@RequestMapping(value = "/start")
 	public String start(Model model) throws InvalidBusinessKeyException {
 
@@ -56,6 +91,22 @@ public class RelatieController {
 		Persoon harry = new Persoon("Harry", "Potter");
 		harry.addAdres(new Adres(true, false, "1340DF", "4", "Little Whinging",
 				"Privet Drive"));
+
+		// //////////////////////
+
+		Nfa harry_twitter = new Twitter();
+		harry_twitter.setNfaAdres("@harrypotter");
+		harry.addNfa(harry_twitter);
+
+		Nfa harry_website = new Website();
+		harry_website.setNfaAdres("http://www.pottermore.com");
+		harry.addNfa(harry_website);
+
+		Nfa harry_telefoon = new TelefoonNummer();
+		harry_telefoon.setNfaAdres("+3160000000");
+		harry.addNfa(harry_telefoon);
+
+		// //////////////////////
 
 		Persoon ron = new Persoon("Ron", "Weasley");
 		ron.addAdres(aBurrow);
@@ -94,14 +145,21 @@ public class RelatieController {
 		relatieService.save(hagrid);
 		relatieService.save(hermione);
 
-		// TODO: Ik kan een adres niet aan 2 relaties toevoegen
 		Persoon profdumbledore = new Persoon("Albert", "Dumbledore");
-		// profdumbledore.addAdres(hogwarts.getCorrespondentieAdres());
 		relatieService.save(profdumbledore);
 
-		// TODO: Ik kan oneindig duplicaten van personen blijven toevoegen
 		Persoon profdumbledore2 = new Persoon("Albert", "Dumbledore");
 		relatieService.save(profdumbledore2);
+
+		harry.addRol(new Kandidaat());
+		persoonService.update(harry);
+
+		hogwarts.addRol(new Bedrijf());
+		organisatieService.update(hogwarts);
+
+		new Aanbieding(harry, hogwarts);
+		persoonService.update(harry);
+		organisatieService.update(hogwarts);
 
 		return "redirect:/getAllRelaties";
 	}
@@ -110,55 +168,78 @@ public class RelatieController {
 	 * Get All
 	 */
 
-	@RequestMapping(value = { "/getAllRelaties", "/getAllPersonen",
-			"/getAllOrganisaties" })
+	@RequestMapping(value = { "/getAllRelaties" })
 	public String getAllRelaties(Model model) {
 		model.addAttribute("relaties", relatieService.getAll());
 		return "getAllRelaties";
 	}
 
-	// @RequestMapping(value = "/getAllPersonen")
-	// public String getAllPersonen(Model model) {
-	// // model.addAttribute("relaties", relatieService.getAllPersonen()); //
-	// // TODO: Servicelaag
-	// return "getAllPersonen";
-	// }
+	@RequestMapping(value = { "/getAllPersonen" })
+	public String getAllPersonen(Model model) {
+		model.addAttribute("personen", persoonService.getAllCompleet());
+		return "getAllPersonen";
+	}
 
-	// @RequestMapping(value = "/getAllOrganisaties")
-	// public String getAllOrganisaties(Model model) {
-	// // model.addAttribute("relaties", relatieService.getAllOrganisaties());
-	// // // TODO: Servicelaag
-	// return "getAllOrganisaties";
-	// }
+	@RequestMapping(value = { "/getAllOrganisaties" })
+	public String getAllOrganisaties(Model model) {
+		model.addAttribute("organisaties", organisatieService.getAllCompleet());
+		return "getAllOrganisaties";
+	}
 
 	/*
 	 * Get Relatie
 	 */
 
-	@RequestMapping(value = { "/getRelatie/{relatie_id}",
-			"/getPersoon/{relatie_id}", "/getOrganisatie/{relatie_id}" }, method = RequestMethod.GET)
-	public String getRelatie(@PathVariable int relatie_id, Model model) {
+	@RequestMapping(value = { "/getPersoon/{relatie_id}" }, method = RequestMethod.GET)
+	public String getPersoon(@PathVariable int relatie_id, Model model) {
 
-		Relatie relatie = relatieService.getByIdMetAdres(relatie_id);
-
-		if (relatie instanceof Persoon) {
-			model.addAttribute("persoonForm",
-					new PersoonForm((Persoon) relatie));
-			model.addAttribute("relatie", relatie);
-			return "getRelatie";
-		}
-
-		if (relatie instanceof Organisatie) {
-			model.addAttribute("organisatieForm", new OrganisatieForm(
-					(Organisatie) relatie));
-			model.addAttribute("relatie", relatie);
-			return "getRelatie";
-		}
-
-		// Stuur gebruiker zomaar zonder feedback terug?
-		return "redirect:/getAllRelaties";
-
+		Persoon persoon = persoonService.getByIdCompleet(relatie_id);
+		model.addAttribute("persoonForm", new PersoonForm(persoon));
+		model.addAttribute("persoon", persoon);
+		return "getPersoon";
 	}
+
+	@RequestMapping(value = { "/getOrganisatie/{relatie_id}" }, method = RequestMethod.GET)
+	public String getOrganisatie(@PathVariable int relatie_id, Model model) {
+
+		Organisatie organisatie = organisatieService
+				.getByIdCompleet(relatie_id);
+		model.addAttribute("organisatieForm", new OrganisatieForm(organisatie));
+		model.addAttribute("organisatie", organisatie);
+		return "getOrganisatie";
+	}
+
+	// @RequestMapping(value = { "/getRelatie/{relatie_id}" }, method =
+	// RequestMethod.GET)
+	// public String getRelatie(@PathVariable int relatie_id, Model model) {
+	//
+	// /*
+	// * Splits op, 1 db aanroep minder
+	// */
+	//
+	// Relatie relatie = relatieService.getByIdMetAdres(relatie_id); // per +
+	// // org
+	//
+	// if (relatie instanceof Persoon) {
+	// model.addAttribute("persoonForm",
+	// new PersoonForm((Persoon) relatie));
+	// model.addAttribute("relatie",
+	// persoonService.getByIdCompleet(relatie_id));
+	// return "getRelatie";
+	// }
+	//
+	// if (relatie instanceof Organisatie) {
+	// model.addAttribute("organisatieForm", new OrganisatieForm(
+	// (Organisatie) relatie));
+	// model.addAttribute("relatie",
+	// organisatieService.getByIdCompleet(relatie_id));
+	// return "getRelatie";
+	// }
+	//
+	// // TODO: Stuur gebruiker zomaar zonder feedback terug?
+	// return "redirect:/getAllRelaties";
+	//
+	// }
 
 	/*
 	 * Update Relatie
@@ -187,11 +268,11 @@ public class RelatieController {
 			persoon.setGeboortedatum(persoonForm.getGeboortedatum());
 
 			relatieService.update(persoon);
-			return "redirect:/getRelatie/" + persoonForm.getId();
+			return "redirect:/getPersoon/" + persoonForm.getId();
 		}
 		model.addAttribute("persoonForm", persoonForm);
 		model.addAttribute("relatie", persoon); // Voor adressen
-		return "getRelatie";
+		return "getPersoon";
 	}
 
 	@RequestMapping(value = "/updateOrganisatie", method = RequestMethod.POST)
@@ -211,15 +292,15 @@ public class RelatieController {
 			 * relatie een collectie rollen bevat.
 			 */
 
-			Organisatie organisatie = (Organisatie) relatieService
-					.getByIdMetAdres(organisatieForm.getId());
+			Organisatie organisatie = organisatieService
+					.getByIdCompleet(organisatieForm.getId());
 			organisatie.setNaam(organisatieForm.getNaam());
 
-			relatieService.update(organisatie);
-			return "redirect:/getRelatie/" + organisatieForm.getId();
+			organisatieService.update(organisatie);
+			return "redirect:/getOrganisatie/" + organisatieForm.getId();
 		}
 		model.addAttribute("organisatieForm", organisatieForm);
-		return "updatePersoon";
+		return "updateOrganisatie";
 	}
 
 	/*
@@ -235,11 +316,12 @@ public class RelatieController {
 	@RequestMapping(value = "/voegPersoonToe", method = RequestMethod.POST)
 	public String voegPersoonToeSubmit(@Valid PersoonForm persoonForm,
 			BindingResult persoonFormResult, Model model) {
+
 		if (!persoonFormResult.hasErrors()) {
 			Persoon persoon = new Persoon(persoonForm.getVoornaam(),
 					persoonForm.getTussenvoegsels(),
 					persoonForm.getAchternaam(), persoonForm.getGeboortedatum());
-			relatieService.save(persoon);
+			persoonService.save(persoon);
 			return "redirect:/getAllRelaties";
 		}
 		model.addAttribute("persoonForm", persoonForm);
@@ -267,7 +349,7 @@ public class RelatieController {
 			try {
 				Organisatie organisatie = new Organisatie(
 						organisatieForm.getNaam());
-				relatieService.save(organisatie);
+				organisatieService.save(organisatie);
 				return "redirect:/getAllRelaties";
 			} catch (InvalidBusinessKeyException e) {
 				// Moeten we dit nog een tweede keer afvangen? Validatie zou
@@ -279,7 +361,7 @@ public class RelatieController {
 	}
 
 	/*
-	 * OUDE ADRESSEN!!!!!!!!!!!!!!!
+	 * Adres & Postbus
 	 */
 
 	@RequestMapping(value = { "/voegAdresToe/{relatie_id}" }, method = RequestMethod.GET)
@@ -298,41 +380,68 @@ public class RelatieController {
 		return "voegPostbusToe";
 	}
 
-	@RequestMapping(value = "/voegAdresToe/{relatie_id}", method = RequestMethod.POST)
-	public String setAdresForm(@PathVariable int relatie_id,
-			@Valid AdresForm adresForm, BindingResult adresFormResult,
-			Model model) {
-		Relatie relatie = relatieService.getByIdMetAdres(relatie_id);
+	@RequestMapping(value = "/voegAdresToe", method = RequestMethod.POST)
+	public String saveAdres(@Valid AdresForm adresForm,
+			BindingResult adresFormResult, Model model) {
+
 		if (!adresFormResult.hasErrors()) {
-			Adres adres = new Adres(adresForm.getCorrespondentieAdres(), false,
-					adresForm.getPostcode(), adresForm.getHuisnummer(),
-					adresForm.getPlaats(), adresForm.getStraat());
-			adres.maakStraat();
-			relatie.addAdres(adres);
-			relatieService.update(relatie);
-			return "redirect:/getRelatie/" + relatie_id;
+			if (isPersoonsId(adresForm.getRelatieId())) {
+				Persoon persoon = persoonService.getByIdCompleet(adresForm
+						.getRelatieId());
+				Adres adres = new Adres(adresForm.getCorrespondentieAdres(),
+						false, adresForm.getPostcode(),
+						adresForm.getHuisnummer(), adresForm.getPlaats(),
+						adresForm.getStraat());
+				adres.maakStraat();
+				persoon.addAdres(adres);
+				persoonService.update(persoon);
+				return "redirect:/getPersoon/" + adresForm.getRelatieId();
+			} else {
+				Organisatie organisatie = organisatieService
+						.getByIdCompleet(adresForm.getRelatieId());
+				Adres adres = new Adres(adresForm.getCorrespondentieAdres(),
+						false, adresForm.getPostcode(),
+						adresForm.getHuisnummer(), adresForm.getPlaats(),
+						adresForm.getStraat());
+				adres.maakStraat();
+				organisatie.addAdres(adres);
+				organisatieService.update(organisatie);
+				return "redirect:/getOrganisatie/" + adresForm.getRelatieId();
+			}
 		}
-		model.addAttribute("relatie", relatie);
 		model.addAttribute("adresForm", adresForm);
 		return "voegAdresToe";
 	}
 
-	@RequestMapping(value = "/voegPostbusToe/{relatie_id}", method = RequestMethod.POST)
-	public String setPostbusForm(@PathVariable int relatie_id,
-			@Valid PostbusForm postbusForm, BindingResult postbusFormResult,
-			Model model) {
-		Relatie relatie = relatieService.getByIdMetAdres(relatie_id);
+	@RequestMapping(value = "/voegPostbusToe", method = RequestMethod.POST)
+	public String savePostbus(@Valid PostbusForm postbusForm,
+			BindingResult postbusFormResult, Model model) {
+
 		if (!postbusFormResult.hasErrors()) {
-			Adres adres = new Adres(postbusForm.getCorrespondentieAdres(),
-					true, postbusForm.getPostcode(),
-					postbusForm.getPostbusnummer(), postbusForm.getPlaats(),
-					"nvt");
-			adres.maakPostbus();
-			relatie.addAdres(adres);
-			relatieService.update(relatie);
-			return "redirect:/getRelatie/" + relatie_id;
+			if (isPersoonsId(postbusForm.getRelatieId())) {
+				Persoon persoon = persoonService.getByIdCompleet(postbusForm
+						.getRelatieId());
+				Adres adres = new Adres(postbusForm.getCorrespondentieAdres(),
+						true, postbusForm.getPostcode(),
+						postbusForm.getPostbusnummer(),
+						postbusForm.getPlaats(), "nvt");
+				adres.maakPostbus();
+				persoon.addAdres(adres);
+				persoonService.update(persoon);
+				return "redirect:/getPersoon/" + postbusForm.getRelatieId();
+			} else {
+				Organisatie organisatie = organisatieService
+						.getByIdCompleet(postbusForm.getRelatieId());
+				Adres adres = new Adres(postbusForm.getCorrespondentieAdres(),
+						true, postbusForm.getPostcode(),
+						postbusForm.getPostbusnummer(),
+						postbusForm.getPlaats(), "nvt");
+				adres.maakPostbus();
+				organisatie.addAdres(adres);
+				organisatieService.update(organisatie);
+				return "redirect:/getOrganisatie/" + postbusForm.getRelatieId();
+			}
 		}
-		model.addAttribute("relatie", relatie);
 		model.addAttribute("postbusForm", postbusForm);
 		return "voegPostbusToe";
 	}
@@ -384,24 +493,55 @@ public class RelatieController {
 			BindingResult adresFormResult, Model model) {
 
 		if (!adresFormResult.hasErrors()) {
-			Relatie relatie = relatieService.getByIdMetAdres(adresForm
-					.getRelatieId());
-			for (Adres adres : relatie.getAdressen()) {
-				if (adres.getId() == adresForm.getAdresId()) {
-					adres.setHuisOfPostbusNummer(adresForm.getHuisnummer());
-					adres.setPostcode(adresForm.getPostcode());
-					adres.setPlaats(adresForm.getPlaats());
-					adres.setStraat(adresForm.getStraat());
-					adres.maakStraat();
-					if (adresForm.getCorrespondentieAdres()) {
-						System.out
-								.println("!!!!!! TRYING TO MAKE CORRESPONDENTIEADRES");
-						adres.maakCorrespondentieAdres(relatie);
+			if (isPersoonsId(adresForm.getRelatieId())) {
+				Persoon persoon = persoonService.getByIdCompleet(adresForm
+						.getRelatieId());
+				for (Adres adres : persoon.getAdressen()) {
+					if (adres.getId() == adresForm.getAdresId()) {
+						/*
+						 * maakCorrespondentieAdres controleerd of het adres wel
+						 * gekoppeld is aan de relatie. Roep de methode dus aan
+						 * voordat je het adres wijzigt, want anders kan de
+						 * methode het adres niet meer vinden
+						 */
+						if (adresForm.getCorrespondentieAdres()) {
+							adres.maakCorrespondentieAdres(persoon);
+						}
+						// Nu is het veilig het adres aan te passen
+						adres.setHuisOfPostbusNummer(adresForm.getHuisnummer());
+						adres.setPostcode(adresForm.getPostcode());
+						adres.setPlaats(adresForm.getPlaats());
+						adres.setStraat(adresForm.getStraat());
+						adres.maakStraat();
 					}
 				}
+				persoonService.update(persoon);
+				return "redirect:/getPersoon/" + adresForm.getRelatieId();
+			} else {
+				Organisatie organisatie = organisatieService
+						.getByIdCompleet(adresForm.getRelatieId());
+				for (Adres adres : organisatie.getAdressen()) {
+					if (adres.getId() == adresForm.getAdresId()) {
+						/*
+						 * maakCorrespondentieAdres controleerd of het adres wel
+						 * gekoppeld is aan de relatie. Roep de methode dus aan
+						 * voordat je het adres wijzigt, want anders kan de
+						 * methode het adres niet meer vinden
+						 */
+						if (adresForm.getCorrespondentieAdres()) {
+							adres.maakCorrespondentieAdres(organisatie);
+						}
+						// Nu is het veilig het adres aan te passen
+						adres.setHuisOfPostbusNummer(adresForm.getHuisnummer());
+						adres.setPostcode(adresForm.getPostcode());
+						adres.setPlaats(adresForm.getPlaats());
+						adres.setStraat(adresForm.getStraat());
+						adres.maakStraat();
+					}
+				}
+				organisatieService.update(organisatie);
+				return "redirect:/getOrganisatie/" + adresForm.getRelatieId();
 			}
-			relatieService.update(relatie);
-			return "redirect:/getRelatie/" + adresForm.getRelatieId();
 		}
 		model.addAttribute("adresForm", adresForm);
 		return "getAdres";
@@ -412,26 +552,224 @@ public class RelatieController {
 			BindingResult postbusFormResult, Model model) {
 
 		if (!postbusFormResult.hasErrors()) {
-			Relatie relatie = relatieService.getByIdMetAdres(postbusForm
-					.getRelatieId());
-			for (Adres adres : relatie.getAdressen()) {
-				if (adres.getId() == postbusForm.getPostbusId()) {
-					adres.setHuisOfPostbusNummer(postbusForm.getPostbusnummer());
-					adres.setPostcode(postbusForm.getPostcode());
-					adres.setPlaats(postbusForm.getPlaats());
-					adres.maakPostbus();
-					if (postbusForm.getCorrespondentieAdres()) {
-						System.out
-								.println("!!!!!! TRYING TO MAKE CORRESPONDENTIEADRES");
-						adres.maakCorrespondentieAdres(relatie);
+
+			if (isPersoonsId(postbusForm.getRelatieId())) {
+				Persoon persoon = persoonService.getByIdCompleet(postbusForm
+						.getRelatieId());
+
+				for (Adres adres : persoon.getAdressen()) {
+					if (adres.getId() == postbusForm.getPostbusId()) {
+
+						/*
+						 * maakCorrespondentieAdres controleerd of het adres wel
+						 * gekoppeld is aan de relatie. Roep de methode dus aan
+						 * voordat je het adres wijzigt, want anders kan de
+						 * methode het adres niet meer vinden
+						 */
+						if (postbusForm.getCorrespondentieAdres()) {
+							adres.maakCorrespondentieAdres(persoon);
+						}
+
+						// Nu is het veilig het adres aan te passen
+						adres.setHuisOfPostbusNummer(postbusForm
+								.getPostbusnummer());
+						adres.setPostcode(postbusForm.getPostcode());
+						adres.setPlaats(postbusForm.getPlaats());
+						adres.maakPostbus();
+
 					}
 				}
+				persoonService.update(persoon);
+				return "redirect:/getPersoon/" + postbusForm.getRelatieId();
+			} else {
+				Organisatie organisatie = organisatieService
+						.getByIdCompleet(postbusForm.getRelatieId());
+
+				for (Adres adres : organisatie.getAdressen()) {
+					if (adres.getId() == postbusForm.getPostbusId()) {
+
+						/*
+						 * maakCorrespondentieAdres controleerd of het adres wel
+						 * gekoppeld is aan de relatie. Roep de methode dus aan
+						 * voordat je het adres wijzigt, want anders kan de
+						 * methode het adres niet meer vinden
+						 */
+						if (postbusForm.getCorrespondentieAdres()) {
+							adres.maakCorrespondentieAdres(organisatie);
+						}
+
+						// Nu is het veilig het adres aan te passen
+						adres.setHuisOfPostbusNummer(postbusForm
+								.getPostbusnummer());
+						adres.setPostcode(postbusForm.getPostcode());
+						adres.setPlaats(postbusForm.getPlaats());
+						adres.maakPostbus();
+
+					}
+				}
+				organisatieService.update(organisatie);
+				return "redirect:/getOrganisatie/" + postbusForm.getRelatieId();
 			}
-			relatieService.update(relatie);
-			return "redirect:/getRelatie/" + postbusForm.getRelatieId();
 		}
 		model.addAttribute("postbusForm", postbusForm);
 		return "getPostbus";
 	}
+
+	/*
+	 * Nfa's
+	 */
+
+	@RequestMapping(value = "/voegNfaToe/{relatie_id}", method = RequestMethod.GET)
+	public String getNfa(@PathVariable int relatie_id, Model model) {
+		model.addAttribute("nfaForm", new NfaForm(relatie_id));
+		return "voegNfaToe";
+	}
+
+	@RequestMapping(value = { "/voegNfaToe" }, method = RequestMethod.POST)
+	public String saveNfa(@Valid NfaForm nfaForm, BindingResult nfaFormResult,
+			Model model) {
+
+		if (!nfaFormResult.hasErrors()) {
+
+			Nfa nfa = null;
+			switch (nfaForm.getNfaSoort()) {
+			case EMAIL:
+				nfa = new Email();
+				break;
+			case FACEBOOK:
+				nfa = new Facebook();
+				break;
+			case FAX:
+				nfa = new Fax();
+				break;
+			case LINKEDIN:
+				nfa = new LinkedIn();
+				break;
+			case TELEFOONNUMMER:
+				nfa = new TelefoonNummer();
+				break;
+			case TWITTER:
+				nfa = new Twitter();
+				break;
+			case WEBSITE:
+				nfa = new Website();
+				break;
+			default:
+				break;
+			}
+
+			nfa.setNfaAdres(nfaForm.getNfaAdres());
+			nfa.setExtraInfo(nfaForm.getExtraInfo());
+
+			if (this.isPersoonsId(nfaForm.getRelatieId())) {
+				Persoon persoon = persoonService.getByIdCompleet(nfaForm
+						.getRelatieId());
+				persoon.addNfa(nfa);
+				persoonService.update(persoon);
+				return "redirect:/getPersoon/" + nfaForm.getRelatieId();
+			} else {
+				Organisatie organisatie = organisatieService
+						.getByIdCompleet(nfaForm.getRelatieId());
+				organisatie.addNfa(nfa);
+				organisatieService.update(organisatie);
+				return "redirect:/getOrganisatie/" + nfaForm.getRelatieId();
+			}
+
+		}
+
+		model.addAttribute("nfaForm", nfaForm);
+		return "voegNfaToe";
+	}
+
+	@RequestMapping(value = { "/getNfa/{relatie_id}/{nfa_id}" }, method = RequestMethod.GET)
+	public String getNfa(@PathVariable int relatie_id,
+			@PathVariable int nfa_id, Model model) {
+
+		NfaForm nfaForm = new NfaForm();
+		nfaForm.setRelatieId(relatie_id);
+		nfaForm.setNfaId(nfa_id);
+
+		if (this.isPersoonsId(relatie_id)) {
+			Persoon persoon = persoonService
+					.getByIdMetAdressenEnNfaLijst(relatie_id);
+			for (Nfa nfa : persoon.getNfaLijst()) {
+				if (nfa.getId() == nfa_id) {
+					nfaForm.setNfaAdres(nfa.getNfaAdres());
+					nfaForm.setExtraInfo(nfa.getExtraInfo());
+					nfaForm.setNfaSoort(nfa.getNfaSoort());
+				}
+			}
+		} else {
+			Organisatie organisatie = organisatieService
+					.getByIdMetAdressenEnNfaLijst(relatie_id);
+			for (Nfa nfa : organisatie.getNfaLijst()) {
+				if (nfa.getId() == nfa_id) {
+					nfaForm.setNfaAdres(nfa.getNfaAdres());
+					nfaForm.setExtraInfo(nfa.getExtraInfo());
+					nfaForm.setNfaSoort(nfa.getNfaSoort());
+				}
+			}
+		}
+
+		model.addAttribute("nfaForm", nfaForm);
+		return "getNfa";
+	}
+
+	@RequestMapping(value = "/getNfa", method = RequestMethod.POST)
+	public String updateNfa(@Valid NfaForm nfaForm,
+			BindingResult nfaFormResult, Model model) {
+
+		// TODO: Sessionvars instead of get params?
+
+		if (!nfaFormResult.hasErrors()) {
+
+			if (this.isPersoonsId(nfaForm.getRelatieId())) {
+				Persoon persoon = persoonService
+						.getByIdMetAdressenEnNfaLijst(nfaForm.getRelatieId());
+				for (Nfa nfa : persoon.getNfaLijst()) {
+					if (nfa.getId() == nfaForm.getNfaId()) {
+						nfa.setNfaAdres(nfaForm.getNfaAdres());
+						nfa.setExtraInfo(nfaForm.getExtraInfo());
+					}
+				}
+				persoonService.update(persoon);
+				return "redirect:/getPersoon/" + nfaForm.getRelatieId();
+			} else {
+				Organisatie organisatie = organisatieService
+						.getByIdMetAdressenEnNfaLijst(nfaForm.getRelatieId());
+				for (Nfa nfa : organisatie.getNfaLijst()) {
+					if (nfa.getId() == nfaForm.getNfaId()) {
+						nfa.setNfaAdres(nfaForm.getNfaAdres());
+						nfa.setExtraInfo(nfaForm.getExtraInfo());
+					}
+				}
+				organisatieService.update(organisatie);
+				return "redirect:/getOrganisatie/" + nfaForm.getRelatieId();
+			}
+
+		}
+		model.addAttribute("nfaForm", nfaForm);
+		return "getNfa";
+	}
+
+	/*
+	 * Rollen
+	 */
+
+	@RequestMapping(value = "/voegKandidaatToe/{persoon_id}", method = RequestMethod.GET)
+	public String oops(@PathVariable int persoon_id, Model model) {
+
+		Persoon persoon = persoonService.getByIdCompleet(persoon_id);
+		persoon.addRol(new Kandidaat()); // TODO: verantwoordelijkheid van
+											// service of core
+		persoonService.update(persoon);
+		return "redirect:/getPersoon/" + persoon_id;
+	}
+
+	
+		
+		
+		
+		
 
 }
