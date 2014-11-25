@@ -23,6 +23,7 @@ public class OrganisatieService implements IOrganisatieService {
 
 	@Override
 	public void delete(Organisatie organisatie) {
+		// TODO do some for loop magic
 		organisatieDao.delete(organisatie);
 	}
 
