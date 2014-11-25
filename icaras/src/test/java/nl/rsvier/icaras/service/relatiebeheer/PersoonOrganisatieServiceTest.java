@@ -12,6 +12,7 @@ import nl.rsvier.icaras.core.arbeidsmarkt.Arbeidsovereenkomst;
 import nl.rsvier.icaras.core.relatiebeheer.Bedrijf;
 import nl.rsvier.icaras.core.relatiebeheer.Contactpersoon;
 import nl.rsvier.icaras.core.relatiebeheer.Kandidaat;
+import nl.rsvier.icaras.core.relatiebeheer.Leverancier;
 import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
 import nl.rsvier.icaras.core.relatiebeheer.Persoon;
 import nl.rsvier.icaras.core.relatiebeheer.Werknemer;
@@ -160,9 +161,13 @@ public class PersoonOrganisatieServiceTest {
 	}
 
 	@Test
-	public void testDelete() {
+	public void testDeletePersoon() {
 
+		//testpersoon1 heeft Kandidaat, Contactpersoon, Aanbieding en
+		//Arbeidsovereenkomst naar testOrganisatie1
 		persoonService.delete(testPersoon1);
+		//onderstaande test controleren of de referenties van testPersoon1
+		//naar testOrganisatie1 na verwijderen testPersoon1 ook zijn verwijderd
 		testOrganisatie1 = organisatieService.getByIdMetRollen(testOrganisatie1
 				.getId());
 		assertTrue(testOrganisatie1.getBedrijf().getAanbiedingen().isEmpty());
@@ -175,6 +180,30 @@ public class PersoonOrganisatieServiceTest {
 		assertNull(aanbiedingService.getById(aanbieding1.getId()));
 		assertNull(arbeidsovereenkomstService.getById(arbeidsovereenkomst1
 				.getId()));
+
+	}
+	
+	@Test
+	public void testDeleteOrganisatie() {
+
+		//testOrganisatie1 heeft  Contactpersoon, Aanbieding en
+		//Arbeidsovereenkomst naar Organisatie1
+		organisatieService.delete(testOrganisatie1);
+		//test of na deleten testOrganisatie1 ook bidirectionele relaties
+		//zijn verwijderd
+		testPersoon1 = persoonService.getByIdMetRollen(testPersoon1
+				.getId());
+		assertTrue(testPersoon1.getKandidaat().getAanbiedingen().isEmpty());
+		assertTrue(testPersoon1.getWerknemer().getArbeidsovereenkomsten().isEmpty());
+		assertTrue(testPersoon1.getContactpersoon().getOrganisaties().isEmpty());
+		assertTrue(testPersoon1.getContactpersoon().getOrganisaties().isEmpty());
+		
+		assertNull(organisatieService.getById(testOrganisatie1.getId()));
+		assertNull(aanbiedingService.getById(aanbieding1.getId()));
+		assertNull(arbeidsovereenkomstService.getById(arbeidsovereenkomst1
+				.getId()));
+		assertFalse(testPersoon1.getContactpersoon().
+				getOrganisaties().contains(testOrganisatie1));
 
 	}
 
@@ -294,4 +323,5 @@ public class PersoonOrganisatieServiceTest {
 		assertTrue(werknemers.contains(testPersoon3));
 		assertFalse(werknemers.contains(testPersoon2));
 	}
+	
 }
