@@ -18,6 +18,7 @@ import nl.rsvier.icaras.core.relatiebeheer.Persoon;
 import nl.rsvier.icaras.core.relatiebeheer.Werknemer;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,7 +183,7 @@ public class PersoonOrganisatieServiceTest {
 				.getId()));
 
 	}
-	
+
 	@Test
 	public void testDeleteOrganisatie() {
 
@@ -324,4 +325,26 @@ public class PersoonOrganisatieServiceTest {
 		assertFalse(werknemers.contains(testPersoon2));
 	}
 	
+	@Test
+	public void testGetAllAanTeBiedenOrganisaties() throws InvalidBusinessKeyException {
+		persoonService.save(testPersoon2);// is wel kandidaat
+		persoonService.save(testPersoon3);// geen kandidaat
+		organisatieService.getAllAanTeBiedenOrganisaties(testPersoon1);
+		testOrganisatie2 = new Organisatie("organisatie2");
+		testOrganisatie2.addRol(new Bedrijf());
+		aanbieding2 = new Aanbieding(testPersoon1, testOrganisatie2);
+		organisatieService.save(testOrganisatie2);
+		persoonService.update(testPersoon1);
+		testOrganisatie3 = new Organisatie("Organisatie3");
+		testOrganisatie3.addRol(new Bedrijf());
+		testOrganisatie4 = new Organisatie("Organisatie4");//geen Bedrijf
+		organisatieService.save(testOrganisatie3);
+		organisatieService.save(testOrganisatie4);
+		testPersoon1 = persoonService.getByIdMetRollen(testPersoon1.getId());
+		testPersoon2 = persoonService.getByIdMetRollen(testPersoon2.getId());
+		testPersoon3 = persoonService.getByIdMetRollen(testPersoon3.getId());
+		assertSame(3, organisatieService.getAllAanTeBiedenOrganisaties(testPersoon3).size());
+		assertSame(3, organisatieService.getAllAanTeBiedenOrganisaties(testPersoon2).size());
+		assertSame(1, organisatieService.getAllAanTeBiedenOrganisaties(testPersoon1).size());
+	}
 }
