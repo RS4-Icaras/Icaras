@@ -110,7 +110,9 @@ public class PersoonDaoHibernate extends GenericDaoHibernate<Persoon> implements
 				p.getWerknemer().getArbeidsovereenkomsten().size();
 				// p moet een kandidaatrol hebben voor de aanbieding van
 				// arbeidsovereenkomst
+				if (p.heeftRol(Kandidaat.class)) {
 				p.getKandidaat().getAanbiedingen().size();
+				}
 				werknemers.add(p);
 			}
 		}
