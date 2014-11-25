@@ -26,36 +26,40 @@
 	</div>
 
 	<c:if test="${not empty persoonForm}">
-		<form:form action="voegPersoonToe" method="post" commandName="persoonForm">
-			<fieldset>
+		<form:form action="voegPersoonToe" method="post" modelAttribute="persoonForm">
+			<div class="fieldset"><fieldset>
 			
-				<legend>Voeg een nieuwe persoon toe</legend>
-				<br />
+				<legend>Persoon</legend>
 				
+				<br />
 				<label for="voornaam">Voornaam</label>
 				<form:input naam="voornaam" path="voornaam" />
 				<form:errors path="voornaam" cssClass="validationError" />
-				<br /><br />
+				<br />
 				
+				<br />
 				<label for="tussenvoegsels">Tussenvoegsel(s)</label>
 				<form:input naam="tussenvoegsels" path="tussenvoegsels" />
 				<form:errors path="tussenvoegsels" cssClass="validationError" />
-				<br /><br />
+				<br />
 				
+				<br />
 				<label for="achternaam">Achternaam</label>
 				<form:input name="achternaam" path="achternaam" />
 				<form:errors path="achternaam" cssClass="validationError" />
-				<br /><br />
+				<br />
 				
+				<br />
 				<label for="geboortedatum">Geboortedatum</label>
 				<form:input name="geboortedatum" path="geboortedatum" />
 				<form:errors path="geboortedatum" cssClass="validationError" />
-				<br /><br />
+				<br />
 				
+				<br />
 				<input type="submit" value="Voeg persoon toe" />
 				<br /> 
 				
-			</fieldset>
+			</fieldset></div>
 		</form:form>
 	</c:if>
 	

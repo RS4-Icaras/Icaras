@@ -24,26 +24,45 @@
 			<li class="menubar_item"><a href="/Icaras/getAllOrganisaties">organisaties</a></li>
 		</ul>
 	</div>
-	
-	<c:if test="${not empty organisatieForm}">
-		<form:form action="voegOrganisatieToe" method="post"
-			modelAttribute="organisatieForm">
-			<div class="fieldset"><fieldset>
-				<legend>Organisatie</legend>
-				
-				<p>
-				<label for="naam">Naam</label>
-				<form:input name="naam" path="naam" />
-				<form:errors path="naam" cssClass="validationError" />
-				</p>
-				
-				<p>
-				<input type="submit" value="Voeg organisatie toe" />
-				</p>
-				
-			</fieldset></div>
+
+	<c:if test="${not empty nfaForm}">
+
+		<form:form method="post" action="/Icaras/voegNfaToe"
+			modelAttribute="nfaForm">
+			<div class="fieldset">
+				<fieldset>
+					<legend>Nfa</legend>
+					
+					<form:input type="hidden" path="relatieId" />
+
+					<p>
+					<label for="straat">Nfa type</label>
+					<form:select path="nfaSoort">
+						<form:options items="${nfaForm.nfaSoorten}" />
+					</form:select>
+ 					<p>
+
+					<p>
+					<label for="nfaAdres">Nfa adres</label>
+					<form:input name="nfaAdres" path="nfaAdres" />
+					<form:errors path="nfaAdres" cssClass="validationError" />
+					</p>
+					
+					<p>
+					<label for="extraInfo">Extra info</label>
+					<form:input name="extraInfo" path="extraInfo" />
+					<form:errors path="extraInfo" cssClass="validationError" />
+					</p>
+					
+					<p>
+					<input type="submit" value="Voeg Nfa toe" />
+					</p>
+
+					</fieldset>
+			</div>
 		</form:form>
+
 	</c:if>
-	
+
 </body>
 </html>

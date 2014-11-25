@@ -319,7 +319,6 @@ public class Persoon extends Relatie implements IEntity {
 
 	@Override
 	public String toString() {
-		return "Persoon(id=" + this.getId() + ", hash=" + this.hashCode()
-				+ "): " + this.getVolledigeNaam();
+		return this.getVolledigeNaam();
 	}
 }

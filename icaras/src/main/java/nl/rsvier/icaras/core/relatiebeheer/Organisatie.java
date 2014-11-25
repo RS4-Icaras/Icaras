@@ -255,8 +255,7 @@ public class Organisatie extends Relatie {
 
 	@Override
 	public String toString() {
-		return "Organisatie(id=" + this.getId() + ", hash=" + this.hashCode()
-				+ ") " + this.getNaam();
+		return this.getNaam();
 	}
 
 }
