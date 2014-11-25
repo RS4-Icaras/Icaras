@@ -14,14 +14,12 @@ public class PersoonForm {
 
 	private int id;
 	
-	@NotBlank(message = "")
 	@Length(min = 2, max = 100, message = "Vul uw voornaam in")
 	private String voornaam;
 	
-	@Pattern(regexp = "[a-zA-Z'-[\\s]]{0,40}", message = "Alleen letters, spaties, ' of - zijn toegestaan")
+	@Pattern(regexp = "[a-zA-Z'-[\\s]]{0,40}", message = "Alleen letters, spaties, ''' of - zijn toegestaan")
 	private String tussenvoegsels = "";
 	
-	@NotBlank(message = "")
 	@Length(min = 2, max = 100, message = "Vul uw achternaam in")
 	private String achternaam;
 

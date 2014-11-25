@@ -1,5 +1,7 @@
 package nl.rsvier.icaras.form.relatiebeheer;
 
+import javax.validation.constraints.Pattern;
+
 import org.hibernate.validator.constraints.NotBlank;
 
 public class PostbusForm {
@@ -14,14 +16,13 @@ public class PostbusForm {
 
 	private boolean correspondentieAdres = true;
 
-	@NotBlank()
-	// Een postbusnummer bestaat uit minimaal één en maximaal vijf cijfers
+	@Pattern(regexp = "[\\d]{1,5}", message = "Een postbusnummer bestaat uit minimaal één en maximaal vijf cijfers")
 	private String postbusnummer = "";
 	
-	@NotBlank
+	@Pattern(regexp = "[0-9]{4}[a-zA-Z]{2}", message = " Vul 4 cijfers gevolgd door 2 letters in (1234AB)")
 	private String postcode = "";
 	
-	@NotBlank
+	@Pattern(regexp = "[a-zA-Z'-[\\s]]{2,100}", message = "Geef een geldige plaatsnaam")
 	private String plaats = "";
 
 	/*

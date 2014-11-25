@@ -1,5 +1,6 @@
 package nl.rsvier.icaras.form.relatiebeheer;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
@@ -8,7 +9,7 @@ public class OrganisatieForm {
 
 	private int id;
 	
-	@NotBlank
+	@Length(min = 2, max = 100, message = "Vul uw voornaam in")
 	private String naam;
 
 	public OrganisatieForm() {

@@ -18,19 +18,15 @@ public class AdresForm {
 
 	private boolean correspondentieAdres = true;
 
-	@NotBlank(message = "")
 	@Pattern(regexp = "[a-zA-Z'-[\\s]]{2,100}", message = "Geef de straatnaam op")
 	private String straat;
 
-	@NotBlank(message = "")
 	@Pattern(regexp = "[0-9]{1}.{0,24}", message = "Geef het huisnummer, gevolgd door eventuele toevoeging")
 	private String huisnummer;
 
-	@NotBlank(message = "")
 	@Pattern(regexp = "[0-9]{4}[a-zA-Z]{2}", message = " Vul 4 cijfers gevolgd door 2 letters in (1234AB)")
 	private String postcode;
 
-	@NotBlank
 	@Pattern(regexp = "[a-zA-Z'-[\\s]]{2,100}", message = "Geef een geldige plaatsnaam")
 	private String plaats;
 
