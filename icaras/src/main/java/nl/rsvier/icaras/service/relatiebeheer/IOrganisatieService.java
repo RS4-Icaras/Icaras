@@ -27,4 +27,6 @@ public interface IOrganisatieService {
 	public List<Organisatie> getAllMetRollen();
 	
 	public List<Organisatie> getAllCompleet();
+	
+	public List<Organisatie> getAllMetBedrijfsrol();
 }

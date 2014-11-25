@@ -1,5 +1,6 @@
 package nl.rsvier.icaras.dao.relatiebeheer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nl.rsvier.icaras.core.relatiebeheer.Bedrijf;
@@ -7,6 +8,7 @@ import nl.rsvier.icaras.core.relatiebeheer.Leverancier;
 import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
 import nl.rsvier.icaras.dao.GenericDaoHibernate;
 
+import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 /*
@@ -21,10 +23,14 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 		super(Organisatie.class);
 	}
 
+	/**
+	 * initialiseert ook de lijst met contactpersonen
+	 */
 	@Override
 	public List<Organisatie> getAllMetAdressenenNfaLijst() {
 		List<Organisatie> organisaties = getAll();
 		for (Organisatie organisatie : organisaties) {
+			organisatie.getContactpersonen().size();
 			organisatie.getAdressen().size();
 			organisatie.getNfaLijst().size();
 		}
@@ -44,6 +50,7 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 				bedrijf.getAanbiedingen().size();
 				bedrijf.getArbeidsovereenkomsten().size();
 				bedrijf.getMedewerkers().size();
+				bedrijf.getVacatures().size();
 			}
 			if (organisatie.heeftRol(Leverancier.class)) {
 				organisatie.getLeverancier();
@@ -64,6 +71,7 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 				bedrijf.getAanbiedingen().size();
 				bedrijf.getArbeidsovereenkomsten().size();
 				bedrijf.getMedewerkers().size();
+				bedrijf.getVacatures().size();
 			}
 			if (organisatie.heeftRol(Leverancier.class)) {
 				organisatie.getLeverancier();
@@ -72,9 +80,13 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 		return organisaties;
 	}
 
+	/**
+	 * initialiseert ook de lijst met contactpersonen
+	 */
 	@Override
 	public Organisatie getByIdMetAdressenEnNfaLijst(int id) {
 		Organisatie organisatie = getById(id);
+		organisatie.getContactpersonen().size();
 		organisatie.getAdressen().size();
 		organisatie.getNfaLijst().size();
 		return organisatie;
@@ -92,6 +104,7 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 			bedrijf.getAanbiedingen().size();
 			bedrijf.getArbeidsovereenkomsten().size();
 			bedrijf.getMedewerkers().size();
+			bedrijf.getVacatures().size();
 		}
 		if (organisatie.heeftRol(Leverancier.class)) {
 			organisatie.getLeverancier();
@@ -110,10 +123,33 @@ public class OrganisatieDaoHibernate extends GenericDaoHibernate<Organisatie>
 			bedrijf.getAanbiedingen().size();
 			bedrijf.getArbeidsovereenkomsten().size();
 			bedrijf.getMedewerkers().size();
+			bedrijf.getVacatures().size();
 		}
 		if (organisatie.heeftRol(Leverancier.class)) {
 			organisatie.getLeverancier();
 		}
 		return organisatie;
+	}
+
+	/**
+	 * initialiseert ook de lijst met contactpersonen
+	 */
+	public List<Organisatie> getAllMetBedrijfsrol() {
+		List<Organisatie> organisaties = new ArrayList<Organisatie>();
+		for (Organisatie o : getAllMetRollen()) {
+			if (o.heeftRol(Bedrijf.class)) {
+				o.getContactpersonen().size();
+				Bedrijf bedrijf = o.getBedrijf();
+				bedrijf.getAanbiedingen().size();
+				bedrijf.getArbeidsovereenkomsten().size();
+				bedrijf.getMedewerkers().size();
+				bedrijf.getVacatures().size();
+				organisaties.add(o);
+			}
+		}
+		return organisaties;
+		// TODO implementeren via HQL
+		// return (List<Organisatie>)
+		// getHibernateTemplate().find("from organisatie o where o.id = ((from organisatie_organisatierol where rollen_rolId = (select rolId from bedrijf))");
 	}
 }

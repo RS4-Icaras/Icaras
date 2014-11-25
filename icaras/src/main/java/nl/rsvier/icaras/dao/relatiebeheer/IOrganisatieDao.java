@@ -35,4 +35,6 @@ public interface IOrganisatieDao extends IGenericDao<Organisatie> {
 	 *         adressen en Nfalijst
 	 */
 	public List<Organisatie> getAllCompleet();
+	
+	public List<Organisatie> getAllMetBedrijfsrol();
 }

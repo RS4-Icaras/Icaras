@@ -70,5 +70,9 @@ public class OrganisatieService implements IOrganisatieService {
 	public List<Organisatie> getAllCompleet() {
 		return organisatieDao.getAllCompleet();
 	}
+	
+	public List<Organisatie> getAllMetBedrijfsrol() {
+		return organisatieDao.getAllMetBedrijfsrol();
+	}
 
 }
