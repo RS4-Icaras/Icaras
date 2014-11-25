@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -13,7 +12,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import nl.rsvier.icaras.core.IEntity;
 
@@ -49,6 +47,11 @@ public class Persoon extends Relatie implements IEntity {
 	 * Constructoren
 	 */
 
+	public Persoon(String v, String t, String a, Calendar date) {
+		this(v, t, a);
+		this.setGeboortedatum(date);
+	}
+
 	public Persoon(String v, String t, String a) {
 		this(v, a);
 		this.setTussenvoegsels(t);
@@ -64,7 +67,7 @@ public class Persoon extends Relatie implements IEntity {
 		this.rollen = new ArrayList<PersoonsRol>();
 	}
 
-	//@Column(nullable = false)
+	// @Column(nullable = false)
 	@NotNull
 	public String getVoornaam() {
 		return voornaam;
@@ -74,7 +77,7 @@ public class Persoon extends Relatie implements IEntity {
 		this.voornaam = voornaam;
 	}
 
-	//@Column(nullable = false)
+	// @Column(nullable = false)
 	@NotNull
 	public String getAchternaam() {
 		return achternaam;
@@ -84,7 +87,7 @@ public class Persoon extends Relatie implements IEntity {
 		this.achternaam = achternaam;
 	}
 
-	//@Column(nullable = false)
+	// @Column(nullable = false)
 	@NotNull
 	public String getTussenvoegsels() {
 		return tussenvoegsels;
@@ -95,13 +98,13 @@ public class Persoon extends Relatie implements IEntity {
 	}
 
 	@Temporal(TemporalType.DATE)
-	//@NotNull
+	// @NotNull
 	public Calendar getGeboortedatum() {
 		return geboortedatum;
 	}
 
-	public void setGeboortedatum(Calendar geboortedatum) {
-		this.geboortedatum = geboortedatum;
+	public void setGeboortedatum(Calendar geboortedatum2) {
+		this.geboortedatum = geboortedatum2;
 	}
 
 	/*
@@ -157,7 +160,8 @@ public class Persoon extends Relatie implements IEntity {
 	// Toevoegen van lege rollen lost dit probleem op.
 	// Deze methode private maken en maakKandidaat() maakWerknemer() etc als
 	// publieke methoden
-	//TODO via getRollen is het nog steeds publiek toegankelijk getRollen().add(kandidaatrol)...
+	// TODO via getRollen is het nog steeds publiek toegankelijk
+	// getRollen().add(kandidaatrol)...
 	public synchronized boolean addRol(PersoonsRol rol) {
 		boolean toegevoegd = false;
 		// controleer of deze persoon dit type rol al heeft
@@ -270,11 +274,11 @@ public class Persoon extends Relatie implements IEntity {
 		final int prime = 41;
 		int hash = 1;
 		if (getVoornaam() != null)
-		hash = hash * prime + this.getVoornaam().hashCode();
+			hash = hash * prime + this.getVoornaam().hashCode();
 		if (getTussenvoegsels() != null)
-		hash = hash * prime + this.getTussenvoegsels().hashCode();
+			hash = hash * prime + this.getTussenvoegsels().hashCode();
 		if (getAchternaam() != null)
-		hash = hash * prime + this.getAchternaam().hashCode();
+			hash = hash * prime + this.getAchternaam().hashCode();
 		return hash;
 	}
 

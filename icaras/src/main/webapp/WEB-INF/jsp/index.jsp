@@ -8,18 +8,27 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>Icaras</title>
-<link href="<c:url value="/resources/rs4/css/icaras.css" />"
-	rel="stylesheet">
+<link href="<c:url value="/resources/rs4/css/icaras.css" />" rel="stylesheet">
 </head>
-
 
 <body>
 
-	<h1>Welkom</h1>
+	<div id="menu">
+		<ul id="menubar">
+			<li class="menubar_item active"><a href="/Icaras/">welkom</a></li>
+			<li class="menubar_item"><a href="/Icaras/getAllRelaties">relaties</a></li>
+			<li class="menubar_item"><a href="/Icaras/getAllPersonen">personen</a></li>
+			<li class="menubar_item"><a href="/Icaras/getAllOrganisaties">organisaties</a></li>
+		</ul>
+	</div>
+	
+	<fieldset>
+	<legend>Welkom</legend>
 	<p>
 		klik <a href="/Icaras/start">hier</a> om de database te vullen met
 		test personen en organisaties.
 	</p>
-
+	</fieldset>
+	
 </body>
 </html>

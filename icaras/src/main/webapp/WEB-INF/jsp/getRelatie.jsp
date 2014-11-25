@@ -20,68 +20,93 @@
 
 	<div id="menu">
 		<ul id="menubar">
-			<li class="menubar_item"><a href="/Icaras/start">vul
-					database</a></li>
+			<li class="menubar_item"><a href="/Icaras/">welkom</a></li>
 			<li class="menubar_item"><a href="/Icaras/getAllRelaties">relaties</a></li>
+			<li class="menubar_item"><a href="/Icaras/getAllPersonen">personen</a></li>
+			<li class="menubar_item"><a href="/Icaras/getAllOrganisaties">organisaties</a></li>
 		</ul>
 	</div>
 
+	<c:if test="${not empty organisatieForm}">
+		<form:form action="/Icaras/updateOrganisatie" method="post"
+			commandName="organisatieForm">
+			<fieldset>
+				<legend>Gegevens</legend>
+				<br />
 
+				<form:input type="hidden" name="id" path="id" readonly="true" />
+
+				<label for="naam">Naam</label>
+				<form:input name="naam" path="naam" readonly="true" />
+				<form:errors path="naam" cssClass="validationError"></form:errors>
+				<br /><br />
+
+				<input type="submit" value="Wijzig gegevens" disabled="disabled" />
+				<br />
+
+			</fieldset>
+		</form:form>
+	</c:if>
+
+	<c:if test="${not empty persoonForm}">
+		<form:form action="/Icaras/updatePersoon" method="post"
+			commandName="persoonForm">
+			<fieldset>
+				<legend>Gegevens</legend>
+				<br />
+
+				<form:input type="hidden" name="id" path="id" readonly="true" />
+
+				<label for="voornaam">Voornaam</label>
+				<form:input name="voornaam" path="voornaam" />
+				<form:errors path="voornaam" cssClass="validationError"></form:errors>
+				<br /><br />
+				
+				<label for="tussenvoegsels">Tussenvoegsels</label>
+				<form:input name="tussenvoegsels" path="tussenvoegsels" />
+				<form:errors path="tussenvoegsels" cssClass="validationError"></form:errors>
+				<br /><br />
+				
+				<label for="achternaam">Achternaam</label>
+				<form:input name="achternaam"  path="achternaam" />
+				<form:errors path="achternaam" cssClass="validationError"></form:errors>
+				<br /><br />
+				
+				<label for="geboortedatum">Geboortedatum</label>
+				<form:input name="geboortedatum" path="geboortedatum" />
+				<form:errors path="geboortedatum" cssClass="validationError"></form:errors>
+				<br /><br />
+				
+				<input type="submit" value="Wijzig gegevens">
+				<br />
+
+			</fieldset>
+		</form:form>
+
+	</c:if>
+	
 	<c:if test="${not empty relatie}">
-		<c:choose>
-
-			<c:when
-				test="${relatie.getClass().name == 'nl.rsvier.icaras.core.relatiebeheer.Organisatie'}">
-				<form:form action="/Icaras/updateOrganisatie" method="post"
-					commandName="relatie">
-					<fieldset>
-						<legend>Gegevens</legend>
-						<br />
-						<form:input type="hidden" path="id" readonly="true" />
-						<label for="naam">Naam</label>
-						<form:input path="naam" readonly="true" />
-						<br /> <br /> <input style="display: inline;" type="submit"
-							value="Wijzig gegevens" disabled="disabled" />
-
-						<p class="warning">Organisatie heeft slechts een naam als
-							attribuut en deze is onaanpasbaar!</p>
-					</fieldset>
-				</form:form>
-			</c:when>
-
-			<c:when
-				test="${relatie.getClass().name == 'nl.rsvier.icaras.core.relatiebeheer.Persoon'}">
-				<form:form action="/Icaras/updatePersoon" method="post"
-					commandName="relatie">
-					<fieldset>
-						<legend>Gegevens</legend>
-						<form:input type="hidden" name="id" path="id" readonly="true" />
-						<br /> <label for="voornaam">Voornaam</label>
-						<form:input id="voornaam" path="voornaam" />
-						<br /> <label for="tussenvoegsels">Tussenvoegsels</label>
-						<form:input path="tussenvoegsels" />
-						<br /> <label for="achternaam">Achternaam</label>
-						<form:input path="achternaam" />
-						<br /> <br /> <input type="submit" value="Wijzig gegevens">
-					</fieldset>
-				</form:form>
-
-			</c:when>
-
-		</c:choose>
-		<fieldset>
-			<legend>Adressen</legend>
-			<ul id="adressenlist">
-				<c:forEach items="${relatie.adressen}" var="adres">
-					<li
-						class="adres edit <c:if test="${adres.isCorrespondentieAdres}">correspondentie</c:if>">
-						<a href="/Icaras/wijzigAdres/${relatie.id}/${adres.id}">${adres}</a>
-					</li>
-				</c:forEach>
-				<li style="margin-top: 12px;" class="new"><a
-					href="/Icaras/voegAdresToe/${relatie.id}">Adres</a></li>
-			</ul>
-		</fieldset>
+	<fieldset>
+		<legend>Adressen</legend>
+		<ul id="adressenlist">
+			<c:forEach items="${relatie.adressen}" var="adres">
+			<li class="adres edit <c:if test="${adres.isCorrespondentieAdres}">correspondentie</c:if>">
+				<c:choose>
+					<c:when test="${adres.isPostbus}">
+						<a href="/Icaras/getPostbus/${relatie.id}/${adres.id}">${adres}</a>
+					</c:when>
+					<c:otherwise>
+						<a href="/Icaras/getAdres/${relatie.id}/${adres.id}">${adres}</a>
+					</c:otherwise>
+				</c:choose>
+			</li>
+			</c:forEach>
+			<li style="margin-top: 12px;" class="new"><a
+				href="/Icaras/voegAdresToe/${relatie.id}">Voeg adres toe</a></li>
+			<li class="new"><a
+				href="/Icaras/voegPostbusToe/${relatie.id}">Voeg postbus toe</a></li>
+		</ul>
+	</fieldset>
 	</c:if>
 
 </body>

@@ -1,15 +1,53 @@
-h1 p {
+body {
+margin: 0px;
+padding: 0px;
+}
+
+body {
+	padding: 2%;
+}
+
+h1, h2, h3, h4, p {
 	font-family: Arial;
-	font-size: 24px;
 	color: #000;
+	font-size: 100%;
+}
+h2, h3, h4 {
+	font-size: 110%;
+}
+h1 {
+	font-size: 120%;
 }
 
-.succes {
-	color: #78AB46;
+legend {
+	font-family: Arial;
+	color: #000;
+	font-size: 120%;
+	font-weight: bold;
 }
 
-.fail {
-	color: #7f0000;
+input {
+	inline-block;
+}
+
+.validationError {
+	padding: 2px;
+	font-weight: bold;
+	color: #CF000F;
+}
+
+.validationError:before {
+    content: "";
+    display: inline-block;
+    background: url("../images/icons/silk/error.png") no-repeat;
+    background-position: 2px 8px;
+    margin-right: 2px;
+    width: 24px;
+    height: 24px;
+}
+
+fieldset {
+	border: 1px solid #EEE;
 }
 
 .error {
@@ -17,13 +55,12 @@ h1 p {
 	background-color: #FF5050;
 }
 
-p.error:before {
+.error:before {
     content: "";
-    display: block;
+    display: inline-block;
     background: url("../images/icons/silk/exclamation.png") no-repeat;
     width: 16px;
     height: 16px;
-    float: left;
     margin: 0 6px 0 0;
 }
 
@@ -43,13 +80,18 @@ p.warning:before {
 }
 
 
-
+#menu {
+	
+	width: 100%;
+	min-width: 100%;
+	border-bottom: 3px solid #a01126;
+	margin-bottom: 26px;
+}
 
 ul#menubar {
 	min-height: 40px;
 	padding-left: 42px;
-	background-image: url("../images/rsv.png");
-	background-repeat: no-repeat;
+	background: url("../images/rsv.png") no-repeat;
 	background-size: auto 100%;
 }
 
@@ -75,69 +117,36 @@ ul#menubar li.active {
 	font-size: 14pt;
 	text-decoration: none;
 	font-weight: bold;
-	color: #fff;
+	color: #FFF;
 }
 
 
-#personenlist ul{
-	width:40%;
-	vertical-align: top;
-	float:right;
-	list-style: none;
-}
-
-#organisatielist ul{
-	width:40%;
-	vertical-align: top;
-	float:left;
-	list-style: none;
-}
 
 
-#organisatielist li {
+#relatielist li {
 	list-style: none;
 	margin-top: 2px;
 }
 
-#personenlist li {
-	list-style: none;
-	margin-top: 2px;
-}
-
-#organisatielist li a {
+#relatielist li a {
 	font-family: Arial;
 	font-size: 14px;
 	padding-left: 22px;
 }
 
-#personenlist li a {
-	font-family: Arial;
-	font-size: 14px;
-	padding-left: 22px;
-}
-
-
-#organisatielist li.organisatie {
-	background-image: url("../images/icons/silk/lorry.png");
-	background-repeat: no-repeat;
+#relatielist li.organisatie {
+	background: url("../images/icons/silk/lorry.png") no-repeat;
 	background-position: left center;
 }
 
-#personenlist li.persoon {
-	background-image: url("../images/icons/silk/user.png");
-	background-repeat: no-repeat;
+#relatielist li.persoon {
+	background: url("../images/icons/silk/user.png") no-repeat;
 	background-position: left center;
 }
 
-#organisatielist li.new {
-	background-image: url("../images/icons/silk/add.png");
-	background-repeat: no-repeat;
+#relatielist li.new {
+	background: url("../images/icons/silk/add.png") no-repeat;
 	background-position: left center;
-}
-#personenlist li.new {
-	background-image: url("../images/icons/silk/add.png");
-	background-repeat: no-repeat;
-	background-position: left center;	
 }
 
 
@@ -154,14 +163,12 @@ ul#menubar li.active {
 }
 
 #adressenlist li.adres {
-	background-image: url("../images/icons/silk/email.png");
-	background-repeat: no-repeat;
+	background: url("../images/icons/silk/email.png") no-repeat;
 	background-position: left center;
 }
 
 #adressenlist li.adres:hover {
-	background-image: url("../images/icons/silk/email_edit.png");
-	background-repeat: no-repeat;
+	background: url("../images/icons/silk/email_edit.png") no-repeat;
 	background-position: left center;
 }
 
@@ -174,10 +181,42 @@ ul#menubar li.active {
 }
 
 #adressenlist li.new {
-	background-image: url("../images/icons/silk/email_add.png");
-	background-repeat: no-repeat;
+	/*background-image: url("../images/icons/silk/email_add.png") no-repeat;*/
+	background: url("../images/icons/silk/add.png") no-repeat;
 	background-position: left center;
 }
 
 
 
+
+/* Start of Column CSS */
+#container2 {
+	clear: left;
+	float: left;
+	width: 100%;
+	overflow: hidden;
+}
+
+#container1 {
+	float: left;
+	width: 100%;
+	position: relative;
+	right: 50%;
+	border-right: 1px solid #eee;
+}
+
+#col1 {
+	float: left;
+	width: 46%;
+	position: relative;
+	left: 52%;
+	overflow: hidden;
+}
+
+#col2 {
+	float: left;
+	width: 46%;
+	position: relative;
+	left: 56%;
+	overflow: hidden;
+}

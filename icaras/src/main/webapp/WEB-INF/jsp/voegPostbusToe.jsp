@@ -26,22 +26,17 @@
 	</div>
 	
 	<c:if test="${not empty relatie}">
-	<c:if test="${not empty adresForm}">
+	<c:if test="${not empty postbusForm}">
 	
-		<form:form method="post" action="/Icaras/voegAdresToe/${relatie.id}"
-			modelAttribute="adresForm">
+		<form:form method="post" action="/Icaras/voegPostbusToe/${relatie.id}"
+			modelAttribute="postbusForm">
 			<fieldset>
-				<legend>Voeg een nieuw adres toe</legend>
+				<legend>Voeg een nieuwe postbus toe</legend>
 				<br /> 
 				
-				<label for="straat">Straat</label>
-				<form:input name="straat" path="straat" />
-				<form:errors path="straat" cssClass="validationError" />
-				<br /><br />
-				
-				<label for="huisnummer">Huisnummer</label>
-				<form:input name="huisnummer" path="huisnummer" />
-				<form:errors path="huisnummer" cssClass="validationError" />
+				<label for="postbusnummer">Postbusnummer</label>
+				<form:input name="postbusnummer" path="postbusnummer" />
+				<form:errors path="postbusnummer" cssClass="validationError" />
 				<br /><br />
 				
 				<label for="postcode">Postcode</label>
@@ -54,7 +49,7 @@
 				<form:errors path="plaats" cssClass="validationError" />
 				<br /><br />
 				
-				<input type="checkbox" name="correspondentieAdres" value="true" <c:if test="${adresForm.correspondentieAdres}">checked</c:if>>
+				<input type="checkbox" name="correspondentieAdres" value="true" <c:if test="${postbusForm.correspondentieAdres}">checked</c:if>>
 				Stuur de post hiernaartoe?
 				<br /><br />
 				

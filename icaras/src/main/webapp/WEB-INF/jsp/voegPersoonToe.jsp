@@ -18,23 +18,43 @@
 
 	<div id="menu">
 		<ul id="menubar">
-			<li class="menubar_item"><a href="/Icaras/start">vul
-					database</a></li>
+			<li class="menubar_item"><a href="/Icaras/">welkom</a></li>
 			<li class="menubar_item"><a href="/Icaras/getAllRelaties">relaties</a></li>
+			<li class="menubar_item"><a href="/Icaras/getAllPersonen">personen</a></li>
+			<li class="menubar_item"><a href="/Icaras/getAllOrganisaties">organisaties</a></li>
 		</ul>
 	</div>
 
-	<c:if test="${not empty persoon}">
-		<form:form action="voegPersoonToe" method="post" commandName="persoon">
+	<c:if test="${not empty persoonForm}">
+		<form:form action="voegPersoonToe" method="post" commandName="persoonForm">
 			<fieldset>
-				<legend>Voeg een nieuwe persoon toe:</legend>
-				<br /> <label for="voornaam">Voornaam</label>
+			
+				<legend>Voeg een nieuwe persoon toe</legend>
+				<br />
+				
+				<label for="voornaam">Voornaam</label>
 				<form:input naam="voornaam" path="voornaam" />
-				<br /> <label for="tussenvoegsels">Tussenvoegsel(s)</label>
+				<form:errors path="voornaam" cssClass="validationError" />
+				<br /><br />
+				
+				<label for="tussenvoegsels">Tussenvoegsel(s)</label>
 				<form:input naam="tussenvoegsels" path="tussenvoegsels" />
-				<br /> <label for="achternaam">Achternaam</label>
+				<form:errors path="tussenvoegsels" cssClass="validationError" />
+				<br /><br />
+				
+				<label for="achternaam">Achternaam</label>
 				<form:input name="achternaam" path="achternaam" />
-				<br /> <br /> <input type="submit" value="Voeg persoon toe" />
+				<form:errors path="achternaam" cssClass="validationError" />
+				<br /><br />
+				
+				<label for="geboortedatum">Geboortedatum</label>
+				<form:input name="geboortedatum" path="geboortedatum" />
+				<form:errors path="geboortedatum" cssClass="validationError" />
+				<br /><br />
+				
+				<input type="submit" value="Voeg persoon toe" />
+				<br /> 
+				
 			</fieldset>
 		</form:form>
 	</c:if>

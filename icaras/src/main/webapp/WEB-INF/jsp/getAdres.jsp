@@ -24,15 +24,17 @@
 			<li class="menubar_item"><a href="/Icaras/getAllOrganisaties">organisaties</a></li>
 		</ul>
 	</div>
-	
-	<c:if test="${not empty relatie}">
+
 	<c:if test="${not empty adresForm}">
-	
-		<form:form method="post" action="/Icaras/voegAdresToe/${relatie.id}"
+		<form:form method="post"
+			action="/Icaras/getAdres"
 			modelAttribute="adresForm">
 			<fieldset>
-				<legend>Voeg een nieuw adres toe</legend>
-				<br /> 
+				<legend>Adres</legend>
+				<br />
+				
+				<form:input type="hidden" path="relatieId" />
+				<form:input type="hidden" path="adresId" />
 				
 				<label for="straat">Straat</label>
 				<form:input name="straat" path="straat" />
@@ -54,17 +56,27 @@
 				<form:errors path="plaats" cssClass="validationError" />
 				<br /><br />
 				
-				<input type="checkbox" name="correspondentieAdres" value="true" <c:if test="${adresForm.correspondentieAdres}">checked</c:if>>
-				Stuur de post hiernaartoe?
-				<br /><br />
+				<c:choose>
+					<c:when test="${adresForm.correspondentieAdres}">
+						<input type="checkbox" name="nepwaarde" value="true" checked
+							disabled>
+							Stuur de post hiernaartoe?
+							<br /><br />
+						<input type="hidden" name="correspondentieAdres" value="true" />
+						<form:input type="hidden" path="correspondentieAdres" />
+					</c:when>
+					<c:otherwise>
+						<input type="checkbox" name="correspondentieAdres" value="true">
+						Stuur de post hiernaartoe?
+						<br /><br />
+					</c:otherwise>
+				</c:choose>
 				
 				<input type="submit" value="Voeg adres toe" />
 				<br />
-				
+
 			</fieldset>
 		</form:form>
-
-	</c:if>
 	</c:if>
 
 </body>

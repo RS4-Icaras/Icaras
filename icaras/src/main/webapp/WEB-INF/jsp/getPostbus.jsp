@@ -24,24 +24,21 @@
 			<li class="menubar_item"><a href="/Icaras/getAllOrganisaties">organisaties</a></li>
 		</ul>
 	</div>
-	
-	<c:if test="${not empty relatie}">
-	<c:if test="${not empty adresForm}">
-	
-		<form:form method="post" action="/Icaras/voegAdresToe/${relatie.id}"
-			modelAttribute="adresForm">
+
+	<c:if test="${not empty postbusForm}">
+		<form:form method="post"
+			action="/Icaras/getPostbus"
+			modelAttribute="postbusForm">
 			<fieldset>
-				<legend>Voeg een nieuw adres toe</legend>
-				<br /> 
+				<legend>Postbus</legend>
+				<br />
 				
-				<label for="straat">Straat</label>
-				<form:input name="straat" path="straat" />
-				<form:errors path="straat" cssClass="validationError" />
-				<br /><br />
+				<form:input type="hidden" path="relatieId" />
+				<form:input type="hidden" path="postbusId" />
 				
-				<label for="huisnummer">Huisnummer</label>
-				<form:input name="huisnummer" path="huisnummer" />
-				<form:errors path="huisnummer" cssClass="validationError" />
+				<label for="postbusnummer">Postbusnummer</label>
+				<form:input name="postbusnummer" path="postbusnummer" />
+				<form:errors path="postbusnummer" cssClass="validationError" />
 				<br /><br />
 				
 				<label for="postcode">Postcode</label>
@@ -54,17 +51,27 @@
 				<form:errors path="plaats" cssClass="validationError" />
 				<br /><br />
 				
-				<input type="checkbox" name="correspondentieAdres" value="true" <c:if test="${adresForm.correspondentieAdres}">checked</c:if>>
-				Stuur de post hiernaartoe?
-				<br /><br />
+				<c:choose>
+					<c:when test="${postbusForm.correspondentieAdres}">
+						<input type="checkbox" name="nepwaarde" value="true" checked
+							disabled>
+							Stuur de post hiernaartoe?
+							<br /><br />
+						<input type="hidden" name="correspondentieAdres" value="true" />
+						<form:input type="hidden" path="correspondentieAdres" />
+					</c:when>
+					<c:otherwise>
+						<input type="checkbox" name="correspondentieAdres" value="true">
+						Stuur de post hiernaartoe?
+						<br /><br />
+					</c:otherwise>
+				</c:choose>
 				
-				<input type="submit" value="Voeg adres toe" />
+				<input type="submit" value="Voeg postbus toe" />
 				<br />
-				
+
 			</fieldset>
 		</form:form>
-
-	</c:if>
 	</c:if>
 
 </body>

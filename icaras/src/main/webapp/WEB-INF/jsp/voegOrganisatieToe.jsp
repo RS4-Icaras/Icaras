@@ -18,24 +18,28 @@
 
 	<div id="menu">
 		<ul id="menubar">
-			<li class="menubar_item"><a href="/Icaras/start">vul
-					database</a></li>
+			<li class="menubar_item"><a href="/Icaras/">welkom</a></li>
 			<li class="menubar_item"><a href="/Icaras/getAllRelaties">relaties</a></li>
+			<li class="menubar_item"><a href="/Icaras/getAllPersonen">personen</a></li>
+			<li class="menubar_item"><a href="/Icaras/getAllOrganisaties">organisaties</a></li>
 		</ul>
 	</div>
-
+	
 	<c:if test="${not empty organisatieForm}">
 		<form:form action="voegOrganisatieToe" method="post"
 			commandName="organisatieForm">
 			<fieldset>
-				<legend>Voeg een nieuwe organisatie toe:</legend>
-				<br /> <label for="naam">Naam</label>
+				<legend>Voeg een nieuwe organisatie toe</legend>
+				<br />
+				
+				<label for="naam">Naam</label>
 				<form:input name="naam" path="naam" />
-				<br /> <br /> 
-				<c:if test="${not empty feedback.invalidBusinessKey}">
-					<p class="error">${feedback.invalidBusinessKey}</p>
-				</c:if>
+				<form:errors path="naam" cssClass="validationError" />
+				<br /><br />
+
 				<input type="submit" value="Voeg organisatie toe" />
+				<br />
+				
 			</fieldset>
 		</form:form>
 	</c:if>
