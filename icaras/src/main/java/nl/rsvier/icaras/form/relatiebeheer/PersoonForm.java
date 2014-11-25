@@ -1,17 +1,41 @@
 package nl.rsvier.icaras.form.relatiebeheer;
 
-import java.util.Date;
+import java.util.Calendar;
+
+import nl.rsvier.icaras.core.relatiebeheer.Persoon;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class PersoonForm {
 
 	private int id;
+	
+	@NotBlank
 	private String voornaam;
-	private String tussenvoegsels;
+	
+	private String tussenvoegsels = "";
+	
+	@NotBlank
 	private String achternaam;
-	private Date geboortedatum;
+
+	@DateTimeFormat(pattern = "dd-mm-yyyy")
+	private Calendar geboortedatum;
+
+	public PersoonForm() {
+
+	}
+
+	public PersoonForm(Persoon persoon) {
+		this.setId(persoon.getId());
+		this.setVoornaam(persoon.getVoornaam());
+		this.setTussenvoegsels(persoon.getTussenvoegsels());
+		this.setAchternaam(persoon.getAchternaam());
+		this.setGeboortedatum(persoon.getGeboortedatum());
+	}
 
 	public PersoonForm(int id, String voornaam, String tussenvoegsels,
-			String achternaam, Date geboortedatum) {
+			String achternaam, Calendar geboortedatum) {
 		this.setId(id);
 		this.setVoornaam(voornaam);
 		this.setTussenvoegsels(tussenvoegsels);
@@ -51,11 +75,11 @@ public class PersoonForm {
 		this.achternaam = achternaam;
 	}
 
-	public Date getGeboortedatum() {
+	public Calendar getGeboortedatum() {
 		return geboortedatum;
 	}
 
-	public void setGeboortedatum(Date geboortedatum) {
+	public void setGeboortedatum(Calendar geboortedatum) {
 		this.geboortedatum = geboortedatum;
 	}
 

@@ -136,7 +136,7 @@ public class Organisatie extends Relatie {
 		return this.naam;
 	}
 
-	private void setNaam(String naam) {
+	public void setNaam(String naam) {
 		this.naam = naam;
 	}
 

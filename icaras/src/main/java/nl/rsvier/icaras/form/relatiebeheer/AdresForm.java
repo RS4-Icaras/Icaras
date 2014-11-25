@@ -4,65 +4,60 @@ import org.hibernate.validator.constraints.NotBlank;
 
 public class AdresForm {
 
-	private int relatie_id = 0;
-	private int id = 0;
+	/*
+	 * Attributen
+	 */
+
+	private int relatieId = 0;
+	
+	private int adresId = 0;
 
 	private boolean postbus = false;
-	private boolean correspondentieAdres = false;
 
-	// Maak een custom annotation die @NotEmpty is op voorwaarde dat postbus
-	// true is, zoals: @StraatNotBlank?
-	private String straat = "";
-	@NotBlank(message="hoi")
-	private String huisOfPostbusNummer = "";
+	private boolean correspondentieAdres = true;
+
 	@NotBlank
-	private String postcode = "";
+	private String straat;
+
 	@NotBlank
-	private String plaats = "";
+	private String huisnummer;
 
-	// Dan kan deze methode weg, en kunnen we Bindingresult gaan gebruiken in
-	// onze controller
-	public boolean isValid() {
-		if (!this.isAllesIngevuld()) {
-			return false;
-		}
-		return true;
+	@NotBlank
+	private String postcode;
+
+	@NotBlank
+	private String plaats;
+
+	/*
+	 * Constructoren
+	 */
+	
+	public AdresForm() {
+		
+	}
+	
+	public AdresForm(int relatieId) {
+		this.setRelatieId(relatieId);
+	}
+	
+	/*
+	 * Getters & Setters
+	 */
+
+	public int getRelatieId() {
+		return relatieId;
 	}
 
-	// Dan kan deze methode weg, en kunnen we Bindingresult gaan gebruiken in
-	// onze controller
-	public boolean isAllesIngevuld() {
-		if (this.getHuisOfPostbusNummer().equals("")
-				|| this.getPostcode().equals("") || this.getPlaats().equals("")
-				|| isStraatZonderStraat()) {
-			return false;
-		}
-		return true;
+	public void setRelatieId(int relatieId) {
+		this.relatieId = relatieId;
 	}
 
-	public boolean isStraatZonderStraat() {
-		if (!this.isPostbus()
-				&& (this.getStraat().equals("nvt") || this.getStraat().equals(
-						""))) {
-			return true;
-		}
-		return false;
+	public int getAdresId() {
+		return adresId;
 	}
 
-	public int getRelatie_id() {
-		return relatie_id;
-	}
-
-	public void setRelatie_id(int relatie_id) {
-		this.relatie_id = relatie_id;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
+	public void setAdresId(int adresId) {
+		this.adresId = adresId;
 	}
 
 	public boolean getPostbus() {
@@ -97,12 +92,21 @@ public class AdresForm {
 		this.straat = straat;
 	}
 
-	public String getHuisOfPostbusNummer() {
-		return huisOfPostbusNummer;
+	/*
+	 * Huisnummer is een String zodat er ook toevoegingen in kunnen worden
+	 * meegenomen. Dit betekend dat het lastig is te valideren of het een getal
+	 * is, en zelfs als je het uit elkaar haalt en een int voor het getal maakt
+	 * in combinate met een String voor toevoegingen word het nog steeds als een
+	 * string weggeschreven naar de database. Dat betekend dat ik met een
+	 * reguliere expressie de string weer zou moeten ontleden om er een getal en
+	 * string van te maken.
+	 */
+	public String getHuisnummer() {
+		return huisnummer;
 	}
 
-	public void setHuisOfPostbusNummer(String huisOfPostbusNummer) {
-		this.huisOfPostbusNummer = huisOfPostbusNummer;
+	public void setHuisnummer(String huisnummer) {
+		this.huisnummer = huisnummer;
 	}
 
 	public String getPostcode() {
