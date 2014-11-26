@@ -12,7 +12,7 @@ public class PostbusForm {
 
 	private int postbusId = 0;
 
-	private boolean correspondentieAdres = true;
+	private boolean correspondentieAdres = false;
 
 	@Pattern(regexp = "[\\d]{1,5}", message = "Een postbusnummer bestaat uit minimaal één en maximaal vijf cijfers")
 	private String postbusnummer = "";

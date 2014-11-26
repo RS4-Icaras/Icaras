@@ -14,7 +14,7 @@ public class AdresForm {
 
 	private boolean postbus = false;
 
-	private boolean correspondentieAdres = true;
+	private boolean correspondentieAdres = false;
 
 	@Pattern(regexp = "[a-zA-Z'-[\\s]]{2,100}", message = "Geef de straatnaam op")
 	private String straat;
