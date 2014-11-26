@@ -2,8 +2,6 @@ package nl.rsvier.icaras.form.relatiebeheer;
 
 import javax.validation.constraints.Pattern;
 
-import org.hibernate.validator.constraints.NotBlank;
-
 public class AdresForm {
 
 	/*
@@ -11,7 +9,7 @@ public class AdresForm {
 	 */
 
 	private int relatieId = 0;
-	
+
 	private int adresId = 0;
 
 	private boolean postbus = false;
@@ -33,15 +31,15 @@ public class AdresForm {
 	/*
 	 * Constructoren
 	 */
-	
+
 	public AdresForm() {
-		
+
 	}
-	
+
 	public AdresForm(int relatieId) {
 		this.setRelatieId(relatieId);
 	}
-	
+
 	/*
 	 * Getters & Setters
 	 */

@@ -7,23 +7,23 @@ import javax.validation.constraints.Pattern;
 import nl.rsvier.icaras.core.relatiebeheer.Persoon;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class PersoonForm {
 
 	private int id;
-	
+
 	@Length(min = 2, max = 100, message = "Vul uw voornaam in")
 	private String voornaam;
-	
+
 	@Pattern(regexp = "[a-zA-Z'-[\\s]]{0,40}", message = "Alleen letters, spaties, ''' of - zijn toegestaan")
 	private String tussenvoegsels = "";
-	
+
 	@Length(min = 2, max = 100, message = "Vul uw achternaam in")
 	private String achternaam;
 
-	//@Pattern(regexp = "\\d{2}[-/]{0,1}\\d{2}[-/]{0,1}\\d{4}"), message = "Geef een datum op (dd-mm-jjjj)")
+	// @Pattern(regexp = "\\d{2}[-/]{0,1}\\d{2}[-/]{0,1}\\d{4}"), message =
+	// "Geef een datum op (dd-mm-jjjj)")
 	@DateTimeFormat(pattern = "dd-mm-yyyy")
 	private Calendar geboortedatum;
 

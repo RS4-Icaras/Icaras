@@ -1,5 +1,9 @@
 package nl.rsvier.icaras.controller.relatiebeheer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import nl.rsvier.icaras.core.InvalidBusinessKeyException;
@@ -13,8 +17,11 @@ import nl.rsvier.icaras.core.relatiebeheer.Kandidaat;
 import nl.rsvier.icaras.core.relatiebeheer.LinkedIn;
 import nl.rsvier.icaras.core.relatiebeheer.Nfa;
 import nl.rsvier.icaras.core.relatiebeheer.Organisatie;
+import nl.rsvier.icaras.core.relatiebeheer.OrganisatieRol;
 import nl.rsvier.icaras.core.relatiebeheer.Persoon;
+import nl.rsvier.icaras.core.relatiebeheer.PersoonsRol;
 import nl.rsvier.icaras.core.relatiebeheer.Relatie;
+import nl.rsvier.icaras.core.relatiebeheer.Rol;
 import nl.rsvier.icaras.core.relatiebeheer.TelefoonNummer;
 import nl.rsvier.icaras.core.relatiebeheer.Twitter;
 import nl.rsvier.icaras.core.relatiebeheer.Website;
@@ -81,8 +88,13 @@ public class RelatieController {
 	@RequestMapping(value = "/start")
 	public String start(Model model) throws InvalidBusinessKeyException {
 
-		Adres aBurrow = new Adres(true, false, "2022PG", "1",
+		Adres aBurrow1 = new Adres(true, false, "2022PG", "1",
 				"Ottery St. Catchpole", "on the outskirts of Devon");
+		Adres aBurrow2 = new Adres(true, false, "2022PG", "1",
+				"Ottery St. Catchpole", "on the outskirts of Devon");
+		Adres aBurrow3 = new Adres(true, false, "2022PG", "1",
+				"Ottery St. Catchpole", "on the outskirts of Devon");
+
 		Adres aHogwarts = new Adres(true, true, "4501MG", "1402", "Edinburgh",
 				"");
 		Adres aPartyshop = new Adres(false, false, "0199TT", "93", "London",
@@ -91,11 +103,12 @@ public class RelatieController {
 		Persoon harry = new Persoon("Harry", "Potter");
 		harry.addAdres(new Adres(true, false, "1340DF", "4", "Little Whinging",
 				"Privet Drive"));
+		harry.addRol(new Kandidaat());
 
 		// //////////////////////
 
 		Nfa harry_twitter = new Twitter();
-		harry_twitter.setNfaAdres("@harrypotter");
+		harry_twitter.setNfaAdres("@harry");
 		harry.addNfa(harry_twitter);
 
 		Nfa harry_website = new Website();
@@ -103,63 +116,58 @@ public class RelatieController {
 		harry.addNfa(harry_website);
 
 		Nfa harry_telefoon = new TelefoonNummer();
-		harry_telefoon.setNfaAdres("+3160000000");
+		harry_telefoon.setNfaAdres("+31634504345");
 		harry.addNfa(harry_telefoon);
 
 		// //////////////////////
 
 		Persoon ron = new Persoon("Ron", "Weasley");
-		ron.addAdres(aBurrow);
+		ron.addAdres(aBurrow1);
 
 		Persoon hermione = new Persoon("Hermione", "Granger");
 
 		Organisatie hogwarts = new Organisatie(
 				"Hogwarts School of Witchcraft and Wizardry");
 		hogwarts.addAdres(aHogwarts);
+		hogwarts.addRol(new Bedrijf());
 		Organisatie gringotts = new Organisatie("Gringotts Wizarding Bank");
+		gringotts.addRol(new Bedrijf());
 		Organisatie leakycauldron = new Organisatie("The Leaky Cauldron");
 		Organisatie ollivanders = new Organisatie("Ollivanders");
 		Organisatie wizardwheezes = new Organisatie("Weasleys' Wizard Wheezes");
 		wizardwheezes.addAdres(aPartyshop);
+		wizardwheezes.addRol(new Bedrijf());
 
 		Persoon hagrid = new Persoon("Rubeus", "Hagrid");
-		// hagrid.addAdres(aHogwarts);
 
 		Persoon twins_george = new Persoon("George", "Weasley");
-		// twins_george.addAdres(aBurrow);
-		// twins_george.addAdres(aPartyshop);
+		twins_george.addAdres(aBurrow2);
 
 		Persoon twins_fred = new Persoon("Fred", "Weasley");
-		// twins_fred.addAdres(aBurrow);
-		// twins_fred.addAdres(aPartyshop);
+		twins_fred.addAdres(aBurrow3);
 
-		relatieService.save(harry); // Voeg harry eerst toe
-		relatieService.save(twins_fred);
-		relatieService.save(wizardwheezes);
-		relatieService.save(hogwarts);
-		relatieService.save(ron);
-		relatieService.save(ollivanders);
-		relatieService.save(gringotts);
-		relatieService.save(twins_george);
-		relatieService.save(leakycauldron);
-		relatieService.save(hagrid);
-		relatieService.save(hermione);
+		persoonService.save(harry);
+		persoonService.save(twins_fred);
+		organisatieService.save(wizardwheezes);
+		organisatieService.save(hogwarts);
+		persoonService.save(ron);
+		organisatieService.save(ollivanders);
+		organisatieService.save(gringotts);
+		persoonService.save(twins_george);
+		organisatieService.save(leakycauldron);
+		persoonService.save(hagrid);
+		persoonService.save(hermione);
 
 		Persoon profdumbledore = new Persoon("Albert", "Dumbledore");
-		relatieService.save(profdumbledore);
-
-		Persoon profdumbledore2 = new Persoon("Albert", "Dumbledore");
-		relatieService.save(profdumbledore2);
-
-		harry.addRol(new Kandidaat());
-		persoonService.update(harry);
-
-		hogwarts.addRol(new Bedrijf());
-		organisatieService.update(hogwarts);
+		persoonService.save(profdumbledore);
 
 		new Aanbieding(harry, hogwarts);
 		persoonService.update(harry);
 		organisatieService.update(hogwarts);
+
+		new Aanbieding(harry, wizardwheezes);
+		persoonService.update(harry);
+		organisatieService.update(wizardwheezes);
 
 		return "redirect:/getAllRelaties";
 	}
@@ -194,8 +202,19 @@ public class RelatieController {
 	public String getPersoon(@PathVariable int relatie_id, Model model) {
 
 		Persoon persoon = persoonService.getByIdCompleet(relatie_id);
+
+		// SSSsssst!
+		Map<String, PersoonsRol> rollenMap = new HashMap<String, PersoonsRol>();
+
+		rollenMap.put("Kandidaat", persoon.getKandidaat());
+		rollenMap.put("Contactpersoon", persoon.getContactpersoon());
+		rollenMap.put("Werknemer", persoon.getWerknemer());
+		rollenMap.put("Aanmelder", null);
+		rollenMap.put("Cursist", null);
+
 		model.addAttribute("persoonForm", new PersoonForm(persoon));
 		model.addAttribute("persoon", persoon);
+		model.addAttribute("rollenMap", rollenMap);
 		return "getPersoon";
 	}
 
@@ -204,42 +223,18 @@ public class RelatieController {
 
 		Organisatie organisatie = organisatieService
 				.getByIdCompleet(relatie_id);
+		
+		// SSSsssst!
+		Map<String, OrganisatieRol> rollenMap = new HashMap<String, OrganisatieRol>();
+
+		rollenMap.put("Bedrijf", organisatie.getBedrijf());
+		rollenMap.put("Leverancier", organisatie.getLeverancier());
+				
 		model.addAttribute("organisatieForm", new OrganisatieForm(organisatie));
 		model.addAttribute("organisatie", organisatie);
+		model.addAttribute("rollenMap", rollenMap);
 		return "getOrganisatie";
 	}
-
-	// @RequestMapping(value = { "/getRelatie/{relatie_id}" }, method =
-	// RequestMethod.GET)
-	// public String getRelatie(@PathVariable int relatie_id, Model model) {
-	//
-	// /*
-	// * Splits op, 1 db aanroep minder
-	// */
-	//
-	// Relatie relatie = relatieService.getByIdMetAdres(relatie_id); // per +
-	// // org
-	//
-	// if (relatie instanceof Persoon) {
-	// model.addAttribute("persoonForm",
-	// new PersoonForm((Persoon) relatie));
-	// model.addAttribute("relatie",
-	// persoonService.getByIdCompleet(relatie_id));
-	// return "getRelatie";
-	// }
-	//
-	// if (relatie instanceof Organisatie) {
-	// model.addAttribute("organisatieForm", new OrganisatieForm(
-	// (Organisatie) relatie));
-	// model.addAttribute("relatie",
-	// organisatieService.getByIdCompleet(relatie_id));
-	// return "getRelatie";
-	// }
-	//
-	// // TODO: Stuur gebruiker zomaar zonder feedback terug?
-	// return "redirect:/getAllRelaties";
-	//
-	// }
 
 	/*
 	 * Update Relatie
@@ -751,25 +746,5 @@ public class RelatieController {
 		model.addAttribute("nfaForm", nfaForm);
 		return "getNfa";
 	}
-
-	/*
-	 * Rollen
-	 */
-
-	@RequestMapping(value = "/voegKandidaatToe/{persoon_id}", method = RequestMethod.GET)
-	public String oops(@PathVariable int persoon_id, Model model) {
-
-		Persoon persoon = persoonService.getByIdCompleet(persoon_id);
-		persoon.addRol(new Kandidaat()); // TODO: verantwoordelijkheid van
-											// service of core
-		persoonService.update(persoon);
-		return "redirect:/getPersoon/" + persoon_id;
-	}
-
-	
-		
-		
-		
-		
 
 }

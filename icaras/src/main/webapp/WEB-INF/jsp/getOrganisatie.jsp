@@ -86,11 +86,22 @@
 	<div class="fieldset"><fieldset>
 		<legend>Rollen</legend>
 		<ul id="rollenlist">
-			<c:forEach items="${persoon.rollen}" var="rol">
-			<li class="rol edit <c:if test="${rol.gearchiveerd}">gearchiveerd</c:if>">
-				<a href="/Icaras/getNfa/${organisatie.id}/${nfa.id}">${rol.opmerking}</a>
-			</li>
+		
+			<c:forEach items="${rollenMap}" var="rol">
+				<c:choose>
+					<c:when test="${not empty rol.value}">
+						<li class="rol edit ${rol.key}">
+							<a class="" href="/Icaras/get${rol.key}/${organisatie.id}">${rol.key}</a>
+						</li>
+					</c:when>
+					<c:otherwise>
+						<li class="rol new">
+							<a class="new" href="/Icaras/voeg${rol.key}Toe/${organisatie.id}">Voeg ${rol.key} toe</a>
+						</li>
+					</c:otherwise>
+				</c:choose>
 			</c:forEach>
+			
 		</ul>
 	</fieldset></div>
 	</c:if>

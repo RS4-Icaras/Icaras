@@ -24,27 +24,17 @@
 		</ul>
 	</div>
 
-	<c:if test="${not empty persoon}">
+	<c:if test="${not empty organisatie}">
 	<div class="fieldset"><fieldset>
-	<legend>Bied aan</legend>
-	<ul id="aanbiedingenlist">
-		<c:forEach items="${organisaties}" var="organisatie">
-		<li class="">
-			<a href="/Icaras/biedPersoonAan/${persoon.id}/${organisatie.id}">${organisatie}</a>
-		</li>
-		</c:forEach>
-	</ul>
-	</fieldset></div>
-	
-	<div class="fieldset"><fieldset>
-		<legend>Geschiedenis</legend>
-		<p>${persoon.voornaam} is aangeboden aan:</p>
+		<legend>Aanbiedingen</legend>
+		
 		<ul id="aanbiedingenlist">
-			<c:forEach items="${persoon.kandidaat.aanbiedingen}" var="aanbieding">
+			<c:forEach items="${organisatie.bedrijf.aanbiedingen}" var="aanbieding">
 			<li class="">
-				<a href="/Icaras/getOrganisatie/${aanbieding.organisatie.id}">${aanbieding.organisatie}</a>
+				<a href="/Icaras/getPersoon/${aanbieding.persoon.id}">${aanbieding.persoon}</a>
 			</li>
 			</c:forEach>
+			<p>zijn aangeboden aan: ${organisatie.naam}</p>
 		</ul>
 	</fieldset></div>
 	</c:if>

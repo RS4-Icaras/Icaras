@@ -104,21 +104,21 @@
 	<div class="fieldset"><fieldset>
 		<legend>Rollen</legend>
 		<ul id="rollenlist">
-			<c:forEach items="${persoon.rollen}" var="rol">
-			<li class="rol edit <c:if test="${rol.gearchiveerd}">gearchiveerd</c:if>">
+			<c:forEach items="${rollenMap}" var="rol">
 				
 				<c:choose>
-					<c:when test="${rol.getClass().name == 'nl.rsvier.icaras.core.relatiebeheer.Kandidaat'}">
-						<a href="/Icaras/getKandidaat/${persoon.id}">Kandidatenrol</a>
+					<c:when test="${not empty rol.value}">
+						<li class="rol edit ${rol.key}">
+							<a class="" href="/Icaras/get${rol.key}/${persoon.id}">${rol.key}</a>
+						</li>
 					</c:when>
+					<c:otherwise>
+						<li class="rol new">
+							<a class="new" href="/Icaras/voeg${rol.key}Toe/${persoon.id}">Voeg ${rol.key} toe</a>
+						</li>
+					</c:otherwise>
 				</c:choose>
-				
-			</li>
 			</c:forEach>
-			
-			<li class="new"><a href="/Icaras/voegKandidaatToe/${persoon.id}">Voeg kandidatenrol toe</a></li>
-			<li class="new"><a href="#">Voeg werknemersrol toe</a></li>
-			<li class="new"><a href="#">Voeg contactpersoonsrol toe</a></li>
 			
 		</ul>
 	</fieldset></div>
